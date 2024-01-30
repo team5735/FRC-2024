@@ -19,7 +19,8 @@ public class LimelightSubsystem extends SubsystemBase {
     private Pose3d m_guessedPosition;
 
     /** Creates a new ExampleSubsystem. */
-    public LimelightSubsystem() {}
+    public LimelightSubsystem() {
+    }
 
     /**
      * Example command factory method.
@@ -29,10 +30,9 @@ public class LimelightSubsystem extends SubsystemBase {
     public CommandBase exampleMethodCommand() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(()
-                           -> {
-                               /* one-time action goes here */
-                           });
+        return runOnce(() -> {
+            /* one-time action goes here */
+        });
     }
 
     /**
@@ -57,16 +57,17 @@ public class LimelightSubsystem extends SubsystemBase {
         return m_guessedPosition;
     }
 
-    public double getLatency() { return m_targetingLatency; }
+    public double getLatency() {
+        return m_targetingLatency;
+    }
 
     private void tryFetchLL() {
         if (!m_staleLLData) {
-            LimelightResults latestResults =
-                LimelightHelpers.getLatestResults("");
+            LimelightResults latestResults = LimelightHelpers.getLatestResults("");
             LimelightHelpers.Results res = latestResults.targetingResults;
             m_targetFiducials = res.targets_Fiducials;
             m_targetingLatency = res.latency_capture + res.latency_pipeline +
-                                 res.latency_jsonParse;
+                    res.latency_jsonParse;
             m_guessedPosition = res.getBotPose3d();
         }
     }

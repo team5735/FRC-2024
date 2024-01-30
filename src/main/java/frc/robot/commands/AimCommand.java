@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 // Attempts to aim correctly at the field part that the robot can currently see.
 public class AimCommand extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final LimelightSubsystem m_subsystem;
 
     public AimCommand(LimelightSubsystem LLsubsystem) {
@@ -30,45 +30,47 @@ public class AimCommand extends CommandBase {
         LimelightTarget_Fiducial[] targets = m_subsystem.getTargetedFiducials();
         // do math n stuff
         SmartDashboard.putNumber("Current bot pose (estimated) x",
-                                 currentBotPose.getX());
+                currentBotPose.getX());
         SmartDashboard.putNumber("Current bot pose (estimated) y",
-                                 currentBotPose.getY());
+                currentBotPose.getY());
         SmartDashboard.putNumber("Current bot pose (estimated) z",
-                                 currentBotPose.getZ());
+                currentBotPose.getZ());
 
         Rotation3d currentBotRot = currentBotPose.getRotation();
         SmartDashboard.putNumber("Current bot rotation (estimated) x",
-                                 currentBotRot.getX());
+                currentBotRot.getX());
         SmartDashboard.putNumber("Current bot rotation (estimated) y",
-                                 currentBotRot.getY());
+                currentBotRot.getY());
         SmartDashboard.putNumber("Current bot rotation (estimated) z",
-                                 currentBotRot.getZ());
+                currentBotRot.getZ());
 
         // is there any better way to do this? I kinda hate this lol but no two
         // ways around it.
         ArrayList<String> targetsAsStrings = new ArrayList<>();
         for (LimelightTarget_Fiducial fid : targets) {
             targetsAsStrings.add("(" + fid.tx + ", " + fid.ty + ", " + fid.ta +
-                                 ", " + fid.fiducialID + ")");
+                    ", " + fid.fiducialID + ")");
         }
         String[] strings = new String[targetsAsStrings.size()];
         targetsAsStrings.toArray(strings);
         SmartDashboard.putStringArray(
-            "Currently tracked targets (tx, ty, ta, id)", strings);
+                "Currently tracked targets (tx, ty, ta, id)", strings);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {}
+    public void execute() {
+    }
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+    }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        // just does processing for now. in the future, we may have it turn;
+        // just does logging for now. in the future, we may have it turn;
         // that'd take more commands.
         return true;
     }
