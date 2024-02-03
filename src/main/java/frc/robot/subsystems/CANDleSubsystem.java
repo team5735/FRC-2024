@@ -2,23 +2,27 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// this file is a massive TODO
+
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.led.*;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import com.ctre.phoenix.led.CANdle;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class CANDleSubsystem extends SubsystemBase {
+public class CANdleSubsystem extends SubsystemBase {
+    private CANdle candle;
 
     /** Creates a new CANDleSubsystem. */
-    public CANDleSubsystem() {}
+    public CANdleSubsystem() {candle = new CANdle(Constants.kCANdleID);}
 
     /**
      * Example command factory method.
      *
      * @return a command
      */
-    public CommandBase setAimingColor() {
+    public Command setAimingColor() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
         return runOnce(() -> {});
