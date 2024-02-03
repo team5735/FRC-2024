@@ -4,21 +4,20 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.LimelightSubsystem;
-import java.util.ArrayList;
 
 // Attempts to aim correctly at the field part that the robot can currently see.
 public class AimCommand extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-    private final LimelightSubsystem m_subsystem;
+    private final LimelightSubsystem m_limelightSubsystem;
 
     public AimCommand(LimelightSubsystem LLsubsystem) {
-        m_subsystem = LLsubsystem;
+        m_limelightSubsystem = LLsubsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(LLsubsystem);
     }
@@ -26,35 +25,31 @@ public class AimCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        Pose3d currentBotPose = m_subsystem.getGuessedPosition();
-        LimelightTarget_Fiducial[] targets = m_subsystem.getTargetedFiducials();
-        // do math n stuff
-        SmartDashboard.putNumber("Current bot pose (estimated) x",
-                currentBotPose.getX());
-        SmartDashboard.putNumber("Current bot pose (estimated) y",
-                currentBotPose.getY());
-        SmartDashboard.putNumber("Current bot pose (estimated) z",
-                currentBotPose.getZ());
-
-        Rotation3d currentBotRot = currentBotPose.getRotation();
-        SmartDashboard.putNumber("Current bot rotation (estimated) x",
-                currentBotRot.getX());
-        SmartDashboard.putNumber("Current bot rotation (estimated) y",
-                currentBotRot.getY());
-        SmartDashboard.putNumber("Current bot rotation (estimated) z",
-                currentBotRot.getZ());
-
-        // is there any better way to do this? I kinda hate this lol but no two
-        // ways around it.
-        ArrayList<String> targetsAsStrings = new ArrayList<>();
-        for (LimelightTarget_Fiducial fid : targets) {
-            targetsAsStrings.add("(" + fid.tx + ", " + fid.ty + ", " + fid.ta +
-                    ", " + fid.fiducialID + ")");
+        // attempt to determine the position of the bottom of the hood, roughly
+        // (in botspace) for that we need the fiducial's position in botspace
+        // distance from the center of the fiducial to the bottom of the hood is
+        // 1' 8 7/8"
+        LimelightTarget_Fiducial mainTargetedFiducial = m_limelightSubsystem.getMainTargetedFiducial();
+        if (mainTargetedFiducial.fiducialID != Constants.kHoodAprilTagFiducialID) {
+            return;
         }
-        String[] strings = new String[targetsAsStrings.size()];
-        targetsAsStrings.toArray(strings);
-        SmartDashboard.putStringArray(
-                "Currently tracked targets (tx, ty, ta, id)", strings);
+
+        // x = forward, y = right, z = up
+        Translation3d robotToFiducial = mainTargetedFiducial.getTargetPose_RobotSpace().getTranslation();
+        // TODO: determine units that limelight gives
+        Translation3d robotToHood = robotToFiducial.plus(
+                new Translation3d(0, Constants.kHoodAprilTagHeight, 0));
+        Translation3d robotShooterOrigin = new Translation3d(
+                -Constants.kIntakeDistBehind, 0, Constants.kIntakeHeight);
+        Translation3d shooterToHood = robotToHood.minus(robotShooterOrigin);
+
+        // could also use Math.atan2
+        // norm is the distance from the origin
+        double requiredShooterAngle = Math.atan(shooterToHood.getZ() /
+                shooterToHood.toTranslation2d().getNorm());
+
+        SmartDashboard.putNumber("requiredShooterAngle", requiredShooterAngle);
+        SmartDashboard.putNumber("distanceToTarget", shooterToHood.getX());
     }
 
     // Called every time the scheduler runs while the command is scheduled.

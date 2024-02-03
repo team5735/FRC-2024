@@ -13,14 +13,10 @@ import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class LimelightSubsystem extends SubsystemBase {
     private boolean m_staleLLData;
-    private LimelightTarget_Fiducial[] m_targetFiducials;
-    /* currently unused */
-    private double m_targetingLatency;
-    private Pose3d m_guessedPosition;
+    private LimelightHelpers.Results m_targetingResults;
 
     /** Creates a new ExampleSubsystem. */
-    public LimelightSubsystem() {
-    }
+    public LimelightSubsystem() {}
 
     /**
      * Example command factory method.
@@ -30,9 +26,10 @@ public class LimelightSubsystem extends SubsystemBase {
     public CommandBase exampleMethodCommand() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(() -> {
-            /* one-time action goes here */
-        });
+        return runOnce(()
+                           -> {
+                               /* one-time action goes here */
+                           });
     }
 
     /**
@@ -44,31 +41,37 @@ public class LimelightSubsystem extends SubsystemBase {
     public boolean hasTargetedApriltag() {
         // Query some boolean state, such as a digital sensor.
         tryFetchLL();
-        return m_targetFiducials.length > 0;
+        return m_targetingResults.targets_Fiducials.length > 0;
     }
 
     public LimelightTarget_Fiducial[] getTargetedFiducials() {
         tryFetchLL();
-        return m_targetFiducials;
+        return m_targetingResults.targets_Fiducials;
     }
 
-    public Pose3d getGuessedPosition() {
+    public LimelightTarget_Fiducial getMainTargetedFiducial() {
         tryFetchLL();
-        return m_guessedPosition;
+        // lazy (no better way to get main fiducial that i can tell) (terrible
+        // library)
+        return m_targetingResults.targets_Fiducials[0];
+    }
+
+    public Pose3d getBotPose3d() {
+        tryFetchLL();
+        return m_targetingResults.getBotPose3d();
     }
 
     public double getLatency() {
-        return m_targetingLatency;
+        return m_targetingResults.latency_capture +
+            m_targetingResults.latency_pipeline +
+            m_targetingResults.latency_jsonParse;
     }
 
     private void tryFetchLL() {
         if (!m_staleLLData) {
-            LimelightResults latestResults = LimelightHelpers.getLatestResults("");
-            LimelightHelpers.Results res = latestResults.targetingResults;
-            m_targetFiducials = res.targets_Fiducials;
-            m_targetingLatency = res.latency_capture + res.latency_pipeline +
-                    res.latency_jsonParse;
-            m_guessedPosition = res.getBotPose3d();
+            LimelightResults latestResults =
+                LimelightHelpers.getLatestResults("");
+            m_targetingResults = latestResults.targetingResults;
         }
     }
 

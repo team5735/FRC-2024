@@ -4,15 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.led.*;
 
 public class CANDleSubsystem extends SubsystemBase {
 
     /** Creates a new CANDleSubsystem. */
-    public CANDleSubsystem() {
-    }
+    public CANDleSubsystem() {}
 
     /**
      * Example command factory method.
@@ -22,8 +21,7 @@ public class CANDleSubsystem extends SubsystemBase {
     public CommandBase setAimingColor() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(() -> {
-        });
+        return runOnce(() -> {});
     }
 
     /**
