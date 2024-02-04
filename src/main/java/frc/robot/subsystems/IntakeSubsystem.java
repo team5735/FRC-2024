@@ -19,14 +19,14 @@ public class IntakeSubsystem extends SubsystemBase
     }
 
     public void pull() {
-        double pullSpeed = SmartDashboard.getNumber("intakePullSpeed", Constants.INTAKE_PULL_SPEED);
+        double pullSpeed = SmartDashboard.getNumber("intakePullVoltage", Constants.INTAKE_PULL_VOLTS);
 
         m_talon_pull.setVoltage(pullSpeed);
 
     }
 
     public void push() {
-        double pushSpeed = SmartDashboard.getNumber("intakePushSpeed", Constants.INTAKE_PUSH_SPEED);
+        double pushSpeed = SmartDashboard.getNumber("intakePushVoltage", Constants.INTAKE_PUSH_VOLTS);
 
         m_talon_pull.setVoltage(-pushSpeed);
     }

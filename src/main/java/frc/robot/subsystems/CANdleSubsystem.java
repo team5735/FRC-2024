@@ -18,7 +18,7 @@ public class CANdleSubsystem extends SubsystemBase {
 
     /** Creates a new CANDleSubsystem. */
     public CANdleSubsystem() {
-        candle = new CANdle(Constants.kCANdleID);
+        candle = new CANdle(Constants.CAN_DLE_ID);
     }
 
     /**

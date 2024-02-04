@@ -19,53 +19,53 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void rightUp() {
         double rightVoltage =
-            SmartDashboard.getNumber("rightClimbUpVoltage", Constants.CLIMBER_SPEED_RIGHT_UP);
+            SmartDashboard.getNumber("climbRightUpVoltage", Constants.CLIMBER_RIGHT_UP_VOLTS);
         
         m_sparkMax_right.setVoltage(rightVoltage);
 
-        SmartDashboard.putNumber("rightClimbSpeed", m_sparkMax_right.getOutputCurrent());
-         SmartDashboard.putNumber("righttrigger", 1);
+        SmartDashboard.putNumber("climbRightOutput", m_sparkMax_right.getOutputCurrent());
+         SmartDashboard.putNumber("rightTrigger", 1);
     }
 
     public void leftUp(){
         double leftVoltage =
-            SmartDashboard.getNumber("leftClimbUpVoltage", Constants.CLIMBER_SPEED_LEFT_UP);
+            SmartDashboard.getNumber("climbLeftUpVoltage", Constants.CLIMBER_LEFT_UP_VOLTS);
 
         m_sparkMax_left.setVoltage(leftVoltage);
 
-        SmartDashboard.putNumber("leftClimbSpeed", m_sparkMax_left.getOutputCurrent());
-         SmartDashboard.putNumber("lefttrigger", 1);
+        SmartDashboard.putNumber("climbLeftOutput", m_sparkMax_left.getOutputCurrent());
+        SmartDashboard.putNumber("leftTrigger", 1);
     }
 
     public void rightDown() {
         double rightVoltage =
-            SmartDashboard.getNumber("rightClimbDownVoltage", Constants.CLIMBER_SPEED_RIGHT_DOWN);
+            SmartDashboard.getNumber("climbRightDownVoltage", Constants.CLIMBER_RIGHT_DOWN_VOLTS);
         
         m_sparkMax_right.setVoltage(-rightVoltage);
 
-        SmartDashboard.putNumber("rightClimbSpeed", m_sparkMax_right.getOutputCurrent());
-        SmartDashboard.putNumber("righttrigger", -1);
+        SmartDashboard.putNumber("climbRightOutput", m_sparkMax_right.getOutputCurrent());
+        SmartDashboard.putNumber("rightTrigger", -1);
     }
 
     public void leftDown(){
         double leftVoltage =
-            SmartDashboard.getNumber("leftClimbDownVoltage", Constants.CLIMBER_SPEED_LEFT_DOWN);
+            SmartDashboard.getNumber("climbLeftDownVoltage", Constants.CLIMBER_LEFT_DOWN_VOLTS);
         
         m_sparkMax_left.setVoltage(-leftVoltage);
 
-        SmartDashboard.putNumber("leftClimbSpeed", m_sparkMax_left.getOutputCurrent());
-        SmartDashboard.putNumber("lefttrigger", -1);
+        SmartDashboard.putNumber("climbLeftOutput", m_sparkMax_left.getOutputCurrent());
+        SmartDashboard.putNumber("leftTrigger", -1);
     }
 
     public void stopRight() {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         m_sparkMax_right.setVoltage(0);
-         SmartDashboard.putNumber("righttrigger", 0);
+         SmartDashboard.putNumber("rightTrigger", 0);
     }
 
     public void stopLeft(){
         m_sparkMax_left.setIdleMode(IdleMode.kBrake);
         m_sparkMax_left.setVoltage(0);
-        SmartDashboard.putNumber("lefttrigger", 0);
+        SmartDashboard.putNumber("leftTrigger", 0);
     }
 }

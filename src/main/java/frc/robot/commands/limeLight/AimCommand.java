@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.limeLight;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -41,7 +41,7 @@ public class AimCommand extends Command {
             return;
         }
         LimelightTarget_Fiducial mainTargetedFiducial = fiducials[0];
-        if (mainTargetedFiducial.fiducialID != Constants.kHoodAprilTagFiducialID) {
+        if (mainTargetedFiducial.fiducialID != Constants.SPEAKER_LEFT_TAG_FIDUCIALID) {
             return;
         }
 
@@ -49,9 +49,9 @@ public class AimCommand extends Command {
         Translation3d robotToFiducial = mainTargetedFiducial.getTargetPose_RobotSpace().getTranslation();
         // limelight units are meters
         Translation3d robotToHood = robotToFiducial.minus(
-                new Translation3d(0, Constants.kHoodAprilTagHeight, 0));
+                new Translation3d(0, Constants.SPEAKER_LEFT_TAG_HEIGHT, 0));
         Translation3d robotShooterOrigin = new Translation3d(
-                -Constants.kIntakeDistBehind, 0, Constants.kIntakeHeight);
+                -Constants.INTAKE_DISTANCE_BEHIND, 0, Constants.INTAKE_HEIGHT);
         Translation3d shooterToHood = robotToHood.minus(robotShooterOrigin);
 
         // could also use Math.atan2

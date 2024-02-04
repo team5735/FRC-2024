@@ -31,17 +31,17 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button
         // bindings, and put our autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-        SmartDashboard.putNumber("rightShootVoltage", Constants.SHOOTER_SPEED);
-        SmartDashboard.putNumber("leftShootVoltage", Constants.SHOOTER_SPEED);
+        SmartDashboard.putNumber("shootRightVoltage", Constants.SHOOTER_RIGHT_VOLTS);
+        SmartDashboard.putNumber("shootLeftVoltage", Constants.SHOOTER_LEFT_VOLTS);
 
-        SmartDashboard.putNumber("rightClimbUpVoltage", Constants.CLIMBER_SPEED_RIGHT_UP);
-        SmartDashboard.putNumber("leftClimbUpVoltage", Constants.CLIMBER_SPEED_LEFT_UP);
-        SmartDashboard.putNumber("rightClimbDownVoltage", Constants.CLIMBER_SPEED_RIGHT_DOWN);
-        SmartDashboard.putNumber("leftClimbDownVoltage", Constants.CLIMBER_SPEED_LEFT_DOWN);
+        SmartDashboard.putNumber("climbRightUpVoltage", Constants.CLIMBER_RIGHT_UP_VOLTS);
+        SmartDashboard.putNumber("climbLeftUpVoltage", Constants.CLIMBER_LEFT_UP_VOLTS);
+        SmartDashboard.putNumber("climbRightDownVoltage", Constants.CLIMBER_RIGHT_DOWN_VOLTS);
+        SmartDashboard.putNumber("climbLeftDownVoltage", Constants.CLIMBER_LEFT_DOWN_VOLTS);
 
 
-        SmartDashboard.putNumber("intakePullSpeed", Constants.INTAKE_PULL_SPEED);
-        SmartDashboard.putNumber("intakePushSpeed", Constants.INTAKE_PUSH_SPEED);
+        SmartDashboard.putNumber("intakePullVoltage", Constants.INTAKE_PULL_VOLTS);
+        SmartDashboard.putNumber("intakePushVoltage", Constants.INTAKE_PUSH_VOLTS);
 
         SmartDashboard.putNumber("rightBumper", 0);
         SmartDashboard.putNumber("leftBumper", 0);
@@ -82,12 +82,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-        // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+        // // schedule the autonomous command (example)
+        // if (m_autonomousCommand != null) {
+        //     m_autonomousCommand.schedule();
+        // }
     }
 
     /** This function is called periodically during autonomous. */
