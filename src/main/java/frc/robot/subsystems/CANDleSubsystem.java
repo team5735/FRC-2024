@@ -7,6 +7,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,17 +17,22 @@ public class CANdleSubsystem extends SubsystemBase {
     private CANdle candle;
 
     /** Creates a new CANDleSubsystem. */
-    public CANdleSubsystem() {candle = new CANdle(Constants.kCANdleID);}
+    public CANdleSubsystem() {
+        candle = new CANdle(Constants.kCANdleID);
+    }
 
     /**
      * Example command factory method.
      *
      * @return a command
      */
-    public Command setAimingColor() {
+    public Command setupColors() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(() -> {});
+        return runOnce(() -> {
+            CANdleConfiguration config = new CANdleConfiguration();
+            config.stripType = LEDStripType.RGB;
+        });
     }
 
     /**
