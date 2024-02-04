@@ -5,8 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+// import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,9 +28,25 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // Instantiate our RobotContainer. This will perform all our button
+        // Instantiate our RobotContainer.  This will perform all our button
         // bindings, and put our autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+        SmartDashboard.putNumber("rightShootVoltage", Constants.SHOOTER_SPEED);
+        SmartDashboard.putNumber("leftShootVoltage", Constants.SHOOTER_SPEED);
+
+        SmartDashboard.putNumber("rightClimbUpVoltage", Constants.CLIMBER_SPEED_RIGHT_UP);
+        SmartDashboard.putNumber("leftClimbUpVoltage", Constants.CLIMBER_SPEED_LEFT_UP);
+        SmartDashboard.putNumber("rightClimbDownVoltage", Constants.CLIMBER_SPEED_RIGHT_DOWN);
+        SmartDashboard.putNumber("leftClimbDownVoltage", Constants.CLIMBER_SPEED_LEFT_DOWN);
+
+
+        SmartDashboard.putNumber("intakePullSpeed", Constants.INTAKE_PULL_SPEED);
+        SmartDashboard.putNumber("intakePushSpeed", Constants.INTAKE_PUSH_SPEED);
+
+        SmartDashboard.putNumber("rightBumper", 0);
+        SmartDashboard.putNumber("leftBumper", 0);
+        SmartDashboard.putNumber("rightTrigger", 0);
+        SmartDashboard.putNumber("leftTrigger", 0);
     }
 
     /**
@@ -36,16 +54,15 @@ public class Robot extends TimedRobot {
      * items like diagnostics that you want ran during disabled, autonomous,
      * teleoperated and test.
      *
-     * <p>
-     * This runs after the mode specific periodic functions, but before
+     * <p>This runs after the mode specific periodic functions, but before
      * LiveWindow and SmartDashboard integrated updating.
      */
     @Override
     public void robotPeriodic() {
-        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // Runs the Scheduler.  This is responsible for polling buttons, adding
         // newly-scheduled commands, running already-scheduled commands,
         // removing finished or interrupted commands, and running subsystem
-        // periodic() methods. This must be called from the robot's periodic
+        // periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
     }
@@ -75,7 +92,9 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        
+    }
 
     @Override
     public void teleopInit() {
@@ -90,7 +109,9 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during operator control. */
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        // RobotContainer.m_intakeSubsystem.periodic();
+    }
 
     @Override
     public void testInit() {
