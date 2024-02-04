@@ -12,11 +12,12 @@ import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class LimelightSubsystem extends SubsystemBase {
-    private boolean m_staleLLData;
+    private boolean m_staleLLData = false;
     private LimelightHelpers.Results m_targetingResults;
 
     /** Creates a new ExampleSubsystem. */
-    public LimelightSubsystem() {}
+    public LimelightSubsystem() {
+    }
 
     /**
      * Example command factory method.
@@ -26,10 +27,9 @@ public class LimelightSubsystem extends SubsystemBase {
     public Command exampleMethodCommand() {
         // Inline construction of command goes here.
         // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(()
-                           -> {
-                               /* one-time action goes here */
-                           });
+        return runOnce(() -> {
+            /* one-time action goes here */
+        });
     }
 
     /**
@@ -63,14 +63,13 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public double getLatency() {
         return m_targetingResults.latency_capture +
-            m_targetingResults.latency_pipeline +
-            m_targetingResults.latency_jsonParse;
+                m_targetingResults.latency_pipeline +
+                m_targetingResults.latency_jsonParse;
     }
 
     private void tryFetchLL() {
-        if (!m_staleLLData) {
-            LimelightResults latestResults =
-                LimelightHelpers.getLatestResults("");
+        if (m_staleLLData) {
+            LimelightResults latestResults = LimelightHelpers.getLatestResults("");
             m_targetingResults = latestResults.targetingResults;
         }
     }
@@ -78,11 +77,11 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        m_staleLLData = true;
     }
 
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
-        m_staleLLData = true;
     }
 }

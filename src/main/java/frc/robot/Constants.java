@@ -20,12 +20,14 @@ public final class Constants {
     }
 
     // all wrong
+    // limelight units are in meters
     public static final int kHoodAprilTagFiducialID = 1;
-    public static final int kHoodAprilTagHeight = 1;
-    // 15 inches
-    public static final int kIntakeDistBehind = 1;
-    // 4 inches ("3 2/3")
-    public static final int kIntakeHeight = 1;
+    // 1' 8 7/8" = 20.875"
+    public static final double kHoodAprilTagHeight = 0.5302;
+    // 15"
+    public static final double kIntakeDistBehind = 0.381;
+    // 4" (*technically* "3 2/3")
+    public static final double kIntakeHeight = 0.1016;
 
     public static final int kCANdleID = 69;
 }
