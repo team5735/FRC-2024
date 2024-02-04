@@ -32,6 +32,7 @@ public class CANdleSubsystem extends SubsystemBase {
         return runOnce(() -> {
             CANdleConfiguration config = new CANdleConfiguration();
             config.stripType = LEDStripType.RGB;
+            candle.configAllSettings(config);
         });
     }
 

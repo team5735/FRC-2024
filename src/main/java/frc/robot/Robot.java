@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import java.util.ArrayList;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -110,10 +109,4 @@ public class Robot extends TimedRobot {
     /** This function is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {}
-
-    private void updateTrackedAprilTags() {
-        // I thought you'd parse the json dump. sad :(
-        // wait how do I log lol
-        /* logSomehow( */ LimelightHelpers.getJSONDump("");
-    }
 }
