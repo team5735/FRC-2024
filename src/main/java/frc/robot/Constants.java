@@ -26,4 +26,6 @@ public final class Constants {
     public static final int kIntakeDistBehind = 1;
     // 4 inches ("3 2/3")
     public static final int kIntakeHeight = 1;
+
+    public static final int kCANdleID = 69;
 }
