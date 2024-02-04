@@ -19,7 +19,8 @@ public class IntakeCommandPIDReset extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_subsystem.resetThat();
+        // PLEASE HELP I AM CONFUSE
+        // m_subsystem.resetThat();
     }
 
     // Called once the command ends or is interrupted.

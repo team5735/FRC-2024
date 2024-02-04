@@ -19,7 +19,8 @@ public class IntakeCommandLiftDown extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_subsystem.liftDown();
+        // PLEASE HELP I AM CONFUSE
+        // m_subsystem.liftDown();
     }
 
     // Called once the command ends or is interrupted.

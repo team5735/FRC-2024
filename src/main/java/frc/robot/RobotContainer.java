@@ -8,15 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.ShooterCommandStop;
-import frc.robot.commands.climber.ClimberCommandLeftDown;
-import frc.robot.commands.climber.ClimberCommandLeftStop;
-import frc.robot.commands.climber.ClimberCommandLeftUp;
-import frc.robot.commands.climber.ClimberCommandRightDown;
-import frc.robot.commands.climber.ClimberCommandRightStop;
-import frc.robot.commands.climber.ClimberCommandRightUp;
 import frc.robot.commands.intake.IntakeCommandIn;
 // import frc.robot.commands.intake.IntakeCommandLiftDown;
 // import frc.robot.commands.intake.IntakeCommandLiftUp;
@@ -26,6 +21,7 @@ import frc.robot.commands.intake.IntakeCommandStop;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -42,6 +38,8 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
+    
+  private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -92,6 +90,7 @@ public class RobotContainer {
     // m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
     //   .onFalse(new ClimberCommandLeftStop(m_climberSubsystem));    
 
+        m_driverController.a().whileTrue(new AimCommand(m_limelightSubsystem));
   }
 
   /**
