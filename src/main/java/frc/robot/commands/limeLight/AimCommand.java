@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.limeLight;
+package frc.robot.commands.limelight;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -58,11 +58,10 @@ public class AimCommand extends Command {
         // norm is the distance from the origin
         double requiredShooterAngle = Math.atan(-shooterToHood.getY() /
                 new Translation2d(shooterToHood.getX(), shooterToHood.getZ()).getNorm());
-                double requiredShooterAngleDeg = Math.toDegrees(requiredShooterAngle);
+        double requiredShooterAngleDeg = Math.toDegrees(requiredShooterAngle);
 
         SmartDashboard.putNumber("requiredShooterAngle", requiredShooterAngleDeg);
         SmartDashboard.putNumber("distanceToTarget", shooterToHood.getZ());
-
 
     }
 

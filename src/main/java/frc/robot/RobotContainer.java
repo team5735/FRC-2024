@@ -4,14 +4,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.intake.IntakeCommandStop;
-import frc.robot.commands.limeLight.AimCommand;
+import frc.robot.commands.limelight.AimCommand;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.commands.shooter.ShooterCommandStop;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -64,7 +63,6 @@ public class RobotContainer {
     private void configureBindings() {
         // Schedule `exampleMethodCommand` when the Xbox controller's B button
         // is pressed, cancelling on release.
-        m_driverController.a().onTrue(new AimCommand(m_limelightSubsystem));
 
         m_driverController.a().whileTrue(new ShooterCommand(m_shooterSubsystem))
                 .whileFalse(new ShooterCommandStop(m_shooterSubsystem));
