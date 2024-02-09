@@ -62,7 +62,6 @@ public class AimCommand extends Command {
 
         SmartDashboard.putNumber("requiredShooterAngle", requiredShooterAngleDeg);
         SmartDashboard.putNumber("distanceToTarget", shooterToHood.getZ());
-
     }
 
     // Called once the command ends or is interrupted.

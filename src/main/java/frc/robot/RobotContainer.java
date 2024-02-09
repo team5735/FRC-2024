@@ -77,21 +77,22 @@ public class RobotContainer {
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem))
                 .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
 
-    m_driverController.y().whileTrue(new IntakeCommandOut(m_intakeSubsystem))
-        .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
-    
-        //climbing :3
-     m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
-         .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
-     m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))
-         .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
-    
-     m_driverController.rightTrigger(0.5).whileTrue(new ClimberCommandRightDown(m_climberSubsystem))
-       .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
-     m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
-       .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));    
+        m_driverController.y().whileTrue(new IntakeCommandOut(m_intakeSubsystem))
+                .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
 
-       //limelight???? >:(
+        // climbing :3
+        m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
+                .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
+        m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))
+                .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
+
+        m_driverController.rightTrigger(0.5).whileTrue(new ClimberCommandRightDown(m_climberSubsystem))
+                .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
+        m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
+                .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
+
+        // limelight???? >:(
+        // yes limelight
         m_driverController.x().whileTrue(new AimCommand(m_limelightSubsystem));
     }
 
