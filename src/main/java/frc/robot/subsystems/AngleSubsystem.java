@@ -5,14 +5,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AngleConstants;
+import frc.robot.constants.AngleConstants;
+import frc.robot.constants.Constants;
 
 public class AngleSubsystem {
     private ArmFeedforward m_feedForward;
     private PIDController m_pid;
 
-    private TalonFX m_talon_right = new TalonFX(AngleConstants.ANGLE_MOTOR_RIGHT_ID);
-    private TalonFX m_talon_left = new TalonFX(AngleConstants.ANGLE_MOTOR_LEFT_ID);
+    private TalonFX m_talon_right = new TalonFX(Constants.ANGLE_MOTOR_RIGHT_ID);
+    private TalonFX m_talon_left = new TalonFX(Constants.ANGLE_MOTOR_LEFT_ID);
 
     public AngleSubsystem() {
         double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);

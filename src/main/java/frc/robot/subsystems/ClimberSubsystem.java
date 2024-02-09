@@ -6,13 +6,13 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.ClimberConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.ClimberConstants.CLIMBER_MOTOR_RIGHT_ID,
+    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.CLIMBER_MOTOR_RIGHT_ID,
             MotorType.kBrushless);
-    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.ClimberConstants.CLIMBER_MOTOR_LEFT_ID,
+    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.CLIMBER_MOTOR_LEFT_ID,
             MotorType.kBrushless);
 
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
