@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftStop;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
@@ -15,7 +15,6 @@ import frc.robot.commands.climber.ClimberCommandRightStop;
 import frc.robot.commands.climber.ClimberCommandRightUp;
 // import frc.robot.commands.Autos;
 import frc.robot.commands.intake.IntakeCommandIn;
-import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.intake.IntakeCommandStop;
 import frc.robot.commands.limelight.AimCommand;
 import frc.robot.commands.shooter.ShooterCommand;
@@ -77,10 +76,8 @@ public class RobotContainer {
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem))
                 .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
 
-        m_driverController.y().whileTrue(new IntakeCommandOut(m_intakeSubsystem))
-                .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
 
-        // climbing :3
+// climbing :3
         m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
                 .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
         m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))

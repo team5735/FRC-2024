@@ -8,8 +8,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.constants.Constants;
+import frc.robot.constants.LimelightConstants;
+import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.LimelightSubsystem;
 
 // Attempts to aim correctly at the field part that the robot can currently see.
@@ -41,7 +42,7 @@ public class AimCommand extends Command {
             return;
         }
         LimelightTarget_Fiducial mainTargetedFiducial = fiducials[0];
-        if (mainTargetedFiducial.fiducialID != Constants.SPEAKER_LEFT_TAG_FIDUCIALID) {
+        if (mainTargetedFiducial.fiducialID != LimelightConstants.SPEAKER_LEFT_TAG_FIDUCIALID) {
             return;
         }
 
@@ -49,9 +50,9 @@ public class AimCommand extends Command {
         Translation3d robotToFiducial = mainTargetedFiducial.getTargetPose_RobotSpace().getTranslation();
         // limelight units are meters
         Translation3d robotToHood = robotToFiducial.minus(
-                new Translation3d(0, Constants.SPEAKER_LEFT_TAG_HEIGHT, 0));
+                new Translation3d(0, LimelightConstants.SPEAKER_LEFT_TAG_HEIGHT, 0));
         Translation3d robotShooterOrigin = new Translation3d(
-                -Constants.INTAKE_DISTANCE_BEHIND, 0, Constants.INTAKE_HEIGHT);
+                -LimelightConstants.PIVOT_OFFSET_X, 0, LimelightConstants.PIVOT_OFFSET_Z);
         Translation3d shooterToHood = robotToHood.minus(robotShooterOrigin);
 
         // could also use Math.atan2
@@ -62,6 +63,7 @@ public class AimCommand extends Command {
 
         SmartDashboard.putNumber("requiredShooterAngle", requiredShooterAngleDeg);
         SmartDashboard.putNumber("distanceToTarget", shooterToHood.getZ());
+
     }
 
     // Called once the command ends or is interrupted.

@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.ClimberConstants;
 // import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.constants.Constants;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.ShooterConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,17 +35,18 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button
         // bindings, and put our autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-        SmartDashboard.putNumber("shootRightVoltage", Constants.SHOOTER_RIGHT_VOLTS);
-        SmartDashboard.putNumber("shootLeftVoltage", Constants.SHOOTER_LEFT_VOLTS);
+        SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+        SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
-        SmartDashboard.putNumber("climbRightUpVoltage", Constants.CLIMBER_RIGHT_UP_VOLTS);
-        SmartDashboard.putNumber("climbLeftUpVoltage", Constants.CLIMBER_LEFT_UP_VOLTS);
-        SmartDashboard.putNumber("climbRightDownVoltage", Constants.CLIMBER_RIGHT_DOWN_VOLTS);
-        SmartDashboard.putNumber("climbLeftDownVoltage", Constants.CLIMBER_LEFT_DOWN_VOLTS);
+        SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
+        SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
+        SmartDashboard.putNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
+        SmartDashboard.putNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
+
+        SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
+        SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
 
 
-        SmartDashboard.putNumber("intakePullVoltage", Constants.INTAKE_PULL_VOLTS);
-        SmartDashboard.putNumber("intakePushVoltage", Constants.INTAKE_PUSH_VOLTS);
 
         SmartDashboard.putNumber("rightBumper", 0);
         SmartDashboard.putNumber("leftBumper", 0);

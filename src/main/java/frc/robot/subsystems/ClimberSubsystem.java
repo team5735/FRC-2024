@@ -1,25 +1,25 @@
 package frc.robot.subsystems;
 
-// import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-// import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.Constants;
+
 
 public class ClimberSubsystem extends SubsystemBase {
-    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.CLIMBER_RIGHT_ID, MotorType.kBrushless);
-    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.CLIMBER_LEFT_ID, MotorType.kBrushless);
+    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.CLIMBER_MOTOR_RIGHT_ID, MotorType.kBrushless);
+    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.CLIMBER_MOTOR_LEFT_ID, MotorType.kBrushless);
 
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
     public void rightUp() {
         double rightVoltage =
-            SmartDashboard.getNumber("climbRightUpVoltage", Constants.CLIMBER_RIGHT_UP_VOLTS);
+            SmartDashboard.getNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         
         m_sparkMax_right.setVoltage(rightVoltage);
 
@@ -29,7 +29,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void leftUp(){
         double leftVoltage =
-            SmartDashboard.getNumber("climbLeftUpVoltage", Constants.CLIMBER_LEFT_UP_VOLTS);
+            SmartDashboard.getNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
 
         m_sparkMax_left.setVoltage(leftVoltage);
 
@@ -39,7 +39,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void rightDown() {
         double rightVoltage =
-            SmartDashboard.getNumber("climbRightDownVoltage", Constants.CLIMBER_RIGHT_DOWN_VOLTS);
+            SmartDashboard.getNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
         
         m_sparkMax_right.setVoltage(-rightVoltage);
 
@@ -49,7 +49,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void leftDown(){
         double leftVoltage =
-            SmartDashboard.getNumber("climbLeftDownVoltage", Constants.CLIMBER_LEFT_DOWN_VOLTS);
+            SmartDashboard.getNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
         
         m_sparkMax_left.setVoltage(-leftVoltage);
 
