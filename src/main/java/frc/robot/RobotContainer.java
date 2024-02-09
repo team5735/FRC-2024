@@ -8,6 +8,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.climber.ClimberCommandLeftDown;
+import frc.robot.commands.climber.ClimberCommandLeftStop;
+import frc.robot.commands.climber.ClimberCommandLeftUp;
+import frc.robot.commands.climber.ClimberCommandRightDown;
+import frc.robot.commands.climber.ClimberCommandRightStop;
+import frc.robot.commands.climber.ClimberCommandRightUp;
 // import frc.robot.commands.Autos;
 import frc.robot.commands.intake.IntakeCommandIn;
 // import frc.robot.commands.intake.IntakeCommandLiftDown;
@@ -80,16 +86,18 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new IntakeCommandOut(m_intakeSubsystem))
         .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
     
-    // m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
-    //     .onFalse(new ClimberCommandRightStop(m_climberSubsystem));
-    // m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))
-    //     .onFalse(new ClimberCommandLeftStop(m_climberSubsystem));
+        //climbing :3
+     m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
+         .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
+     m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))
+         .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
     
-    // m_driverController.rightTrigger(0.5).whileTrue(new ClimberCommandRightDown(m_climberSubsystem))
-    //   .onFalse(new ClimberCommandRightStop(m_climberSubsystem));
-    // m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
-    //   .onFalse(new ClimberCommandLeftStop(m_climberSubsystem));    
+     m_driverController.rightTrigger(0.5).whileTrue(new ClimberCommandRightDown(m_climberSubsystem))
+       .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
+     m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
+       .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));    
 
+       //limelight???? >:(
         m_driverController.x().whileTrue(new AimCommand(m_limelightSubsystem));
   }
 
