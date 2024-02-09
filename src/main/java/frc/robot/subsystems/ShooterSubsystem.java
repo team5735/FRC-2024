@@ -17,17 +17,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void drive() {
         double rightVoltage =
-            SmartDashboard.getNumber("rightShootVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+            SmartDashboard.getNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         double leftVoltage =
-            SmartDashboard.getNumber("leftShootVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
+            SmartDashboard.getNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
         m_talon_right.setInverted(true);
 
         m_talon_right.setVoltage(rightVoltage);
         m_talon_left.setVoltage(leftVoltage);
 
-        SmartDashboard.putNumber("rightShootOutput", m_talon_right.get());
-        SmartDashboard.putNumber("leftShootOutput", m_talon_left.get());
+        SmartDashboard.putNumber("shootRightOutput", m_talon_right.get());
+        SmartDashboard.putNumber("shootLeftOutput", m_talon_left.get());
     }
 
     public void stop() {

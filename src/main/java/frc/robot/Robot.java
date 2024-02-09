@@ -47,6 +47,8 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
+        SmartDashboard.putNumber("shootRightOutput", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+        SmartDashboard.putNumber("shootLeftOutput", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
