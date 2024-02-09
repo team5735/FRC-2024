@@ -13,7 +13,6 @@ import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightStop;
 import frc.robot.commands.climber.ClimberCommandRightUp;
-// import frc.robot.commands.Autos;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandStop;
 import frc.robot.commands.limelight.AimCommand;
