@@ -52,8 +52,9 @@ public final class Constants {
 
     public static double convertTalonRotationsToDegrees(double rotations) {
         rotations %= 1;
-        if (rotations < 0)
+        if (rotations < 0) {
             rotations += 1;
+        }
         rotations *= 360;
 
         return rotations;
