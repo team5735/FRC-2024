@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.AngleConstants;
 import frc.robot.constants.ClimberConstants;
 // import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.constants.Constants;
@@ -35,6 +36,15 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button
         // bindings, and put our autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+        SmartDashboard.putNumber("angleKP", AngleConstants.ANGLE_KP);
+        SmartDashboard.putNumber("angleKI", AngleConstants.ANGLE_KI);
+        SmartDashboard.putNumber("angleKD", AngleConstants.ANGLE_KD);
+
+        SmartDashboard.putNumber("angleKS", AngleConstants.ANGLE_KS);
+        SmartDashboard.putNumber("angleKG", AngleConstants.ANGLE_KG);
+        SmartDashboard.putNumber("angleKV", AngleConstants.ANGLE_KV);
+
+
         SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
