@@ -13,16 +13,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
+    public ShooterSubsystem(){
+        // m_talon_right.setInverted(true);
+    }
+
     public void drive() {
         double rightVoltage =
             SmartDashboard.getNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         double leftVoltage =
             SmartDashboard.getNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
-        m_talon_right.setInverted(true);
 
         m_talon_right.setVoltage(rightVoltage);
-        m_talon_left.setVoltage(leftVoltage);
+        m_talon_left.setVoltage(-leftVoltage);
 
         SmartDashboard.putNumber("shootRightOutput", m_talon_right.get());
         SmartDashboard.putNumber("shootLeftOutput", m_talon_left.get());
