@@ -6,12 +6,15 @@
 
 package frc.robot.subsystems;
 
+import java.awt.Color;
+
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.RainbowAnimation;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CANdleConstants;
 import frc.robot.constants.Constants;
 
 public class CANdleSubsystem extends SubsystemBase {
@@ -22,25 +25,25 @@ public class CANdleSubsystem extends SubsystemBase {
         candle = new CANdle(Constants.CANDLE_ID);
     }
 
-    /**
-     * Example command factory method.
-     *
-     * @return a command
-     */
-    public Command setColorAim() {
-        // Inline construction of command goes here.
-        // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(() -> {
-            CANdleConfiguration config = getDefaultConfig();
-            config.customParam0 = 1;
-            candle.configAllSettings(config);
-        });
+    public void setIdle() {
+        candle.animate(new RainbowAnimation(0.5, 1.0, 8));
     }
 
-    private CANdleConfiguration getDefaultConfig() {
+    public void setColorAim() {
+        // Inline construction of command goes here.
+        // Subsystem::RunOnce implicitly requires `this` subsystem.
+        setToDefault();
+        setToColor(CANdleConstants.CANDLE_AIM_COLOR);
+    }
+
+    private void setToColor(Color color) {
+        candle.setLEDs(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    private void setToDefault() {
         CANdleConfiguration config = new CANdleConfiguration();
         config.stripType = LEDStripType.RGB;
-        return config;
+        candle.configAllSettings(config);
     }
 
     /**
