@@ -44,6 +44,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("angleKG", AngleConstants.ANGLE_KG);
         SmartDashboard.putNumber("angleKV", AngleConstants.ANGLE_KV);
 
+        SmartDashboard.putNumber("anglePos", 0);
+
+
 
         SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);

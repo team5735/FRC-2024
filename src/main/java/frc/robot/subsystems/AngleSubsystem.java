@@ -43,6 +43,8 @@ public class AngleSubsystem {
         m_pid.setPID(kp, ki, kd);
 
         useOutput(m_pid.calculate(getMeasurement()), m_pid.getSetpoint());
+
+        SmartDashboard.putNumber("anglePos", getMeasurement());
     }
 
     public double getMeasurement(){
@@ -56,5 +58,9 @@ public class AngleSubsystem {
 
     public void pidReset(){
         m_pid.reset();
+    }
+
+    public void setSetpoint(double angle){
+        m_pid.setSetpoint(angle);
     }
 }
