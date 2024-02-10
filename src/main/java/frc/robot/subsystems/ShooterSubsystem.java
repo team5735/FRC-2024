@@ -1,25 +1,20 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Constants;
-import frc.robot.constants.ShooterConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
-    private final TalonFX m_talon_right = new TalonFX(Constants.SHOOTER_MOTOR_RIGHT_ID);
-    private final TalonFX m_talon_left = new TalonFX(Constants.SHOOTER_MOTOR_LEFT_ID);
+    private final TalonFX m_talon_right = new TalonFX(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID);
+    private final TalonFX m_talon_left = new TalonFX(ShooterConstants.SHOOTER_MOTOR_LEFT_ID);
 
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
     public void drive() {
-        double rightVoltage =
-            SmartDashboard.getNumber("rightShootVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
-        double leftVoltage =
-            SmartDashboard.getNumber("leftShootVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
+        double rightVoltage = SmartDashboard.getNumber("rightShootVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+        double leftVoltage = SmartDashboard.getNumber("leftShootVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
         m_talon_right.setInverted(true);
 

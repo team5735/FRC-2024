@@ -8,8 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants;
-import frc.robot.constants.LimelightConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.LimelightSubsystem;
 
