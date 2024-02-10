@@ -8,12 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.AngleConstants;
-import frc.robot.constants.ClimberConstants;
-// import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.constants.Constants;
-import frc.robot.constants.IntakeConstants;
-import frc.robot.constants.ShooterConstants;
+import frc.robot.constants.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,7 +28,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // Instantiate our RobotContainer.  This will perform all our button
+        // Instantiate our RobotContainer. This will perform all our button
         // bindings, and put our autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
         SmartDashboard.putNumber("angleKP", AngleConstants.ANGLE_KP);
@@ -50,6 +45,8 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
+        SmartDashboard.putNumber("shootRightOutput", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+        SmartDashboard.putNumber("shootLeftOutput", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
@@ -58,8 +55,6 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
         SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
-
-
 
         SmartDashboard.putNumber("rightBumper", 0);
         SmartDashboard.putNumber("leftBumper", 0);
@@ -72,15 +67,16 @@ public class Robot extends TimedRobot {
      * items like diagnostics that you want ran during disabled, autonomous,
      * teleoperated and test.
      *
-     * <p>This runs after the mode specific periodic functions, but before
+     * <p>
+     * This runs after the mode specific periodic functions, but before
      * LiveWindow and SmartDashboard integrated updating.
      */
     @Override
     public void robotPeriodic() {
-        // Runs the Scheduler.  This is responsible for polling buttons, adding
+        // Runs the Scheduler. This is responsible for polling buttons, adding
         // newly-scheduled commands, running already-scheduled commands,
         // removing finished or interrupted commands, and running subsystem
-        // periodic() methods.  This must be called from the robot's periodic
+        // periodic() methods. This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
     }
@@ -89,10 +85,12 @@ public class Robot extends TimedRobot {
      * This function is called once each time the robot enters Disabled mode.
      */
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+    }
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+    }
 
     /**
      * This autonomous runs the autonomous command selected by your {@link
@@ -104,14 +102,14 @@ public class Robot extends TimedRobot {
 
         // // schedule the autonomous command (example)
         // if (m_autonomousCommand != null) {
-        //     m_autonomousCommand.schedule();
+        // m_autonomousCommand.schedule();
         // }
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        
+
     }
 
     @Override
@@ -139,13 +137,16 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during test mode. */
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
     /** This function is called once when the robot is first started up. */
     @Override
-    public void simulationInit() {}
+    public void simulationInit() {
+    }
 
     /** This function is called periodically whilst in simulation. */
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+    }
 }

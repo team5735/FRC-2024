@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,19 +13,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
+    public ShooterSubsystem(){
+        // m_talon_right.setInverted(true);
+    }
+
     public void drive() {
         double rightVoltage =
-            SmartDashboard.getNumber("rightShootVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+            SmartDashboard.getNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
         double leftVoltage =
-            SmartDashboard.getNumber("leftShootVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
+            SmartDashboard.getNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
-        m_talon_right.setInverted(true);
 
         m_talon_right.setVoltage(rightVoltage);
-        m_talon_left.setVoltage(leftVoltage);
+        m_talon_left.setVoltage(-leftVoltage);
 
-        SmartDashboard.putNumber("rightShootOutput", m_talon_right.get());
-        SmartDashboard.putNumber("leftShootOutput", m_talon_left.get());
+        SmartDashboard.putNumber("shootRightOutput", m_talon_right.get());
+        SmartDashboard.putNumber("shootLeftOutput", m_talon_left.get());
     }
 
     public void stop() {

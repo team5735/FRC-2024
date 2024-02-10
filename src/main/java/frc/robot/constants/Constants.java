@@ -19,8 +19,6 @@ public final class Constants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
     }
 
-    
-
     // ALL IDS ****MUST**** BE RECALIBRATED
     public static final int CANDLE_ID = 69;
 
@@ -32,11 +30,8 @@ public final class Constants {
 
     public static final int FEEDER_MOTOR_ID = 78; // SPARKMAX
 
-    public static final int INTAKE_MOTOR_ID = 58; // TALON
+    public static final int INTAKE_MOTOR_ID = 68; // TALON
 
-    public static final int SHOOTER_MOTOR_RIGHT_ID = 55; // TALON
-    public static final int SHOOTER_MOTOR_LEFT_ID = 53; // TALON
-
-    
-    
+    public static final int SHOOTER_MOTOR_RIGHT_ID = 58; // TALON
+    public static final int SHOOTER_MOTOR_LEFT_ID = 57; // TALON
 }

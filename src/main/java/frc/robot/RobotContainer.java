@@ -75,8 +75,7 @@ public class RobotContainer {
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem))
                 .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
 
-
-// climbing :3
+        // climbing :3
         m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
                 .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
         m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))

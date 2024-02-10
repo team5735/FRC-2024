@@ -15,7 +15,7 @@ public class AngleSubsystem {
     private TalonFX m_talon_right = new TalonFX(Constants.ANGLE_MOTOR_RIGHT_ID);
     private TalonFX m_talon_left = new TalonFX(Constants.ANGLE_MOTOR_LEFT_ID);
 
-    public AngleSubsystem(){
+    public AngleSubsystem() {
         double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
         double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
         double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
@@ -27,10 +27,11 @@ public class AngleSubsystem {
         m_feedForward = new ArmFeedforward(ks, kg, kV);
         m_pid = new PIDController(kp, ki, kd);
 
-        m_talon_left.setPosition(0); // Need to find the correct position on start, 0 should be parallel to robot base
+        m_talon_left.setPosition(0); // Need to find the correct position on start, 0 should be parallel to robot
+                                     // base
     }
 
-    public void periodic(){
+    public void periodic() {
         double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
         double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
         double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
@@ -47,16 +48,16 @@ public class AngleSubsystem {
         SmartDashboard.putNumber("anglePos", getMeasurement());
     }
 
-    public double getMeasurement(){
+    public double getMeasurement() {
         return AngleConstants.convertTalonRotationsToDegrees(m_talon_left.getPosition().getValueAsDouble());
     }
 
-    public void useOutput(double output, double setpoint){
+    public void useOutput(double output, double setpoint) {
         m_talon_right.setVoltage(output + m_feedForward.calculate(setpoint, output));
         m_talon_left.setVoltage(output + m_feedForward.calculate(setpoint, output));
     }
 
-    public void pidReset(){
+    public void pidReset() {
         m_pid.reset();
     }
 
