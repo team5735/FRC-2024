@@ -45,8 +45,8 @@ public class AimCommandV2 extends Command {
         // coordinate system: x along long side (facing TODO team), y along short side
         // (facing TODO), z up
         Pose3d currentRobotPos = targets[0].getRobotPose_FieldSpace();
-        Translation3d centerOfHood = LimelightConstants.HOOD_POS_TRANSLATION;
-        Translation3d robotToHood = centerOfHood.minus(currentRobotPos.getTranslation());
+        // Translation3d centerOfHood = LimelightConstants.HOOD_POS_TRANSLATION;
+        // Translation3d robotToHood = centerOfHood.minus(currentRobotPos.getTranslation());
     }
 
     // Called once the command ends or is interrupted.

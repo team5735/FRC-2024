@@ -22,15 +22,15 @@ public final class Constants {
     // ALL IDS ****MUST**** BE RECALIBRATED
     public static final int CANDLE_ID = 69;
 
-    public static final int ANGLE_MOTOR_RIGHT_ID = 81; // TALON
-    public static final int ANGLE_MOTOR_LEFT_ID = 82; // TALON
+    public static final int ANGLE_MOTOR_RIGHT_ID = 20; // TALON
+    public static final int ANGLE_MOTOR_LEFT_ID = 21; // TALON
 
     public static final int CLIMBER_MOTOR_RIGHT_ID = 30; // SPARKMAX
     public static final int CLIMBER_MOTOR_LEFT_ID = 31; // SPARKMAX
 
-    public static final int FEEDER_MOTOR_ID = 78; // SPARKMAX
+    public static final int FEEDER_MOTOR_ID = 40; // SPARKMAX
 
-    public static final int INTAKE_MOTOR_ID = 68; // TALON
+    public static final int INTAKE_MOTOR_ID = 60; // TALON
 
     public static final int SHOOTER_MOTOR_RIGHT_ID = 58; // TALON
     public static final int SHOOTER_MOTOR_LEFT_ID = 57; // TALON
