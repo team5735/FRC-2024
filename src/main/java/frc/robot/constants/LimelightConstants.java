@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Translation3d;
+
 public class LimelightConstants {
     // all wrong
     // limelight units are in meters
@@ -10,4 +12,8 @@ public class LimelightConstants {
     public static final double PIVOT_OFFSET_X = 0.381;
     // 4" (*technically* "3 2/3")
     public static final double PIVOT_OFFSET_Z = 0.1016;
+
+    public static final Translation3d HOOD_POS = new Translation3d();
+    // meters
+    public static final double BOT_SHOOTING_DISTANCE = 69.0;
 }

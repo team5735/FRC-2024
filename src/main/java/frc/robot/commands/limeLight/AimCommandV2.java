@@ -4,8 +4,14 @@
 
 package frc.robot.commands.limelight;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
@@ -42,11 +48,39 @@ public class AimCommandV2 extends Command {
         }
         m_targetAcquired = true;
 
-        // coordinate system: x along long side (facing TODO team), y along short side
-        // (facing TODO), z up
+        // TODO: determine unknown
+        // coordinate system: x along long side (facing unknown team), y along short
+        // side (facing unknown), z up
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
+
         Pose3d currentRobotPos = targets[0].getRobotPose_FieldSpace();
-        Translation3d centerOfHood = LimelightConstants.HOOD_POS_TRANSLATION;
-        Translation3d robotToHood = centerOfHood.minus(currentRobotPos.getTranslation());
+        Translation3d hoodPos;
+        if (alliance == Alliance.Red) {
+            hoodPos = LimelightConstants.HOOD_POS;
+        } else {
+            hoodPos = LimelightConstants.HOOD_POS.unaryMinus();
+        }
+        if (checkBotCanAim(currentRobotPos.getTranslation(), hoodPos)) {
+            return;
+        }
+
+        Translation2d robotToHood = hoodPos.minus(currentRobotPos.getTranslation()).toTranslation2d();
+        // mathing is TODO TODO TODO
+        double robotDesiredAngleRads = Math.atan2(robotToHood.getY(), robotToHood.getX());
+
+        SmartDashboard.putNumber("aimcmdv2_desAngRads", robotDesiredAngleRads);
+        SmartDashboard.putNumber("aimcmdv2_desAngDegs", Math.toDegrees(robotDesiredAngleRads));
+        SmartDashboard.putNumber("aimcmdv2_robDst", robotToHood.getNorm());
+    }
+
+    // checks to see if the robot is within reasonable shooting range of the target
+    private boolean checkBotCanAim(Translation3d bot, Translation3d target) {
+        boolean botIsCloseEnough = bot.toTranslation2d()
+                .getDistance(target.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
+        // TODO: do a quadratic equation intsead.
+        // Translation2d targetToBot = target.minus(bot).toTranslation2d();
+        return botIsCloseEnough;
     }
 
     // Called once the command ends or is interrupted.
