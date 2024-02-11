@@ -27,8 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_talon_right.setVoltage(rightVoltage);
         m_talon_left.setVoltage(-leftVoltage);
 
-        SmartDashboard.putNumber("shootRightOutput", m_talon_right.get());
-        SmartDashboard.putNumber("shootLeftOutput", m_talon_left.get());
+        SmartDashboard.putNumber("shootRightOutput", m_talon_right.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("shootLeftOutput", m_talon_left.getVelocity().getValueAsDouble());
     }
 
     public void stop() {

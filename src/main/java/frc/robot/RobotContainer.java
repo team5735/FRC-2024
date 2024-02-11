@@ -13,12 +13,15 @@ import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightStop;
 import frc.robot.commands.climber.ClimberCommandRightUp;
+import frc.robot.commands.feeder.FeederCommandIn;
+import frc.robot.commands.feeder.FeederCommandStop;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandStop;
 import frc.robot.commands.limelight.AimCommand;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.commands.shooter.ShooterCommandStop;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -39,6 +42,7 @@ public class RobotContainer {
     private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
     public static final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    public static final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
     public static final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     public static final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
 
@@ -74,6 +78,9 @@ public class RobotContainer {
 
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem))
                 .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
+
+        m_driverController.x().whileTrue(new FeederCommandIn(m_feederSubsystem))
+                .whileFalse(new FeederCommandStop(m_feederSubsystem));
 
         // climbing :3
         m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
