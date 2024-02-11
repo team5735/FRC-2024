@@ -13,7 +13,8 @@ public class LimelightConstants {
     // 4" (*technically* "3 2/3")
     public static final double PIVOT_OFFSET_Z = 0.1016;
 
-    public static final Translation3d HOOD_POS = new Translation3d();
+    // BS approximated values from testing
+    public static final Translation3d HOOD_POS = new Translation3d(5.7 + 2.8, 1.3 + 0.72, 0.0);
     // meters
     public static final double BOT_SHOOTING_DISTANCE = 69.0;
 }

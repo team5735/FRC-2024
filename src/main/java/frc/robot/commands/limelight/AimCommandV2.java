@@ -49,8 +49,9 @@ public class AimCommandV2 extends Command {
         m_targetAcquired = true;
 
         // TODO: determine unknown
-        // coordinate system: x along long side (facing unknown team), y along short
-        // side (facing unknown), z up
+        // coordinate system: x along long side with positive towards red alliance, y
+        // along short side with positive facing opposite the side that theta zero
+        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red alliance speaker.
         Optional<Alliance> ally = DriverStation.getAlliance();
         Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
@@ -61,7 +62,9 @@ public class AimCommandV2 extends Command {
         } else {
             hoodPos = LimelightConstants.HOOD_POS.unaryMinus();
         }
-        if (checkBotCanAim(currentRobotPos.getTranslation(), hoodPos)) {
+        if (!checkBotCanAim(currentRobotPos.getTranslation(), hoodPos)) {
+            SmartDashboard.putNumber("cantAimDist", currentRobotPos.getTranslation().toTranslation2d().getDistance(
+                    hoodPos.toTranslation2d()));
             return;
         }
 
@@ -91,6 +94,6 @@ public class AimCommandV2 extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_targetAcquired;
+        return false;
     }
 }
