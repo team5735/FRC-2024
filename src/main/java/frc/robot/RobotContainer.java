@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftStop;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
@@ -21,6 +23,7 @@ import frc.robot.commands.limelight.LimelightAimCommandOld;
 import frc.robot.commands.limelight.LimelightAimCommandNew;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.commands.shooter.ShooterCommandStop;
+import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -42,10 +45,11 @@ public class RobotContainer {
 
     private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
-    public static final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-    public static final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
-    public static final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-    public static final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
+    private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+    private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and
@@ -80,6 +84,8 @@ public class RobotContainer {
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem))
                 .whileFalse(new IntakeCommandStop(m_intakeSubsystem));
 
+        m_driverController.x().whileTrue(new LimelightAimCommandNew(m_limelightSubsystem));
+
         m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem))
                 .whileFalse(new FeederCommandStop(m_feederSubsystem));
 
@@ -93,11 +99,6 @@ public class RobotContainer {
                 .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
         m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
                 .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
-
-        // limelight???? >:(
-        // yes limelight
-        m_driverController.x().whileTrue(new LimelightAimCommandOld(m_limelightSubsystem));
-        m_driverController.leftStick().whileTrue(new LimelightAimCommandNew(m_limelightSubsystem));
     }
 
     /**
@@ -105,8 +106,8 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    // public Command getAutonomousCommand() {
-    // // An example command will be run in autonomous
-    // return Autos.exampleAuto(m_exampleSubsystem);
-    // }
+    public Command getAutonomousCommand() {
+        // An example command will be run in autonomous
+        return Autos.auto(m_limelightSubsystem, m_candleSubsystem);
+    }
 }

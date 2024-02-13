@@ -95,6 +95,9 @@ public class LimelightAimCommandNew extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        if (LimelightConstants.INFINITE_AIM) {
+            return false;
+        }
+        return m_targetAcquired;
     }
 }
