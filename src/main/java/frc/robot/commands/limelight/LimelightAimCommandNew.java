@@ -18,7 +18,7 @@ import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class AimCommandV2 extends Command {
+public class LimelightAimCommandNew extends Command {
     private LimelightSubsystem m_subsystem;
     private boolean m_targetAcquired = false;
 
@@ -28,7 +28,7 @@ public class AimCommandV2 extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public AimCommandV2(final LimelightSubsystem subsystem) {
+    public LimelightAimCommandNew(final LimelightSubsystem subsystem) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
         m_subsystem = subsystem;
@@ -51,7 +51,8 @@ public class AimCommandV2 extends Command {
         // TODO: determine unknown
         // coordinate system: x along long side with positive towards red alliance, y
         // along short side with positive facing opposite the side that theta zero
-        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red alliance speaker.
+        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red
+        // alliance speaker.
         Optional<Alliance> ally = DriverStation.getAlliance();
         Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
