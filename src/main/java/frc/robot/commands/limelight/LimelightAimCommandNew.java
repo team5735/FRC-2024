@@ -48,10 +48,10 @@ public class LimelightAimCommandNew extends Command {
         }
         m_targetAcquired = true;
 
-        // TODO: determine unknown
         // coordinate system: x along long side with positive towards red alliance, y
-        // along short side with positive facing opposite the side that theta zero
-        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red
+        // along short side with positive facing the long side where red alliance is
+        // left when looking at that long side from the origin, z up, positive theta is
+        // counterclockwise and theta 0 is facing the red
         // alliance speaker.
         Optional<Alliance> ally = DriverStation.getAlliance();
         Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
