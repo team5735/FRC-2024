@@ -17,8 +17,8 @@ import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandStop;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandStop;
-import frc.robot.commands.limelight.AimCommand;
-import frc.robot.commands.limelight.AimCommandV2;
+import frc.robot.commands.limelight.LimelightAimCommandOld;
+import frc.robot.commands.limelight.LimelightAimCommandNew;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.commands.shooter.ShooterCommandStop;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -96,8 +96,8 @@ public class RobotContainer {
 
         // limelight???? >:(
         // yes limelight
-        m_driverController.x().whileTrue(new AimCommand(m_limelightSubsystem));
-        m_driverController.leftStick().whileTrue(new AimCommandV2(m_limelightSubsystem));
+        m_driverController.x().whileTrue(new LimelightAimCommandOld(m_limelightSubsystem));
+        m_driverController.leftStick().whileTrue(new LimelightAimCommandNew(m_limelightSubsystem));
     }
 
     /**

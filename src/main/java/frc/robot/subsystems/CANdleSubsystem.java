@@ -2,8 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-// this file is a massive TODO
-
 package frc.robot.subsystems;
 
 import java.awt.Color;
@@ -30,27 +28,33 @@ public class CANdleSubsystem extends SubsystemBase {
         candle.animate(new RainbowAnimation(0.5, 1.0, 8));
     }
 
+    public Command colorReady() {
+        return setToColorByID(CANdleConstants.READY);
+    }
+
+    public Command colorAuto() {
+        return setToColorByID(CANdleConstants.AUTO);
+    }
+
     public Command colorAiming() {
-        return runOnce(() -> {
-            setToColor(CANdleConstants.COLORS[CANdleConstants.AIMING]);
-        });
+        return setToColorByID(CANdleConstants.AIMING);
     }
 
     public Command colorAimed() {
-        return runOnce(() -> {
-            setToColor(CANdleConstants.COLORS[CANdleConstants.AIMED]);
-        });
-    }
-
-    public Command colorReady() {
-        return runOnce(() -> {
-            setToColor(CANdleConstants.COLORS[CANdleConstants.READY]);
-        });
+        return setToColorByID(CANdleConstants.AIMED);
     }
 
     public Command colorIntakeRunning() {
+        return setToColorByID(CANdleConstants.INTAKE_RUNNING);
+    }
+
+    public Command colorShooting() {
+        return setToColorByID(CANdleConstants.SHOOTING);
+    }
+
+    private Command setToColorByID(int id) {
         return runOnce(() -> {
-            setToColor(CANdleConstants.COLORS[CANdleConstants.INTAKE_RUNNING]);
+            setToColor(CANdleConstants.COLORS[id]);
         });
     }
 
