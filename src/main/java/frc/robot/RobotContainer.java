@@ -98,6 +98,13 @@ public class RobotContainer {
                 .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
         m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
                 .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
+
+        m_driverController.povUp().onTrue(m_candleSubsystem.colorReady());
+        m_driverController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
+        m_driverController.povRight().onTrue(m_candleSubsystem.colorAiming());
+        m_driverController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
+        m_driverController.povDown().onTrue(m_candleSubsystem.colorShooting());
+        m_driverController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
     }
 
     /**
