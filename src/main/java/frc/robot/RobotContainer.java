@@ -45,7 +45,7 @@ public class RobotContainer {
     private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-    private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
+    public static final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
     private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
