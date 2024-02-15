@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
-
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
 
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
+        SmartDashboard.putBoolean("feederSwitchStatus", false);
 
         SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
 
@@ -80,6 +81,8 @@ public class Robot extends TimedRobot {
         // periodic() methods. This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        RobotContainer.m_feederSubsystem.periodic();
     }
 
     /**
