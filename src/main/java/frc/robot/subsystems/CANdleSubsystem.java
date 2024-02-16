@@ -59,7 +59,7 @@ public class CANdleSubsystem extends SubsystemBase {
     }
 
     private void setToColor(Color color) {
-        setDefaultSettings();
+        // setDefaultSettings();
         candle.setLEDs(color.getRed(), color.getGreen(), color.getBlue());
     }
 

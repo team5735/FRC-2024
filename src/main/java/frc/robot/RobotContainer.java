@@ -9,25 +9,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.climber.ClimberCommandLeftDown;
-import frc.robot.commands.climber.ClimberCommandLeftStop;
-import frc.robot.commands.climber.ClimberCommandLeftUp;
-import frc.robot.commands.climber.ClimberCommandRightDown;
-import frc.robot.commands.climber.ClimberCommandRightStop;
-import frc.robot.commands.climber.ClimberCommandRightUp;
-import frc.robot.commands.feeder.FeederCommandIn;
-import frc.robot.commands.feeder.FeederCommandStop;
-import frc.robot.commands.intake.IntakeCommandIn;
-import frc.robot.commands.intake.IntakeCommandStop;
-import frc.robot.commands.limelight.LimelightAimCommandNew;
-import frc.robot.commands.shooter.ShooterCommand;
-import frc.robot.commands.shooter.ShooterCommandStop;
-import frc.robot.subsystems.CANdleSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.candle.*;
+import frc.robot.commands.climber.*;
+import frc.robot.commands.feeder.*;
+import frc.robot.commands.intake.*;
+import frc.robot.commands.limelight.*;
+import frc.robot.commands.shooter.*;
+import frc.robot.subsystems.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -85,8 +75,8 @@ public class RobotContainer {
 
         m_driverController.x().whileTrue(new LimelightAimCommandNew(m_limelightSubsystem));
 
-        m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem))
-                .whileFalse(new FeederCommandStop(m_feederSubsystem));
+        m_driverController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
+
 
         // climbing :3
         m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
