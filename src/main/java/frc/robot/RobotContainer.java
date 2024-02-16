@@ -79,15 +79,11 @@ public class RobotContainer {
 
 
         // climbing :3
-        m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem))
-                .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
-        m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem))
-                .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
+        m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));
+        m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
 
-        m_driverController.rightTrigger(0.5).whileTrue(new ClimberCommandRightDown(m_climberSubsystem))
-                .whileFalse(new ClimberCommandRightStop(m_climberSubsystem));
-        m_driverController.leftTrigger(0.5).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem))
-                .whileFalse(new ClimberCommandLeftStop(m_climberSubsystem));
+        m_driverController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberSubsystem));
+        m_driverController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem));
 
         m_driverController.povUp().onTrue(m_candleSubsystem.colorReady());
         m_driverController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
