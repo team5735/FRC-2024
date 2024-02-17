@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,8 @@ public class ClimberSubsystem extends SubsystemBase {
             MotorType.kBrushless);
     private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.CLIMBER_MOTOR_LEFT_ID,
             MotorType.kBrushless);
+
+    private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
 
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
