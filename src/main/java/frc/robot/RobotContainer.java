@@ -74,6 +74,7 @@ public class RobotContainer {
         m_driverController.x().whileTrue(new LimelightAimCommandNew(m_limelightSubsystem));
 
         // m_driverController.y().whileTrue(new FeederPrimeNote(m_feederSubsystem));
+        // ^ONLY USE WITH BEAM BLOCKER
         m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
 
         // climbing :3

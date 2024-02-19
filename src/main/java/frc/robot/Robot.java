@@ -45,20 +45,34 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("anglePos", 0);
 
-        SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
-        SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
-        SmartDashboard.putNumber("shootRightOutput", ShooterConstants.SHOOTER_RIGHT_VOLTS);
-        SmartDashboard.putNumber("shootLeftOutput", ShooterConstants.SHOOTER_LEFT_VOLTS);
 
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
         SmartDashboard.putNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
         SmartDashboard.putNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
 
+        
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
         SmartDashboard.putBoolean("feederSwitchStatus", false);
 
-        SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
+
+        SmartDashboard.putNumber("intakeKP", IntakeConstants.INTAKE_KP);
+        SmartDashboard.putNumber("intakeKI", IntakeConstants.INTAKE_KI);
+        SmartDashboard.putNumber("intakeKD", IntakeConstants.INTAKE_KD);
+
+        SmartDashboard.putNumber("intakeKS", IntakeConstants.INTAKE_KS);
+        SmartDashboard.putNumber("intakeKV", IntakeConstants.INTAKE_KV);
+
+        SmartDashboard.putNumber("intakePullRPM", IntakeConstants.INTAKE_PULL_RPM);
+        SmartDashboard.putNumber("intakeOutput", 0);
+
+
+        SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+        SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
+        SmartDashboard.putNumber("shootRightOutput", ShooterConstants.SHOOTER_RIGHT_VOLTS);
+        SmartDashboard.putNumber("shootLeftOutput", ShooterConstants.SHOOTER_LEFT_VOLTS);
+
+
 
         SmartDashboard.putNumber("rightBumper", 0);
         SmartDashboard.putNumber("leftBumper", 0);
