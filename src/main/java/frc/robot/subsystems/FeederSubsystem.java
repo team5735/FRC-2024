@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,7 +15,7 @@ public class FeederSubsystem extends SubsystemBase {
     private final DigitalInput m_switch = new DigitalInput(Constants.FEEDER_SWITCH_CHANNEL);
 
     public FeederSubsystem() {
-        // m_sparkMax_pull.setInverted(true);
+        m_sparkMax_pull.setInverted(true);
     }
 
     public void pull() {
