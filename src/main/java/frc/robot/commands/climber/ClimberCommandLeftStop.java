@@ -14,12 +14,12 @@ public class ClimberCommandLeftStop extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        m_subsystem.stopLeft();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_subsystem.stopLeft();
         // System.out.println("hellotest");
     }
 

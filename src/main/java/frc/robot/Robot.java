@@ -53,18 +53,13 @@ public class Robot extends TimedRobot {
 
         
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
+        SmartDashboard.putNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
+
         SmartDashboard.putBoolean("feederSwitchStatus", false);
 
 
-        SmartDashboard.putNumber("intakeKP", IntakeConstants.INTAKE_KP);
-        SmartDashboard.putNumber("intakeKI", IntakeConstants.INTAKE_KI);
-        SmartDashboard.putNumber("intakeKD", IntakeConstants.INTAKE_KD);
-
-        SmartDashboard.putNumber("intakeKS", IntakeConstants.INTAKE_KS);
-        SmartDashboard.putNumber("intakeKV", IntakeConstants.INTAKE_KV);
-
-        SmartDashboard.putNumber("intakePullRPM", IntakeConstants.INTAKE_PULL_RPM);
-        SmartDashboard.putNumber("intakeOutput", 0);
+        SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
+        SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
 
 
         SmartDashboard.putNumber("shootTopVoltage", ShooterConstants.SHOOTER_TOP_VOLTS);

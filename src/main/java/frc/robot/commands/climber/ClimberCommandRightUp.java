@@ -14,12 +14,13 @@ public class ClimberCommandRightUp extends Command {
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+        m_subsystem.rightUp();
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_subsystem.rightUp();
         // System.out.println("hellotest");
     }
 
