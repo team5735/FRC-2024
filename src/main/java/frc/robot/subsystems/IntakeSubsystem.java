@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
         updateProportions();
     }
 
-    public void updateProportions(){
+    private void updateProportions(){
         double kp = SmartDashboard.getNumber("intakeKP", IntakeConstants.INTAKE_KP);
         double ki = SmartDashboard.getNumber("intakeKI", IntakeConstants.INTAKE_KI);
         double kd = SmartDashboard.getNumber("intakeKD", IntakeConstants.INTAKE_KD);
@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void periodic(){
-        updateProportions();
+        // updateProportions();
         
         SmartDashboard.putNumber("intakeOutput", getMeasurement());
     }

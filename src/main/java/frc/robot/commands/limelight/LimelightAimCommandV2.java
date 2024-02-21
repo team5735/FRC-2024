@@ -15,12 +15,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class LimelightAimCommandV2 extends Command {
-    private LimelightSubsystem m_subsystem;
+    private LimelightSubsystem m_limelight;
     private boolean m_targetAcquired = false;
+    private final DrivetrainSubsystem m_drivetrain;
 
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     /**
@@ -28,10 +30,11 @@ public class LimelightAimCommandV2 extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public LimelightAimCommandV2(final LimelightSubsystem subsystem) {
+    public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(subsystem);
-        m_subsystem = subsystem;
+        addRequirements(limelight, drivetrain);
+        m_limelight = limelight;
+        m_drivetrain = drivetrain;
     }
 
     // Called when the command is initially scheduled.
@@ -39,11 +42,18 @@ public class LimelightAimCommandV2 extends Command {
     public void initialize() {
     }
 
+    // Spin clockwise, used if no fiducial can be seen.
+    private void spin() {
+        m_drivetrain.drive(0, 0, 1);
+    }
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        LimelightTarget_Fiducial[] targets = m_subsystem.getTargetedFiducials();
-        if (targets.length == 0) {
+        LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
+        if (targets.length < 2) {
+            System.out.println("spinning");
+            // spin();
             return;
         }
         m_targetAcquired = true;
@@ -51,7 +61,8 @@ public class LimelightAimCommandV2 extends Command {
         // TODO: determine unknown
         // coordinate system: x along long side with positive towards red alliance, y
         // along short side with positive facing opposite the side that theta zero
-        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red alliance speaker.
+        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red
+        // alliance speaker.
         Optional<Alliance> ally = DriverStation.getAlliance();
         Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
@@ -60,7 +71,8 @@ public class LimelightAimCommandV2 extends Command {
         if (alliance == Alliance.Red) {
             hoodPos = LimelightConstants.HOOD_POS;
         } else {
-            hoodPos = LimelightConstants.HOOD_POS.unaryMinus();
+            Translation3d hoodPosTmp = LimelightConstants.HOOD_POS;
+            hoodPos = new Translation3d(-hoodPosTmp.getX(), hoodPosTmp.getY(), hoodPosTmp.getZ());
         }
         if (!checkBotCanAim(currentRobotPos.getTranslation(), hoodPos)) {
             SmartDashboard.putNumber("cantAimDist", currentRobotPos.getTranslation().toTranslation2d().getDistance(
@@ -69,7 +81,7 @@ public class LimelightAimCommandV2 extends Command {
         }
 
         Translation2d robotToHood = hoodPos.minus(currentRobotPos.getTranslation()).toTranslation2d();
-        // mathing is TODO TODO TODO
+        // mathing is TODO
         double robotDesiredAngleRads = Math.atan2(robotToHood.getY(), robotToHood.getX());
 
         SmartDashboard.putNumber("aimcmdv2_desAngRads", robotDesiredAngleRads);

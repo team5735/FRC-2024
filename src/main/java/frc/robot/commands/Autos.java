@@ -8,12 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.subsystems.CANdleSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 public final class Autos {
     /** Example static factory for an autonomous command. */
-    public static Command auto(LimelightSubsystem limelight, CANdleSubsystem candle) {
-        return Commands.sequence(candle.colorAuto(), new LimelightAimCommandV2(limelight), candle.colorReady());
+    public static Command auto(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain, CANdleSubsystem candle) {
+        return Commands.sequence(candle.colorAuto(), new LimelightAimCommandV2(limelight, drivetrain), candle.colorReady());
     }
 
     private Autos() {

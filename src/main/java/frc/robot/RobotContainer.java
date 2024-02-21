@@ -66,6 +66,7 @@ public class RobotContainer {
     private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
     private final SwerveRequest.PointWheelsAt m_pointWheelsAt = new SwerveRequest.PointWheelsAt();
+    private final Telemetry m_telemetry = new Telemetry(.1);
 
     private double m_turboMultiplier = 10;
     private double m_normalMultiplier = 2;
@@ -76,6 +77,7 @@ public class RobotContainer {
      * commands.
      */
     public RobotContainer() {
+        m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
         configureBindings();
     }
@@ -108,7 +110,7 @@ public class RobotContainer {
         m_drivingController.a().whileTrue(new BrakeCommand(m_drivetrain));
         m_drivingController.b().whileTrue(m_drivetrain.applyRequest(() -> m_pointWheelsAt
                 .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(), m_drivingController.getLeftX()))));
-        m_drivingController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
+        m_drivingController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
         m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
@@ -155,6 +157,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return Autos.auto(m_limelightSubsystem, m_candleSubsystem);
+        return Autos.auto(m_limelightSubsystem, m_drivetrain, m_candleSubsystem);
     }
 }
