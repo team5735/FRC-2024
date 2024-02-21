@@ -13,6 +13,7 @@ import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.LimelightSubsystem;
 
 // Attempts to aim correctly at the field part that the robot can currently see.
+@Deprecated
 public class LimelightAimCommandOld extends Command {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final LimelightSubsystem m_limelightSubsystem;
