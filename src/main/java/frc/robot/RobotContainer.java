@@ -19,14 +19,16 @@ import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightUp;
-import frc.robot.commands.feeder.FeederCommandIn;
+import frc.robot.commands.feeder.*;
 import frc.robot.commands.intake.IntakeCommandIn;
+import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.shooter.ShooterCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
+ * 
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and trigger mappings) should be declared here.
@@ -76,11 +78,14 @@ public class RobotContainer {
 
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
 
-        m_driverController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
+        m_driverController.x().whileTrue(new IntakeCommandOut(m_intakeSubsystem));
 
-        // m_driverController.y().whileTrue(new FeederPrimeNote(m_feederSubsystem));
+        // m_driverController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
+
+
+        m_driverController.y().whileTrue(new FeederPrimeNote(m_feederSubsystem));
         // ^ONLY USE WITH BEAM BLOCKER
-        m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
+        // m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
 
         // climbing :3
         m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));

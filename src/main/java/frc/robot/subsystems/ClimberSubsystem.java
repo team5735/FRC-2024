@@ -18,8 +18,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
     private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
 
-    // private final PIDController m_speedController = new PIDController(1, 0, 0);
-    // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
     public void rightUp() {
         double rightVoltage = SmartDashboard.getNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
@@ -27,7 +25,6 @@ public class ClimberSubsystem extends SubsystemBase {
         m_sparkMax_right.setVoltage(rightVoltage);
 
         SmartDashboard.putNumber("climbRightOutput", m_sparkMax_right.getOutputCurrent());
-        SmartDashboard.putNumber("rightTrigger", 1);
     }
 
     public void leftUp() {
@@ -36,7 +33,6 @@ public class ClimberSubsystem extends SubsystemBase {
         m_sparkMax_left.setVoltage(leftVoltage);
 
         SmartDashboard.putNumber("climbLeftOutput", m_sparkMax_left.getOutputCurrent());
-        SmartDashboard.putNumber("leftTrigger", 1);
     }
 
     public void rightDown() {
@@ -46,7 +42,6 @@ public class ClimberSubsystem extends SubsystemBase {
         m_sparkMax_right.setVoltage(-rightVoltage);
 
         SmartDashboard.putNumber("climbRightOutput", m_sparkMax_right.getOutputCurrent());
-        SmartDashboard.putNumber("rightTrigger", -1);
     }
 
     public void leftDown() {
@@ -55,18 +50,15 @@ public class ClimberSubsystem extends SubsystemBase {
         m_sparkMax_left.setVoltage(-leftVoltage);
 
         SmartDashboard.putNumber("climbLeftOutput", m_sparkMax_left.getOutputCurrent());
-        SmartDashboard.putNumber("leftTrigger", -1);
     }
 
     public void stopRight() {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         m_sparkMax_right.setVoltage(0);
-        SmartDashboard.putNumber("rightTrigger", 0);
     }
 
     public void stopLeft() {
         m_sparkMax_left.setIdleMode(IdleMode.kBrake);
         m_sparkMax_left.setVoltage(0);
-        SmartDashboard.putNumber("leftTrigger", 0);
     }
 }

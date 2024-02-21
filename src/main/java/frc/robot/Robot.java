@@ -66,13 +66,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shootBottomVoltage", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
         SmartDashboard.putNumber("shootTopRPS", ShooterConstants.SHOOTER_TOP_VOLTS);
         SmartDashboard.putNumber("shootBottomRPS", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
-
-
-
-        SmartDashboard.putNumber("rightBumper", 0);
-        SmartDashboard.putNumber("leftBumper", 0);
-        SmartDashboard.putNumber("rightTrigger", 0);
-        SmartDashboard.putNumber("leftTrigger", 0);
     }
 
     /**
