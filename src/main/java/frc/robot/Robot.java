@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("anglePos", 0);
 
-
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
         SmartDashboard.putNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
@@ -54,7 +53,6 @@ public class Robot extends TimedRobot {
         
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
         SmartDashboard.putBoolean("feederSwitchStatus", false);
-
 
         SmartDashboard.putNumber("intakeKP", IntakeConstants.INTAKE_KP);
         SmartDashboard.putNumber("intakeKI", IntakeConstants.INTAKE_KI);
@@ -66,13 +64,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("intakePullRPM", IntakeConstants.INTAKE_PULL_RPM);
         SmartDashboard.putNumber("intakeOutput", 0);
 
-
         SmartDashboard.putNumber("shootTopVoltage", ShooterConstants.SHOOTER_TOP_VOLTS);
         SmartDashboard.putNumber("shootBottomVoltage", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
         SmartDashboard.putNumber("shootTopRPS", ShooterConstants.SHOOTER_TOP_VOLTS);
         SmartDashboard.putNumber("shootBottomRPS", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
-
-
 
         SmartDashboard.putNumber("rightBumper", 0);
         SmartDashboard.putNumber("leftBumper", 0);
@@ -97,8 +92,6 @@ public class Robot extends TimedRobot {
         // periodic() methods. This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-
-        RobotContainer.m_feederSubsystem.periodic();
     }
 
     /**

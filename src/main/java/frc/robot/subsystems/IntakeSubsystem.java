@@ -65,6 +65,12 @@ public class IntakeSubsystem extends SubsystemBase {
         m_pid.setSetpoint(pullSpeed);
     }
 
+    public void push() {
+        double pushSpeed = SmartDashboard.getNumber("intakePushRPM", IntakeConstants.INTAKE_PUSH_RPM);
+
+        m_pid.setSetpoint(pushSpeed);
+    }
+
     public void stop() {
         m_pid.setSetpoint(0);
     }

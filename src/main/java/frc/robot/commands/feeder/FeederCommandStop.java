@@ -3,6 +3,8 @@ package frc.robot.commands.feeder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FeederSubsystem;
 
+// Deprecated because the other feeder commands stop the subsystem on end()
+@Deprecated
 public class FeederCommandStop extends Command {
     FeederSubsystem m_subsystem;
 

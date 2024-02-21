@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -16,6 +15,12 @@ public class FeederSubsystem extends SubsystemBase {
 
     public FeederSubsystem() {
         m_sparkMax_pull.setInverted(true);
+    }
+
+    public void push() {
+        double pushSpeed = SmartDashboard.getNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
+
+        m_sparkMax_pull.setVoltage(pushSpeed);
     }
 
     public void pull() {
