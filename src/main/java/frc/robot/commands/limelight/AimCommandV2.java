@@ -42,8 +42,7 @@ public class AimCommandV2 extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        LimelightTarget_Fiducial[] targets = m_subsystem.getTargetedFiducials();
-        if (targets.length == 0) {
+        if (!m_subsystem.hasTargetedApriltag()) {
             return;
         }
         m_targetAcquired = true;
@@ -51,11 +50,12 @@ public class AimCommandV2 extends Command {
         // TODO: determine unknown
         // coordinate system: x along long side with positive towards red alliance, y
         // along short side with positive facing opposite the side that theta zero
-        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red alliance speaker.
+        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red
+        // alliance speaker.
         Optional<Alliance> ally = DriverStation.getAlliance();
         Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
-        Pose3d currentRobotPos = targets[0].getRobotPose_FieldSpace();
+        Pose3d currentRobotPos = m_subsystem.getBotPose3d();
         Translation3d hoodPos;
         if (alliance == Alliance.Red) {
             hoodPos = LimelightConstants.HOOD_POS;
