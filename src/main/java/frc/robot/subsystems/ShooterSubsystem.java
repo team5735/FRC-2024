@@ -15,8 +15,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
     public ShooterSubsystem(){
-        // m_talon_top.setNeutralMode(NeutralModeValue.Brake);
-        // m_talon_bottom.setNeutralMode(NeutralModeValue.Brake);
+        // m_talon_top.setNeutralMode(NeutralModeValue.Coast);
+        // m_talon_bottom.setNeutralMode(NeutralModeValue.Coast);
     }
 
     public void drive() {

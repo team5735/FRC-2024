@@ -10,6 +10,15 @@ import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
 public class AngleSubsystem extends SubsystemBase{
+    /*
+     * 
+     * 
+     * DO NOT USE THIS SUBSYSTEM ON THIS BRANCH!!!!!!!!
+     * Use the PID-&-FeedForward branch for this subsytem, for now 
+     * 
+     * 
+     * 
+     */
     private ArmFeedforward m_feedForward;
     private PIDController m_pid;
 
