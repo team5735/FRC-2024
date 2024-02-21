@@ -8,16 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.subsystems.CANdleSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.candle.*;
-import frc.robot.commands.climber.*;
-import frc.robot.commands.feeder.*;
-import frc.robot.commands.intake.*;
-import frc.robot.commands.limelight.*;
-import frc.robot.commands.shooter.*;
-import frc.robot.subsystems.*;
-
+import frc.robot.commands.climber.ClimberCommandLeftDown;
+import frc.robot.commands.climber.ClimberCommandLeftUp;
+import frc.robot.commands.climber.ClimberCommandRightDown;
+import frc.robot.commands.climber.ClimberCommandRightUp;
+import frc.robot.commands.feeder.FeederCommandIn;
+import frc.robot.commands.intake.IntakeCommandIn;
+import frc.robot.commands.limelight.LimelightAimCommandV2;
+import frc.robot.commands.shooter.ShooterCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -71,7 +76,7 @@ public class RobotContainer {
 
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
 
-        m_driverController.x().whileTrue(new LimelightAimCommandNew(m_limelightSubsystem));
+        m_driverController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
 
         // m_driverController.y().whileTrue(new FeederPrimeNote(m_feederSubsystem));
         // ^ONLY USE WITH BEAM BLOCKER
