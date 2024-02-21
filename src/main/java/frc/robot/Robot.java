@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.*;
+import frc.robot.constants.AngleConstants;
+import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.FeederConstants;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.ShooterConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -21,7 +25,7 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
-
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -42,20 +46,33 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("anglePos", 0);
 
 
-
-        SmartDashboard.putNumber("shootRightVoltage", ShooterConstants.SHOOTER_RIGHT_VOLTS);
-        SmartDashboard.putNumber("shootLeftVoltage", ShooterConstants.SHOOTER_LEFT_VOLTS);
-        SmartDashboard.putNumber("shootRightOutput", ShooterConstants.SHOOTER_RIGHT_VOLTS);
-        SmartDashboard.putNumber("shootLeftOutput", ShooterConstants.SHOOTER_LEFT_VOLTS);
-
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
         SmartDashboard.putNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
         SmartDashboard.putNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
 
+        
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
+        SmartDashboard.putBoolean("feederSwitchStatus", false);
 
-        SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
+
+        SmartDashboard.putNumber("intakeKP", IntakeConstants.INTAKE_KP);
+        SmartDashboard.putNumber("intakeKI", IntakeConstants.INTAKE_KI);
+        SmartDashboard.putNumber("intakeKD", IntakeConstants.INTAKE_KD);
+
+        SmartDashboard.putNumber("intakeKS", IntakeConstants.INTAKE_KS);
+        SmartDashboard.putNumber("intakeKV", IntakeConstants.INTAKE_KV);
+
+        SmartDashboard.putNumber("intakePullRPM", IntakeConstants.INTAKE_PULL_RPM);
+        SmartDashboard.putNumber("intakeOutput", 0);
+
+
+        SmartDashboard.putNumber("shootTopVoltage", ShooterConstants.SHOOTER_TOP_VOLTS);
+        SmartDashboard.putNumber("shootBottomVoltage", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
+        SmartDashboard.putNumber("shootTopRPS", ShooterConstants.SHOOTER_TOP_VOLTS);
+        SmartDashboard.putNumber("shootBottomRPS", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
+
+
 
         SmartDashboard.putNumber("rightBumper", 0);
         SmartDashboard.putNumber("leftBumper", 0);
@@ -80,6 +97,8 @@ public class Robot extends TimedRobot {
         // periodic() methods. This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        RobotContainer.m_feederSubsystem.periodic();
     }
 
     /**
@@ -99,12 +118,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-        // // schedule the autonomous command (example)
-        // if (m_autonomousCommand != null) {
-        // m_autonomousCommand.schedule();
-        // }
+        // schedule the autonomous command (example)
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
     }
 
     /** This function is called periodically during autonomous. */

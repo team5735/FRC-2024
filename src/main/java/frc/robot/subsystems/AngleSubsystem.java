@@ -5,10 +5,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
-public class AngleSubsystem {
+public class AngleSubsystem extends SubsystemBase{
     private ArmFeedforward m_feedForward;
     private PIDController m_pid;
 
