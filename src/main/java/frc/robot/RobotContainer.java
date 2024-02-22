@@ -62,7 +62,7 @@ public class RobotContainer {
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
-    private final Telemetry m_telemetry = new Telemetry(.1);
+    // private final Telemetry m_telemetry = new Telemetry(.1);
 
     private double m_turboMultiplier = 10;
     private double m_normalMultiplier = 2;
@@ -73,7 +73,7 @@ public class RobotContainer {
      * commands.
      */
     public RobotContainer() {
-        m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
+        // m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
         configureBindings();
     }
@@ -125,21 +125,15 @@ public class RobotContainer {
         m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
         m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
 
-        m_drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-                new DriveCommand(m_drivetrain,
-                        () -> deadband(m_drivingController.getLeftX()),
-                        () -> m_drivingController.povUp().getAsBoolean() ? -1.0
-                                : deadband(m_drivingController.getLeftY()),
-                        () -> {
-                            return deadband(m_drivingController.getLeftTriggerAxis()
-                                    - m_drivingController.getRightTriggerAxis());
-                        }, () -> {
-                            return m_drivingController.leftStick().getAsBoolean()
-                                    ? m_slowMultiplier
-                                    : (m_drivingController.b().getAsBoolean()
-                                            ? m_turboMultiplier
-                                            : m_normalMultiplier);
-                        }));
+        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> deadband(m_drivingController.getLeftX()),
+                () -> m_drivingController.povUp().getAsBoolean() ? -1.0 : deadband(m_drivingController.getLeftY()),
+                () -> {
+                    return deadband(
+                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
+                }, () -> {
+                    return m_drivingController.leftStick().getAsBoolean() ? m_slowMultiplier
+                            : (m_drivingController.b().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
+                }));
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
