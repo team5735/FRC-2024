@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
@@ -48,6 +47,7 @@ public class LimelightAimCommandV2 extends Command {
             return;
         }
         m_targetAcquired = true;
+        System.out.println("have acquired target.");
 
         // coordinate system: x along long side with positive towards red alliance, y
         // along short side with positive facing opposite the side that theta zero
@@ -65,8 +65,8 @@ public class LimelightAimCommandV2 extends Command {
             hoodPos = new Translation3d(-hoodPosTmp.getX(), hoodPosTmp.getY(), hoodPosTmp.getZ());
         }
         if (!checkBotCanAim(currentRobotPos.getTranslation(), hoodPos)) {
-            SmartDashboard.putNumber("cantAimDist", currentRobotPos.getTranslation().toTranslation2d().getDistance(
-                    hoodPos.toTranslation2d()));
+            System.out.println("bot can't aim, bad distance: "
+                    + currentRobotPos.getTranslation().toTranslation2d().getDistance(hoodPos.toTranslation2d()));
             return;
         }
 
@@ -74,9 +74,8 @@ public class LimelightAimCommandV2 extends Command {
         // mathing is TODO
         double robotDesiredAngleRads = Math.atan2(robotToHood.getY(), robotToHood.getX());
 
-        SmartDashboard.putNumber("aimcmdv2_desAngRads", robotDesiredAngleRads);
-        SmartDashboard.putNumber("aimcmdv2_desAngDegs", Math.toDegrees(robotDesiredAngleRads));
-        SmartDashboard.putNumber("aimcmdv2_robDst", robotToHood.getNorm());
+        System.out.printf("limelight targeting results: %f dar %f dad %f rd\n", robotDesiredAngleRads,
+                Math.toDegrees(robotDesiredAngleRads), robotToHood.getNorm());
     }
 
     // checks to see if the robot is within reasonable shooting range of the target
@@ -96,7 +95,6 @@ public class LimelightAimCommandV2 extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        // return m_targetAcquired;
-        return false;
+        return m_targetAcquired;
     }
 }
