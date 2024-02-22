@@ -64,8 +64,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     }
 
     public void drive(double vx, double vy, double omega, double multiplier) {
-        SmartDashboard.putNumber("omega", omega);
-
         if (m_isFieldCentric.get()) {
             setControl(m_fieldCentric.withVelocityX(vx * multiplier)
                     .withVelocityY(vy * multiplier)

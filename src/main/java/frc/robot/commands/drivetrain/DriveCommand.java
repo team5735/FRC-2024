@@ -27,9 +27,11 @@ public class DriveCommand extends Command {
     public void execute() {
         m_watchdog.reset();
         m_drivetrain.drive(-m_stickY.get(), -m_stickX.get(), m_rotate.get(), m_multiplier.get());
+        m_watchdog.addEpoch("drivetrain_update");
         m_watchdog.disable();
         if (m_watchdog.isExpired()) {
-            System.out.println("watchdog expired :( " + m_watchdog.getTimeout() + ", " + m_watchdog.getTime());
+            System.out.println("watchdog expired :( ");
+            m_watchdog.printEpochs();
         }
     }
 }

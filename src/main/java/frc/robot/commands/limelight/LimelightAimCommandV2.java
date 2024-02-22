@@ -15,14 +15,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class LimelightAimCommandV2 extends Command {
     private LimelightSubsystem m_limelight;
     private boolean m_targetAcquired = false;
-    private final DrivetrainSubsystem m_drivetrain;
 
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     /**
@@ -30,11 +28,10 @@ public class LimelightAimCommandV2 extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain) {
+    public LimelightAimCommandV2(final LimelightSubsystem limelight) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(limelight, drivetrain);
+        addRequirements(limelight);
         m_limelight = limelight;
-        m_drivetrain = drivetrain;
     }
 
     // Called when the command is initially scheduled.
@@ -42,23 +39,16 @@ public class LimelightAimCommandV2 extends Command {
     public void initialize() {
     }
 
-    // Spin clockwise, used if no fiducial can be seen.
-    private void spin() {
-        m_drivetrain.drive(0, 0, 1);
-    }
-
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
         if (targets.length < 2) {
-            System.out.println("spinning");
-            // spin();
+            System.out.println("need to spin");
             return;
         }
         m_targetAcquired = true;
 
-        // TODO: determine unknown
         // coordinate system: x along long side with positive towards red alliance, y
         // along short side with positive facing opposite the side that theta zero
         // faces, z up, positive theta is counterclockwise and theta 0 is facing the red
@@ -106,6 +96,7 @@ public class LimelightAimCommandV2 extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_targetAcquired;
+        // return m_targetAcquired;
+        return false;
     }
 }

@@ -14,7 +14,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public final class Autos {
     /** Example static factory for an autonomous command. */
     public static Command auto(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain, CANdleSubsystem candle) {
-        return Commands.sequence(candle.colorAuto(), new LimelightAimCommandV2(limelight, drivetrain), candle.colorReady());
+        return Commands.sequence(candle.colorAuto(), new LimelightAimCommandV2(limelight), candle.colorReady());
     }
 
     private Autos() {

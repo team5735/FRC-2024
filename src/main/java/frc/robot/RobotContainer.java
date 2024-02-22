@@ -6,9 +6,6 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -65,7 +62,6 @@ public class RobotContainer {
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
-    private final SwerveRequest.PointWheelsAt m_pointWheelsAt = new SwerveRequest.PointWheelsAt();
     private final Telemetry m_telemetry = new Telemetry(.1);
 
     private double m_turboMultiplier = 10;
@@ -108,15 +104,19 @@ public class RobotContainer {
         // is pressed, cancelling on release.
 
         m_drivingController.a().whileTrue(new BrakeCommand(m_drivetrain));
-        m_drivingController.b().whileTrue(m_drivetrain.applyRequest(() -> m_pointWheelsAt
-                .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(), m_drivingController.getLeftX()))));
-        m_drivingController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain));
+        // m_drivingController.b().whileTrue(m_drivetrain.applyRequest(() ->
+        // m_pointWheelsAt
+        // .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(),
+        // m_drivingController.getLeftX()))));
+        m_drivingController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-        m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
-                new FeederCommandOut(m_feederSubsystem)));
-        m_drivingController.rightBumper().whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
-                new FeederCommandIn(m_feederSubsystem)));
+        m_drivingController.leftBumper()
+                .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
+                        new FeederCommandOut(m_feederSubsystem)));
+        m_drivingController.rightBumper()
+                .whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
+                        new FeederCommandIn(m_feederSubsystem)));
 
         m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
         m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
@@ -134,8 +134,11 @@ public class RobotContainer {
                             return deadband(m_drivingController.getLeftTriggerAxis()
                                     - m_drivingController.getRightTriggerAxis());
                         }, () -> {
-                            return m_drivingController.leftStick().getAsBoolean() ? m_slowMultiplier
-                                    : (m_drivingController.x().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
+                            return m_drivingController.leftStick().getAsBoolean()
+                                    ? m_slowMultiplier
+                                    : (m_drivingController.b().getAsBoolean()
+                                            ? m_turboMultiplier
+                                            : m_normalMultiplier);
                         }));
         // some lines were not copied from the drivetrain
 
