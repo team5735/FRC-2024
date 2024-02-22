@@ -17,6 +17,7 @@ public class Turn90Command extends Command {
         m_drivetrain = drivetrain;
 
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
+        m_controller.setTolerance(0.001);
 
         addRequirements(m_drivetrain);
     }
@@ -33,6 +34,6 @@ public class Turn90Command extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs((m_startPos + m_distance) - getCurrentAngle.get()) <= 0.001;
+        return m_controller.atSetpoint();
     }
 }

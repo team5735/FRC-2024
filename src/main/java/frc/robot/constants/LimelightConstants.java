@@ -19,4 +19,6 @@ public class LimelightConstants {
     public static final double BOT_SHOOTING_DISTANCE = 69.0;
 
     public static boolean INFINITE_AIM = true;
+
+    public static final double DRIVETRAIN_MOVEMENT_SPEED = 1;
 }

@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class LimelightAimCommandV2 extends Command {
     private LimelightSubsystem m_limelight;
+    private DrivetrainSubsystem m_drivetrain;
     private boolean m_targetAcquired = false;
 
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
@@ -27,10 +29,11 @@ public class LimelightAimCommandV2 extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public LimelightAimCommandV2(final LimelightSubsystem limelight) {
+    public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(limelight);
+        addRequirements(limelight, drivetrain);
         m_limelight = limelight;
+        m_drivetrain = drivetrain;
     }
 
     // Called when the command is initially scheduled.
@@ -43,11 +46,12 @@ public class LimelightAimCommandV2 extends Command {
     public void execute() {
         LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
         if (targets.length < 2) {
-            System.out.println("need to spin");
+            System.out.println("spinning");
+            m_drivetrain.drive(0, 0, 1);
             return;
         }
         m_targetAcquired = true;
-        System.out.println("have acquired target.");
+        System.out.println("target acquired");
 
         // coordinate system: x along long side with positive towards red alliance, y
         // along short side with positive facing opposite the side that theta zero
@@ -57,6 +61,8 @@ public class LimelightAimCommandV2 extends Command {
         Alliance alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
         Pose3d currentRobotPos = targets[0].getRobotPose_FieldSpace();
+        // do this fast
+        m_drivetrain.seedFieldRelative(currentRobotPos.toPose2d());
         Translation3d hoodPos;
         if (alliance == Alliance.Red) {
             hoodPos = LimelightConstants.HOOD_POS;
@@ -64,13 +70,17 @@ public class LimelightAimCommandV2 extends Command {
             Translation3d hoodPosTmp = LimelightConstants.HOOD_POS;
             hoodPos = new Translation3d(-hoodPosTmp.getX(), hoodPosTmp.getY(), hoodPosTmp.getZ());
         }
+        Translation2d robotToHood = hoodPos.minus(currentRobotPos.getTranslation()).toTranslation2d();
         if (!checkBotCanAim(currentRobotPos.getTranslation(), hoodPos)) {
-            System.out.println("bot can't aim, bad distance: "
+            System.out.println("bot aim distance check failed"
                     + currentRobotPos.getTranslation().toTranslation2d().getDistance(hoodPos.toTranslation2d()));
+            System.out.println("moving towards the hood");
+            Translation2d desiredVelocity = robotToHood.div(robotToHood.getNorm()).times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED);
+            m_drivetrain.drive(desiredVelocity);
+            // TODO: look into drivetrain.addVisionMeasurement
             return;
         }
 
-        Translation2d robotToHood = hoodPos.minus(currentRobotPos.getTranslation()).toTranslation2d();
         // mathing is TODO
         double robotDesiredAngleRads = Math.atan2(robotToHood.getY(), robotToHood.getX());
 

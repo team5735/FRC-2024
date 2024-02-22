@@ -5,8 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.commands.limelight.LimelightAimCommandV2;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -14,7 +13,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public final class Autos {
     /** Example static factory for an autonomous command. */
     public static Command auto(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain, CANdleSubsystem candle) {
-        return Commands.sequence(candle.colorAuto(), new LimelightAimCommandV2(limelight), candle.colorReady());
+        return new InstantCommand();
     }
 
     private Autos() {
