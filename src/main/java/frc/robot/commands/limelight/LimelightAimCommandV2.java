@@ -32,7 +32,8 @@ public class LimelightAimCommandV2 extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain, final AngleSubsystem angler) {
+    public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
+            final AngleSubsystem angler) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
@@ -70,27 +71,16 @@ public class LimelightAimCommandV2 extends Command {
         m_targetAcquired = true;
         System.out.println("target acquired");
 
-        // coordinate system: x along long side with positive towards red alliance, y
-        // along short side with positive facing opposite the side that theta zero
-        // faces, z up, positive theta is counterclockwise and theta 0 is facing the red
-        // alliance speaker.
+        // coordinate system for field-oriented limelight targeting: x along long side
+        // with positive towards red alliance, y along short side with positive facing
+        // opposite the side that theta zero faces, z up, positive theta is
+        // counterclockwise and theta 0 is facing the red alliance speaker.
 
         Translation3d hoodPos = getHoodPos();
         Pose3d currentRobotPose = targets[0].getRobotPose_FieldSpace();
         m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
-        Translation2d robotToHood = hoodPos.minus(currentRobotPose.getTranslation()).toTranslation2d();
 
-        if (!checkBotCanAim(currentRobotPose.getTranslation(), hoodPos)) {
-            System.out.println("bot aim distance check failed"
-                    + currentRobotPose.getTranslation().toTranslation2d().getDistance(hoodPos.toTranslation2d()));
-            System.out.println("moving towards the hood");
-            Translation2d desiredVelocity = robotToHood.div(robotToHood.getNorm())  // normalize the vector
-                    .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED);  // set magnitude to allowed drivetrain movement speed
-            // TODO: check coordinate systems (could be okay due to seedFieldRelative above?)
-            m_drivetrain.drive(desiredVelocity);
-            // TODO: look into drivetrain.addVisionMeasurement
-            return;
-        }
+        checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
 
         Translation3d angleChangerToHood = currentRobotPose.getTranslation().plus(LimelightConstants.ANGLE_CHANGER_POS);
         double angleChangerDesiredAngle = Math.atan2(angleChangerToHood.getZ(),
@@ -100,10 +90,23 @@ public class LimelightAimCommandV2 extends Command {
     }
 
     // checks to see if the robot is within reasonable shooting range of the target
-    private boolean checkBotCanAim(Translation3d bot, Translation3d target) {
-        boolean botIsCloseEnough = bot.toTranslation2d()
-                .getDistance(target.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
-        return botIsCloseEnough;
+    private void checkBotCanAim(Translation3d robotPosition, Translation3d targetPosition) {
+        boolean botIsCloseEnough = robotPosition.toTranslation2d()
+                .getDistance(targetPosition.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
+        if (!botIsCloseEnough) {
+            System.out.println("bot aim distance check failed"
+                    + robotPosition.toTranslation2d().getDistance(getHoodPos().toTranslation2d()));
+            System.out.println("moving towards the hood");
+            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition.toTranslation2d());
+            Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
+                    .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
+                                                                          // movement speed
+            // TODO: check coordinate systems (could be okay due to seedFieldRelative
+            // above?)
+            m_drivetrain.drive(desiredVelocity);
+            // TODO: look into drivetrain.addVisionMeasurement
+            return;
+        }
     }
 
     // Called once the command ends or is interrupted.
