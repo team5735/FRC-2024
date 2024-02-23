@@ -4,8 +4,8 @@ public class IntakeConstants {
     public static final double INTAKE_PULL_RPM = 1500;
     public static final double INTAKE_PUSH_RPM = 1500;
 
-    public static final double INTAKE_PULL_VOLTS = 4;
-    public static final double INTAKE_PUSH_VOLTS = 4;
+    public static final double INTAKE_PULL_VOLTS = 12;
+    public static final double INTAKE_PUSH_VOLTS = 12;
 
     public static final double INTAKE_KP = 0.0002;
     public static final double INTAKE_KI = 0;

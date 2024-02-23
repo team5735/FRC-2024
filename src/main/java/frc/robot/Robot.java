@@ -63,6 +63,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("intakePullRPM", IntakeConstants.INTAKE_PULL_RPM);
         SmartDashboard.putNumber("intakeOutput", 0);
 
+        SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
+        SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
+
         SmartDashboard.putNumber("shootTopVoltage", ShooterConstants.SHOOTER_TOP_VOLTS);
         SmartDashboard.putNumber("shootBottomVoltage", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
         SmartDashboard.putNumber("shootTopRPS", ShooterConstants.SHOOTER_TOP_VOLTS);
