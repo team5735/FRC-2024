@@ -64,27 +64,23 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         setupAuto();
     }
 
-    public void drive(double vx, double vy, double omega, double multiplier) {
+    public void drive(double vx, double vy, double omega) {
         if (m_isFieldCentric.get()) {
-            setControl(m_fieldCentric.withVelocityX(vx * multiplier)
-                    .withVelocityY(vy * multiplier)
-                    .withRotationalRate(omega * multiplier)
+            setControl(m_fieldCentric.withVelocityX(vx)
+                    .withVelocityY(vy)
+                    .withRotationalRate(omega)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
             return;
         }
 
-        setControl(m_robotCentric.withVelocityX(vx * multiplier)
-                .withVelocityY(vy * multiplier)
-                .withRotationalRate(omega * multiplier)
+        setControl(m_robotCentric.withVelocityX(vx)
+                .withVelocityY(vy)
+                .withRotationalRate(omega)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
     }
 
-    public void drive(double vx, double vy, double omega) {
-        drive(vx, vy, omega, 1);
-    }
-
     public void drive(Translation2d movement) {
-        drive(movement.getX(), movement.getY(), 0, 1);
+        drive(movement.getX(), movement.getY(), 0);
     }
 
     public void driveClosedLoop(double vx, double vy, double omega) {
