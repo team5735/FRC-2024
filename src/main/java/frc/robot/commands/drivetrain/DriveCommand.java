@@ -36,7 +36,7 @@ public class DriveCommand extends Command {
         double multiplier = m_multiplier.get();
         double speedX = m_xLimiter.calculate(-m_stickY.get() * multiplier);
         double speedY = m_yLimiter.calculate(-m_stickX.get() * multiplier);
-        double speedOmega = m_omegaLimiter.calculate(-m_rotate.get() * multiplier);
+        double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
         m_drivetrain.drive(speedX, speedY, speedOmega);
 
         m_watchdog.addEpoch("drivetrain_update");

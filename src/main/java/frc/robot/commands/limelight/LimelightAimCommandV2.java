@@ -84,9 +84,9 @@ public class LimelightAimCommandV2 extends Command {
             System.out.println("bot aim distance check failed"
                     + currentRobotPose.getTranslation().toTranslation2d().getDistance(hoodPos.toTranslation2d()));
             System.out.println("moving towards the hood");
-            Translation2d desiredVelocity = robotToHood.div(robotToHood.getNorm())
-                    .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED);
-            // TODO: check coordinate systems
+            Translation2d desiredVelocity = robotToHood.div(robotToHood.getNorm())  // normalize the vector
+                    .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED);  // set magnitude to allowed drivetrain movement speed
+            // TODO: check coordinate systems (could be okay due to seedFieldRelative above?)
             m_drivetrain.drive(desiredVelocity);
             // TODO: look into drivetrain.addVisionMeasurement
             return;
