@@ -51,6 +51,12 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
         SmartDashboard.putNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
 
+        SmartDashboard.putNumber("climbRightPos", 0);
+        SmartDashboard.putNumber("climbLeftPos", 0);
+
+        SmartDashboard.putNumber("climbRightOutput", 0);
+        SmartDashboard.putNumber("climbLeftOutput", 0);
+
         
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
         SmartDashboard.putNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
@@ -62,10 +68,24 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
 
 
-        SmartDashboard.putNumber("shootTopVoltage", ShooterConstants.SHOOTER_TOP_VOLTS);
-        SmartDashboard.putNumber("shootBottomVoltage", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
-        SmartDashboard.putNumber("shootTopRPS", ShooterConstants.SHOOTER_TOP_VOLTS);
-        SmartDashboard.putNumber("shootBottomRPS", ShooterConstants.SHOOTER_BOTTOM_VOLTS);
+        SmartDashboard.putNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
+        SmartDashboard.putNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
+        SmartDashboard.putNumber("shootTopKD", ShooterConstants.SHOOTER_TOP_KD);
+
+        SmartDashboard.putNumber("shootTopKS", ShooterConstants.SHOOTER_TOP_KS);
+        SmartDashboard.putNumber("shootTopKV", ShooterConstants.SHOOTER_TOP_KV);
+
+        SmartDashboard.putNumber("shootBottomKP", ShooterConstants.SHOOTER_BOTTOM_KP);
+        SmartDashboard.putNumber("shootBottomKI", ShooterConstants.SHOOTER_BOTTOM_KI);
+        SmartDashboard.putNumber("shootBottomKD", ShooterConstants.SHOOTER_BOTTOM_KD);
+
+        SmartDashboard.putNumber("shootBottomKS", ShooterConstants.SHOOTER_BOTTOM_KS);
+        SmartDashboard.putNumber("shootBottomKV", ShooterConstants.SHOOTER_BOTTOM_KV);
+
+        SmartDashboard.putNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
+        SmartDashboard.putNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_RPM);
+        SmartDashboard.putNumber("shootTopOutput", 0);
+        SmartDashboard.putNumber("shootBottomOutput", 0);
     }
 
     /**

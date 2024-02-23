@@ -78,12 +78,12 @@ public class RobotContainer {
 
         m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
 
-        m_driverController.x().whileTrue(new IntakeCommandOut(m_intakeSubsystem));
+        m_driverController.x().whileTrue(new FeederCommandOut(m_feederSubsystem));
 
         // m_driverController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
 
 
-        m_driverController.y().whileTrue(new FeederPrimeNote(m_feederSubsystem));
+        m_driverController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
         // ^ONLY USE WITH BEAM BLOCKER
         // m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
 
