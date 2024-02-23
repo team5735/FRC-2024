@@ -109,7 +109,7 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command nyoom() {
-        return run(() -> drive(0, 0, 12.0));
+        return run(() -> drive(0, 0, 8.0));
     }
 
     private void startSimThread() {
