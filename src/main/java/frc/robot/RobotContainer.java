@@ -18,15 +18,18 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederPrimeNote;
+import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -47,7 +50,8 @@ public class RobotContainer {
 
     private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
-    // private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
     private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
@@ -103,7 +107,7 @@ public class RobotContainer {
         // m_pointWheelsAt
         // .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(),
         // m_drivingController.getLeftX()))));
-        m_drivingController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain));
+        m_drivingController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
         // m_drivingController.leftBumper()
@@ -132,7 +136,7 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
-        // m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
+        m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.x().whileTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
 
