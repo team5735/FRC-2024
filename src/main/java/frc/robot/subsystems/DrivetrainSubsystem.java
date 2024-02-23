@@ -108,6 +108,10 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    public Command nyoom() {
+        return run(() -> drive(0, 0, 12.0));
+    }
+
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 

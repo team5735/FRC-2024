@@ -124,6 +124,8 @@ public class RobotContainer {
         m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
         m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
 
+        m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
+
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> deadband(m_drivingController.getLeftX()),
                 () -> m_drivingController.povUp().getAsBoolean() ? -1.0 : deadband(m_drivingController.getLeftY()),
                 () -> {

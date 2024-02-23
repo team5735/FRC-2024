@@ -5,9 +5,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 
 // This file is not actually generated. But I have a problem and I will fix it the wrong way.
-
 public class SuperSwerveModuleConstantsFactory extends SwerveModuleConstantsFactory {
-
     public SwerveModuleConstants createModuleConstants(
             int steerId,
             int driveId,
