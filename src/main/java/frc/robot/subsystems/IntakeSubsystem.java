@@ -42,8 +42,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void periodic(){
-        // updateProportions();
-        
         SmartDashboard.putNumber("intakeOutput", getMeasurement());
     }
 
