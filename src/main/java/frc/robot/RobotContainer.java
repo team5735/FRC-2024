@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Autos;
+import frc.robot.commands.climber.ClimbCommand;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -135,6 +136,8 @@ public class RobotContainer {
                     return m_drivingController.leftStick().getAsBoolean() ? m_slowMultiplier
                             : (m_drivingController.b().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
                 }));
+
+        m_climberSubsystem.setDefaultCommand(new ClimbCommand(m_climberSubsystem, () -> deadband(m_drivingController.getRightY()), () -> deadband(m_drivingController.getRightX())));
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));

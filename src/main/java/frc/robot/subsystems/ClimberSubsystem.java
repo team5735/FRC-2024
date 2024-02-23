@@ -15,6 +15,14 @@ public class ClimberSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.CLIMBER_MOTOR_LEFT_ID,
             MotorType.kBrushless);
 
+    public void left(double speed) {
+        m_sparkMax_left.setVoltage(speed);
+    }
+
+    public void right(double speed) {
+        m_sparkMax_right.setVoltage(speed);
+    }
+
     public void rightUp() {
         double rightVoltage = SmartDashboard.getNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
 
