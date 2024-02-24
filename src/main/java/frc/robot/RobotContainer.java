@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -12,11 +14,12 @@ import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightUp;
-import frc.robot.commands.feeder.FeederCommandOut;
+import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -35,24 +38,45 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private final CommandXboxController m_driverController = new CommandXboxController(
+    private final CommandXboxController m_drivingController = new CommandXboxController(
             OperatorConstants.DRIVER_CONTROLLER_PORT);
+    private final CommandXboxController m_subsystemController = new CommandXboxController(
+            OperatorConstants.SUBSYSTEM_CONTROLLER_PORT);
 
     private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-    public static final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
+    private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
+    private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
     private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
+    private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
+
+    // Programming war crime :3
+    private static boolean m_isFieldCentric = true;
+    public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
+    // private final Telemetry m_telemetry = new Telemetry(.1);
+
+    private double m_turboMultiplier = 10;
+    private double m_normalMultiplier = 2;
+    private double m_slowMultiplier = 1;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and
      * commands.
      */
     public RobotContainer() {
+        // m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
         configureBindings();
+    }
+
+    private static double deadband(double input) {
+        if (Math.abs(input) <= DrivetrainConstants.DEADBAND) {
+            return 0;
+        }
+        return input;
     }
 
     /**
@@ -73,32 +97,54 @@ public class RobotContainer {
         // Schedule `exampleMethodCommand` when the Xbox controller's B button
         // is pressed, cancelling on release.
 
-        m_driverController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
+        m_drivingController.a().whileTrue(new BrakeCommand(m_drivetrain));
+        // m_drivingController.b().whileTrue(m_drivetrain.applyRequest(() ->
+        // m_pointWheelsAt
+        // .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(),
+        // m_drivingController.getLeftX()))));
+        m_drivingController.x()
+                .whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+        m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-        m_driverController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
+        // m_drivingController.leftBumper()
+        // .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
+        // new FeederCommandOut(m_feederSubsystem)));
+        // m_drivingController.rightBumper()
+        // .whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
+        // new FeederCommandIn(m_feederSubsystem)));
 
-        m_driverController.x().whileTrue(new FeederCommandOut(m_feederSubsystem));
+        m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
+        m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
+        m_drivingController.povRight().onTrue(m_candleSubsystem.colorAiming());
+        m_drivingController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
+        m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
+        m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
 
-        // m_driverController.x().whileTrue(new LimelightAimCommandV2(m_limelightSubsystem));
+        m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
+        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> deadband(m_drivingController.getLeftX()),
+                () -> m_drivingController.povUp().getAsBoolean() ? -1.0 : deadband(m_drivingController.getLeftY()),
+                () -> {
+                    return deadband(
+                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
+                }, () -> {
+                    return m_drivingController.leftStick().getAsBoolean() ? m_slowMultiplier
+                            : (m_drivingController.b().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
+                }));
 
-        m_driverController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
-        // ^ONLY USE WITH BEAM BLOCKER
-        // m_driverController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
+        m_climberSubsystem.setDefaultCommand(new ClimbCommand(m_climberSubsystem,
+                () -> deadband(m_drivingController.getRightY()), () -> deadband(m_drivingController.getRightX())));
+        // some lines were not copied from the drivetrain
 
-        // climbing :3
-        m_driverController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));
-        m_driverController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
+        m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
+        m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
+        m_subsystemController.x().whileTrue(new FeederPrimeNote(m_feederSubsystem));
+        m_subsystemController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
 
-        m_driverController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberSubsystem));
-        m_driverController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem));
-
-        m_driverController.povUp().onTrue(m_candleSubsystem.colorReady());
-        m_driverController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
-        m_driverController.povRight().onTrue(m_candleSubsystem.colorAiming());
-        m_driverController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
-        m_driverController.povDown().onTrue(m_candleSubsystem.colorShooting());
-        m_driverController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
+        m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
+        m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));
+        m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberSubsystem));
+        m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem));
     }
 
     /**
@@ -108,6 +154,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return Autos.auto(m_limelightSubsystem, m_candleSubsystem);
+        return Autos.auto(m_limelightSubsystem, m_drivetrain, m_candleSubsystem);
     }
 }

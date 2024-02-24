@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_sparkMax_pull.setVoltage(pullSpeed);
     }
 
-    public void push(){
+    public void push() {
         double pushSpeed = SmartDashboard.getNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
 
         m_sparkMax_pull.setVoltage(pushSpeed);

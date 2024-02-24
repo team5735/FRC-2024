@@ -17,6 +17,12 @@ public class FeederSubsystem extends SubsystemBase {
         m_sparkMax_pull.setInverted(false);
     }
 
+    public void push() {
+        double pushSpeed = SmartDashboard.getNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
+
+        m_sparkMax_pull.setVoltage(pushSpeed);
+    }
+
     public void pull() {
         double pullSpeed = SmartDashboard.getNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
 

@@ -4,17 +4,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeCommandOut extends Command {
-    IntakeSubsystem m_subsystem;
+    private IntakeSubsystem m_subsystem;
 
-    public IntakeCommandOut(IntakeSubsystem s) {
-        addRequirements(s);
-        m_subsystem = s;
+    public IntakeCommandOut(IntakeSubsystem subsystem) {
+        m_subsystem = subsystem;
+        addRequirements(m_subsystem);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_subsystem.push();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
