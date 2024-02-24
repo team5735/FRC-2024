@@ -45,6 +45,11 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("anglePos", 0);
 
+        SmartDashboard.putNumber("angleCurrentSetpoint", AngleConstants.ANGLE_START_POS_DEG);
+        SmartDashboard.putNumber("angleNewSetpoint", AngleConstants.ANGLE_START_POS_DEG);
+        // these little two-line spaces are ABSOLUTELY IMPERATIVE, the robot will CRASH AND BURN without these (they separate the 
+        // networktables pipelines of different subsystems)
+
 
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
@@ -66,7 +71,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
         SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
-        
+
 
         SmartDashboard.putNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         SmartDashboard.putNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);

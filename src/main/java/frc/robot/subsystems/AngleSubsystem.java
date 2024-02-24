@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -10,61 +13,81 @@ import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
 public class AngleSubsystem extends SubsystemBase{
-    /*
-     * 
-     * 
-     * DO NOT USE THIS SUBSYSTEM ON THIS BRANCH!!!!!!!!
-     * Use the PID-&-FeedForward branch for this subsytem, for now 
-     * 
-     * 
-     * 
-     */
-    private ArmFeedforward m_feedForward;
     private PIDController m_pid;
+    // private PIDController m_pid_left;
+    private ArmFeedforward m_feedForward;
+    // private PIDController m_feedForward_left;
+    private boolean enabled = true;
 
-    private TalonFX m_talon_right = new TalonFX(Constants.ANGLE_MOTOR_RIGHT_ID);
-    private TalonFX m_talon_left = new TalonFX(Constants.ANGLE_MOTOR_LEFT_ID);
+    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
+    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless);
+
+    private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
+
 
     public AngleSubsystem() {
-        double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
-        double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
-        double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
+        m_sparkMax_left.setInverted(true);
+        m_sparkMax_right.setInverted(true);
 
-        double ks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
-        double kg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
-        double kV = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
 
-        m_feedForward = new ArmFeedforward(ks, kg, kV);
-        m_pid = new PIDController(kp, ki, kd);
+        m_sparkMax_left.follow(m_sparkMax_right, true);
 
-        m_talon_left.setPosition(0); // Need to find the correct position on start, 0 should be parallel to robot
-                                     // base
+
+        m_pid = new PIDController(0, 0, 0);
+        m_feedForward = new ArmFeedforward(0, 0, 0);
+
+        updateProportions();
+
+        double startAngle = AngleConstants.ANGLE_START_POS_ROT*AngleConstants.ANGLE_OUTPUT_TO_MOTOR_RATIO;
+
+        m_encoder_right.setPosition(startAngle);
+
+        m_pid.setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
+        // This is the actual value we are working with, when doing feedforward, we need to offset so that 0rad is parallel to base :)
     }
 
+    @Override
     public void periodic() {
-        double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
-        double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
-        double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
+        updateProportions();
 
-        double ks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
-        double kg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
-        double kV = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
-
-        m_feedForward = new ArmFeedforward(ks, kg, kV);
-        m_pid.setPID(kp, ki, kd);
-
-        useOutput(m_pid.calculate(getMeasurement()), m_pid.getSetpoint());
-
+        useOutput();
+        
         SmartDashboard.putNumber("anglePos", getMeasurement());
+        SmartDashboard.putNumber("angleCurrentSetpoint", m_pid.getSetpoint());
     }
 
     public double getMeasurement() {
-        return AngleConstants.convertTalonRotationsToDegrees(m_talon_left.getPosition().getValueAsDouble());
+        return AngleConstants.convertRotationsToDegrees(m_encoder_right.getPosition() * AngleConstants.ANGLE_MOTOR_TO_OUTPUT_RATIO);
     }
 
-    public void useOutput(double output, double setpoint) {
-        m_talon_right.setVoltage(output + m_feedForward.calculate(setpoint, output));
-        m_talon_left.setVoltage(output + m_feedForward.calculate(setpoint, output));
+    public void useOutput(){
+        if(enabled){
+            if(getMeasurement() < AngleConstants.ANGLE_LOWEST_DEG && m_pid.getSetpoint() < AngleConstants.ANGLE_HIGHEST_DEG)
+                m_pid.setSetpoint(m_pid.getSetpoint() + 1);
+            
+            if(getMeasurement() > AngleConstants.ANGLE_HIGHEST_DEG && m_pid.getSetpoint() > AngleConstants.ANGLE_LOWEST_DEG)
+                m_pid.setSetpoint(m_pid.getSetpoint() - 1);
+    
+            double rightOutput = m_pid.calculate(getMeasurement());
+            m_sparkMax_right.setVoltage(rightOutput + m_feedForward.calculate(
+                Math.toRadians(getMeasurement() - 90), rightOutput
+            ));
+        } else {
+            m_sparkMax_right.setVoltage(0);
+        }
+    }
+
+    public void updateProportions(){
+        double rkp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
+        double rki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
+        double rkd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
+
+        double rks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
+        double rkg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
+        double rkv = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
+
+        m_feedForward = new ArmFeedforward(rks, rkg, rkv);
+        m_pid.setPID(rkp, rki, rkd);
     }
 
     public void pidReset() {
@@ -73,5 +96,15 @@ public class AngleSubsystem extends SubsystemBase{
 
     public void setSetpoint(double angle){
         m_pid.setSetpoint(angle);
+    }
+
+    public void releaseBrakes(){
+        m_sparkMax_right.setIdleMode(IdleMode.kCoast);
+        enabled = false;
+    }
+
+    public void engageBrakes(){
+        m_sparkMax_right.setIdleMode(IdleMode.kBrake);
+        enabled = true;
     }
 }
