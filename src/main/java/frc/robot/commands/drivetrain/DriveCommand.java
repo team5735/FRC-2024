@@ -17,10 +17,10 @@ public class DriveCommand extends Command {
     private final Supplier<Double> m_rotate;
     private final Supplier<Double> m_multiplier;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {});
-    private SlewRateLimiter m_magnitudeLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_MAGNITUDE);
-    private SlewRateLimiter m_xLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT);
-    private SlewRateLimiter m_yLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT);
-    private SlewRateLimiter m_omegaLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT);
+    private SlewRateLimiter m_magnitudeLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_THETA_MAGNITUDE);
+    private SlewRateLimiter m_xLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_AXES);
+    private SlewRateLimiter m_yLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_AXES);
+    private SlewRateLimiter m_omegaLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_OMEGA);
      
     public DriveCommand(DrivetrainSubsystem drivetrain, Supplier<Double> stickX, Supplier<Double> stickY, Supplier<Double> rotate, Supplier<Double> multiplier) {
         m_drivetrain = drivetrain;
