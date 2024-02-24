@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.Constants;
 import frc.robot.constants.FeederConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.ShooterConstants;
@@ -25,6 +28,8 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
+
+    private PowerDistribution m_PD = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
     /**
      * This function is run when the robot is first started up and should be
@@ -94,6 +99,12 @@ public class Robot extends TimedRobot {
         // periodic() methods. This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        // (debugging) dump all PD values to smartdashboard
+        SmartDashboard.putNumber("PD 6", m_PD.getCurrent(6));
+        SmartDashboard.putNumber("PD total", m_PD.getTotalCurrent());
+
+        SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
     }
 
     /**

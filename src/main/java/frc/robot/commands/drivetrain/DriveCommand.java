@@ -3,6 +3,8 @@ package frc.robot.commands.drivetrain;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
@@ -15,6 +17,7 @@ public class DriveCommand extends Command {
     private final Supplier<Double> m_rotate;
     private final Supplier<Double> m_multiplier;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {});
+    private SlewRateLimiter m_magnitudeLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_MAGNITUDE);
     private SlewRateLimiter m_xLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT);
     private SlewRateLimiter m_yLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT);
     private SlewRateLimiter m_omegaLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT);
@@ -36,8 +39,13 @@ public class DriveCommand extends Command {
         double multiplier = m_multiplier.get();
         double speedX = m_xLimiter.calculate(-m_stickY.get() * multiplier);
         double speedY = m_yLimiter.calculate(-m_stickX.get() * multiplier);
+        Rotation2d theta = new Rotation2d(speedX, speedY);
+        double magnitude = Math.sqrt(speedX * speedX + speedY * speedY);
+        magnitude = m_magnitudeLimiter.calculate(magnitude);
+        Translation2d thetaMagnitudeMovement = new Translation2d(magnitude, theta);
         double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
         m_drivetrain.drive(speedX, speedY, speedOmega);
+        // m_drivetrain.drive(thetaMagnitudeMovement, speedOmega);
 
         m_watchdog.addEpoch("drivetrain_update");
         m_watchdog.disable();
