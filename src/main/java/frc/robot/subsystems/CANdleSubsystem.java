@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import java.awt.Color;
 
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.RainbowAnimation;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,12 +59,6 @@ public class CANdleSubsystem extends SubsystemBase {
     private void setToColor(Color color) {
         // setDefaultSettings();
         candle.setLEDs(color.getRed(), color.getGreen(), color.getBlue());
-    }
-
-    private void setDefaultSettings() {
-        CANdleConfiguration config = new CANdleConfiguration();
-        config.stripType = LEDStripType.RGB;
-        candle.configAllSettings(config);
     }
 
     /**
