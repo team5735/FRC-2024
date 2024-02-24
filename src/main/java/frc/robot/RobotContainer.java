@@ -23,7 +23,7 @@ import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.generated.TunerConstants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;

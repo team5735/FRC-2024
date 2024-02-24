@@ -1,4 +1,4 @@
-package frc.robot.generated;
+package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -8,6 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
+import frc.robot.generated.SuperSwerveModuleConstantsFactory;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 // Drivetrain dimension wheel to wheel: 20.5 by 25
