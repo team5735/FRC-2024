@@ -20,7 +20,6 @@ public class ClimberCommandLeftStop extends Command {
     @Override
     public void execute() {
         m_subsystem.stopLeft();
-        // System.out.println("hellotest");
     }
 
     // Called once the command ends or is interrupted.

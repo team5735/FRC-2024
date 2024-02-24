@@ -20,5 +20,5 @@ public class LimelightConstants {
     public static final double DRIVETRAIN_MOVEMENT_SPEED = 1;
     // TODO
     public static final Translation3d ANGLE_CHANGER_POS = new Translation3d();
-    public static final boolean INFINITE_AIM = true;
+    public static final boolean INFINITE_AIM = false;
 }

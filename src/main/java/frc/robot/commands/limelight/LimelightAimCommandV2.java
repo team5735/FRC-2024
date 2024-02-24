@@ -77,12 +77,14 @@ public class LimelightAimCommandV2 extends Command {
         // counterclockwise and theta 0 is facing the red alliance speaker.
 
         Translation3d hoodPos = getHoodPos();
-        Pose3d currentRobotPose = targets[0].getRobotPose_FieldSpace();
+        Pose3d currentRobotPose = m_limelight.getBotPose3d();
         m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
 
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
 
-        Translation3d angleChangerToHood = currentRobotPose.getTranslation().plus(LimelightConstants.ANGLE_CHANGER_POS);
+        Translation3d robotToHood = hoodPos.minus(currentRobotPose.getTranslation());
+        Translation3d angleChangerToHood = robotToHood.minus(LimelightConstants.ANGLE_CHANGER_POS);
+        System.out.println("distance to hood: " + angleChangerToHood.getNorm());
         double angleChangerDesiredAngle = Math.atan2(angleChangerToHood.getZ(),
                 new Translation2d(angleChangerToHood.getX(), angleChangerToHood.getY()).getNorm());
         System.out.println("angle changer desired angle: " + angleChangerDesiredAngle);
