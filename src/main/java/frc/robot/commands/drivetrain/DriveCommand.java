@@ -42,6 +42,7 @@ public class DriveCommand extends Command {
         Rotation2d theta = new Rotation2d(speedX, speedY);
         double magnitude = Math.sqrt(speedX * speedX + speedY * speedY);
         magnitude = m_magnitudeLimiter.calculate(magnitude);
+        @SuppressWarnings("unused")
         Translation2d thetaMagnitudeMovement = new Translation2d(magnitude, theta);
         double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
         m_drivetrain.drive(speedX, speedY, speedOmega);
