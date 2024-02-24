@@ -14,14 +14,20 @@ import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightUp;
+import frc.robot.commands.drivetrain.BrakeCommand;
+import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
+import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.constants.DrivetrainConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -132,8 +138,6 @@ public class RobotContainer {
                             : (m_drivingController.b().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
                 }));
 
-        m_climberSubsystem.setDefaultCommand(new ClimbCommand(m_climberSubsystem,
-                () -> deadband(m_drivingController.getRightY()), () -> deadband(m_drivingController.getRightX())));
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));

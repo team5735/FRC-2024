@@ -45,6 +45,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("anglePos", 0);
 
+
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
         SmartDashboard.putNumber("climbRightDownVoltage", ClimberConstants.CLIMBER_RIGHT_DOWN_VOLTS);
@@ -56,13 +57,16 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("climbRightOutput", 0);
         SmartDashboard.putNumber("climbLeftOutput", 0);
 
+
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
         SmartDashboard.putNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
 
         SmartDashboard.putBoolean("feederSwitchStatus", false);
 
+
         SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
         SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
+        
 
         SmartDashboard.putNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         SmartDashboard.putNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
