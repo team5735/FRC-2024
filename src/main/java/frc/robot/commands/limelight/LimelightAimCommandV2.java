@@ -72,9 +72,10 @@ public class LimelightAimCommandV2 extends Command {
         System.out.println("target acquired");
 
         // coordinate system for field-oriented limelight targeting: x along long side
-        // with positive towards red alliance, y along short side with positive facing
-        // opposite the side that theta zero faces, z up, positive theta is
-        // counterclockwise and theta 0 is facing the red alliance speaker.
+        // with positive towards red alliance, y along short side such that positive is
+        // facing the long side that has red on the right and blue on the left, z up,
+        // positive theta is counterclockwise and theta 0 is facing the red alliance
+        // speaker.
 
         Translation3d hoodPos = getHoodPos();
         Pose3d currentRobotPose = m_limelight.getBotPose3d();

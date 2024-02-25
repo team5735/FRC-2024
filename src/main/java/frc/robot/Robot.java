@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.Constants;
 import frc.robot.constants.FeederConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.ShooterConstants;
@@ -25,6 +28,8 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
+
+    private PowerDistribution m_PD = new PowerDistribution(Constants.PDH_ID, ModuleType.kRev);
 
     /**
      * This function is run when the robot is first started up and should be
@@ -47,9 +52,6 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("angleCurrentSetpoint", AngleConstants.ANGLE_START_POS_DEG);
         SmartDashboard.putNumber("angleNewSetpoint", AngleConstants.ANGLE_START_POS_DEG);
-        // these little two-line spaces are ABSOLUTELY IMPERATIVE, the robot will CRASH AND BURN without these (they separate the 
-        // networktables pipelines of different subsystems)
-
 
         SmartDashboard.putNumber("climbRightUpVoltage", ClimberConstants.CLIMBER_RIGHT_UP_VOLTS);
         SmartDashboard.putNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
@@ -62,16 +64,13 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("climbRightOutput", 0);
         SmartDashboard.putNumber("climbLeftOutput", 0);
 
-
         SmartDashboard.putNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
         SmartDashboard.putNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
 
         SmartDashboard.putBoolean("feederSwitchStatus", false);
 
-
         SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
         SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
-
 
         SmartDashboard.putNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         SmartDashboard.putNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
@@ -110,6 +109,10 @@ public class Robot extends TimedRobot {
         // periodic() methods. This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        SmartDashboard.putNumber("PD 6 current", m_PD.getCurrent(6));
+        SmartDashboard.putNumber("PD total current", m_PD.getTotalCurrent());
+        SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
     }
 
     /**
