@@ -1,9 +1,9 @@
 package frc.robot.constants;
 
 public class AngleConstants {
-    public static final double ANGLE_KP = 0.052;
-    public static final double ANGLE_KI = 0.04;
-    public static final double ANGLE_KD = 0.018;
+    public static final double ANGLE_KP = 0.055;
+    public static final double ANGLE_KI = 0.0075;
+    public static final double ANGLE_KD = 0.00;
 
     public static final double ANGLE_KS = 0;
     public static final double ANGLE_KG = 0.515;
@@ -17,7 +17,7 @@ public class AngleConstants {
     public static final double ANGLE_LOWEST_DEG = 230;
 
     public static final double ANGLE_MOTOR_TO_OUTPUT_RATIO = 1./9 * 22./42; 
-    // planetary 9:1, pulleys 22:42 (they are divided by one another, leading to this inverse ratio above)
+    // planetary 9:1, chain drive 22:42 (they are divided by one another, leading to this inverse ratio above)
     public static final double ANGLE_OUTPUT_TO_MOTOR_RATIO = 1./ANGLE_MOTOR_TO_OUTPUT_RATIO;
     // inverse of the previous ratio
 

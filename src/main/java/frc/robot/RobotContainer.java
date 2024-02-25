@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Autos;
+import frc.robot.commands.angle.AngleCommandPIDReset;
+import frc.robot.commands.angle.AngleCommandReleaseMotors;
+import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -143,14 +146,26 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
-        m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
-        m_subsystemController.x().whileTrue(new FeederPrimeNote(m_feederSubsystem));
-        m_subsystemController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
+        // m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
+        m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
+        m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
+        // m_subsystemController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
+        m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
+
+        m_subsystemController.start().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
+
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));
         m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberSubsystem));
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem));
+    }
+
+    // activates the useOutput() methods of PID-implemented subsystems 
+    // (Please let Jacoby know if you have a better way of doing this)
+    public void useSubsystemOutputs(){
+        m_angleSubsystem.useOutput();
+        m_shooterSubsystem.useOutput();
     }
 
     /**
