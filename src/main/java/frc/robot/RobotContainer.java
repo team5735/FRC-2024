@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Autos;
@@ -20,8 +21,10 @@ import frc.robot.commands.climber.ClimberCommandRightUp;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
+import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
+import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -39,7 +42,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
- * 
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and trigger mappings) should be declared here.
@@ -106,7 +108,7 @@ public class RobotContainer {
         // Schedule `exampleMethodCommand` when the Xbox controller's B button
         // is pressed, cancelling on release.
 
-        m_drivingController.a().whileTrue(new BrakeCommand(m_drivetrain));
+        m_drivingController.b().whileTrue(new BrakeCommand(m_drivetrain));
         // m_drivingController.b().whileTrue(m_drivetrain.applyRequest(() ->
         // m_pointWheelsAt
         // .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(),
@@ -115,12 +117,12 @@ public class RobotContainer {
                 .whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
 
-        // m_drivingController.leftBumper()
-        // .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
-        // new FeederCommandOut(m_feederSubsystem)));
-        // m_drivingController.rightBumper()
-        // .whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
-        // new FeederCommandIn(m_feederSubsystem)));
+        m_drivingController.leftBumper()
+                .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
+                        new FeederCommandOut(m_feederSubsystem)));
+        m_drivingController.rightBumper()
+                .whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
+                        new FeederCommandIn(m_feederSubsystem)));
 
         m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
         m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
@@ -138,7 +140,7 @@ public class RobotContainer {
                             m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
                 }, () -> {
                     return m_drivingController.leftStick().getAsBoolean() ? m_slowMultiplier
-                            : (m_drivingController.b().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
+                            : (m_drivingController.a().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
                 }));
 
         // some lines were not copied from the drivetrain

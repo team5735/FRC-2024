@@ -79,8 +79,12 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
     }
 
+    public void drive(Translation2d movement, double omega) {
+        drive(movement.getX(), movement.getY(), omega);
+    }
+
     public void drive(Translation2d movement) {
-        drive(movement.getX(), movement.getY(), 0);
+        drive(movement, 0);
     }
 
     public void driveClosedLoop(double vx, double vy, double omega) {
