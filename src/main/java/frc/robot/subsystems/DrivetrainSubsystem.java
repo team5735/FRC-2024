@@ -87,6 +87,10 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         drive(movement, 0);
     }
 
+    public void drive(double omega) {
+        drive(0, 0, omega);
+    }
+
     public void driveClosedLoop(double vx, double vy, double omega) {
         if (m_isFieldCentric.get()) {
             setControl(m_fieldCentric.withVelocityX(vx)
