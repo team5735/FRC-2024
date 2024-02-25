@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -14,16 +15,13 @@ import frc.robot.constants.Constants;
 
 public class AngleSubsystem extends SubsystemBase{
     private PIDController m_pid;
-    // private PIDController m_pid_left;
     private ArmFeedforward m_feedForward;
-    // private PIDController m_feedForward_left;
     private boolean enabled = true;
 
     private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
     private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless);
 
     private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
-
 
     public AngleSubsystem() {
         m_sparkMax_left.setInverted(true);
@@ -46,20 +44,22 @@ public class AngleSubsystem extends SubsystemBase{
         // This is the actual value we are working with, when doing feedforward, we need to offset so that 0rad is parallel to base :)
     }
 
+    // overriden method called every 20ms, calls updateProportions
+    // as well as updating the NetworkTables for certain readings
     @Override
     public void periodic() {
         updateProportions();
-
-        useOutput();
         
         SmartDashboard.putNumber("anglePos", getMeasurement());
         SmartDashboard.putNumber("angleCurrentSetpoint", m_pid.getSetpoint());
     }
 
+    // reads the motor's position and multiplies it by the constant ratio to determine the arm's position
     public double getMeasurement() {
         return AngleConstants.convertRotationsToDegrees(m_encoder_right.getPosition() * AngleConstants.ANGLE_MOTOR_TO_OUTPUT_RATIO);
     }
 
+    // sets the motor voltage to the PID & FeedForward calculations
     public void useOutput(){
         if(enabled){
             if(getMeasurement() < AngleConstants.ANGLE_LOWEST_DEG && m_pid.getSetpoint() < AngleConstants.ANGLE_HIGHEST_DEG)
@@ -77,6 +77,7 @@ public class AngleSubsystem extends SubsystemBase{
         }
     }
 
+    // updates PID & FeedForward values by the NetworkTables (can probably be removed for the final robot)
     public void updateProportions(){
         double rkp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
         double rki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
@@ -90,19 +91,23 @@ public class AngleSubsystem extends SubsystemBase{
         m_pid.setPID(rkp, rki, rkd);
     }
 
+    // resets PID
     public void pidReset() {
         m_pid.reset();
     }
 
+    // changes the PID setpoint (desired angle)
     public void setSetpoint(double angle){
         m_pid.setSetpoint(angle);
     }
 
+    // disables the PID & FeedForward, sets the motors to loose, and holds the voltage at 0
     public void releaseBrakes(){
         m_sparkMax_right.setIdleMode(IdleMode.kCoast);
         enabled = false;
     }
 
+    // undoes the previous method (re-enables controllers & voltage)
     public void engageBrakes(){
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         enabled = true;

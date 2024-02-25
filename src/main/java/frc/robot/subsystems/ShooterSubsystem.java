@@ -16,7 +16,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private final TalonFX m_talon_top = new TalonFX(Constants.SHOOTER_MOTOR_TOP_ID);
     private final TalonFX m_talon_bottom = new TalonFX(Constants.SHOOTER_MOTOR_BOTTOM_ID);
 
-    // private final PIDController m_speedController = new PIDController(1, 0, 0);
 
     public ShooterSubsystem(){
         m_talon_top.setInverted(true);
@@ -32,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
         updateProportions();
     }
 
+    // changes PID & FeedForward values based on the NetworkTables
     public void updateProportions(){
         double tkp = SmartDashboard.getNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         double tki = SmartDashboard.getNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
@@ -54,6 +54,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_feedForward_bottom = new SimpleMotorFeedforward(bks, bkv);
     }
 
+    
+    @Override
     public void periodic(){
         updateProportions();
         
@@ -76,7 +78,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getTopMeasurement(){
-        // return m_talon_right.getMotorVoltage().getValueAsDouble();
         return m_talon_top.getVelocity().getValueAsDouble()*60;
     }
 
@@ -84,8 +85,11 @@ public class ShooterSubsystem extends SubsystemBase {
         return m_talon_bottom.getVelocity().getValueAsDouble()*60;
     }
 
-
+    
     public void start() {
+
+        System.out.println("shootersubsystem");
+
         double topRPM =
             SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
         double bottomRPM =

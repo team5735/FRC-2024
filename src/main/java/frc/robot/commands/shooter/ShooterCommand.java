@@ -21,6 +21,7 @@ public class ShooterCommand extends Command {
     @Override
     public void execute() {
         // System.out.println("hellotest");
+        // System.out.println("shootercommand");
     }
 
     // Called once the command ends or is interrupted.
