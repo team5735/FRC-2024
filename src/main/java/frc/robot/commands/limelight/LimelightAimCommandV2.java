@@ -72,9 +72,10 @@ public class LimelightAimCommandV2 extends Command {
         System.out.println("target acquired");
 
         // coordinate system for field-oriented limelight targeting: x along long side
-        // with positive towards red alliance, y along short side with positive facing
-        // opposite the side that theta zero faces, z up, positive theta is
-        // counterclockwise and theta 0 is facing the red alliance speaker.
+        // with positive towards red alliance, y along short side such that positive is
+        // facing the long side that has red on the right and blue on the left, z up,
+        // positive theta is counterclockwise and theta 0 is facing the red alliance
+        // speaker.
 
         Translation3d hoodPos = getHoodPos();
         Pose3d currentRobotPose = m_limelight.getBotPose3d();
@@ -83,12 +84,7 @@ public class LimelightAimCommandV2 extends Command {
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
 
         Translation3d robotToHood = hoodPos.minus(currentRobotPose.getTranslation());
-        Translation3d angleChangerToHood = robotToHood.minus(LimelightConstants.ANGLE_CHANGER_POS);
-        System.out.println("distance to hood: " + angleChangerToHood.getNorm());
-        double angleChangerDesiredAngle = Math.atan2(angleChangerToHood.getZ(),
-                new Translation2d(angleChangerToHood.getX(), angleChangerToHood.getY()).getNorm());
-        System.out.println("angle changer desired angle: " + angleChangerDesiredAngle);
-        m_angler.setSetpoint(angleChangerDesiredAngle);
+        aim(robotToHood);
     }
 
     // checks to see if the robot is within reasonable shooting range of the target
@@ -109,6 +105,19 @@ public class LimelightAimCommandV2 extends Command {
             // TODO: look into drivetrain.addVisionMeasurement
             return;
         }
+    }
+
+    private void aim(Translation3d currentRobotPoseToTarget) {
+        Translation3d angleChangerToHood = currentRobotPoseToTarget.minus(LimelightConstants.ANGLE_CHANGER_POS);
+        double angleChangerDesiredAngle = Math.atan2(angleChangerToHood.getZ(),
+                new Translation2d(angleChangerToHood.getX(), angleChangerToHood.getY()).getNorm());
+        m_angler.setSetpoint(angleChangerDesiredAngle);
+        double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
+        double drivetrainDeltaTheta = drivetrainDesiredAngle;
+
+        System.out.println("distance to hood: " + angleChangerToHood.getNorm());
+        System.out.println("angle changer desired angle: " + angleChangerDesiredAngle);
+        System.out.println("delta theta for drivetrain: " + drivetrainDeltaTheta);
     }
 
     // Called once the command ends or is interrupted.
