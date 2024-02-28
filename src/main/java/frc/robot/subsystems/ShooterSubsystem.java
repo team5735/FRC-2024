@@ -18,8 +18,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public ShooterSubsystem(){
-        m_talon_top.setInverted(true);
-        m_talon_bottom.setInverted(true);
+        m_talon_top.setInverted(false);
+        m_talon_bottom.setInverted(false);
 
 
         m_pid_top = new PIDController(0, 0, 0);
