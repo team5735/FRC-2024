@@ -22,7 +22,6 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
-import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
@@ -148,12 +147,11 @@ public class RobotContainer {
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
         // m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
-        // m_subsystemController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
+        // m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
+        m_subsystemController.x().whileTrue(new FeederCommandIn(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
         m_subsystemController.start().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
-
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));
@@ -164,7 +162,7 @@ public class RobotContainer {
     // activates the useOutput() methods of PID-implemented subsystems 
     // (Please let Jacoby know if you have a better way of doing this)
     public void useSubsystemOutputs(){
-        m_angleSubsystem.useOutput();
+        // m_angleSubsystem.useOutput();
         m_shooterSubsystem.useOutput();
     }
 
