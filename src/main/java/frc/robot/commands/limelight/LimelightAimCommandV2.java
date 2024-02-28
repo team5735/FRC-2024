@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.AngleConstants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.AngleSubsystem;
@@ -141,10 +142,6 @@ public class LimelightAimCommandV2 extends Command {
     }
 
     private void aim(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
-        Translation3d angleChangerToHood = currentRobotPoseToTarget.minus(LimelightConstants.ANGLE_CHANGER_POS);
-        double angleChangerDesiredAngle = Math.atan2(angleChangerToHood.getZ(),
-                new Translation2d(angleChangerToHood.getX(), angleChangerToHood.getY()).getNorm());
-        m_angler.setSetpoint(angleChangerDesiredAngle);
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
                 - Math.PI;
         double thetaActual = robotPoseInField.getRotation().getRadians();
@@ -154,13 +151,46 @@ public class LimelightAimCommandV2 extends Command {
         omega = m_rateLimiter.calculate(omega);
         m_drivetrain.drive(omega);
 
+        Translation3d robotPosTranslation3d = new Translation3d(robotPoseInField.getX(), robotPoseInField.getY(), 0);
+        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
+        Translation3d angleChangerToHood = currentRobotPoseToTarget.minus(LimelightConstants.ANGLE_CHANGER_POS);
+        solveTangentForAngler(angleChangerPosition, getHoodPos());
+
         SmartDashboard.putNumber("llv2_omega", omega);
         SmartDashboard.putNumber("llv2_omegaPre", omegaPre);
         SmartDashboard.putNumber("llv2_hoodDst", angleChangerToHood.getNorm());
-        SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
-        SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
         SmartDashboard.putNumber("llv2_thetaSetpoint", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_thetaActual", thetaActual);
+    }
+
+    private double sign(double in) {
+        if (in > 0) {
+            return 1;
+        } else if (in < 0) {
+            return -1;
+        }
+        return 0;
+    }
+
+    private double radiansEnsureInBounds(double angle) {
+        if (angle > -Math.PI && angle < Math.PI) {
+            return angle;
+        }
+        double diff = Math.abs(Math.abs(angle) - Math.PI);
+        return Math.PI * -sign(angle) + diff * sign(angle);
+    }
+
+    private void solveTangentForAngler(Translation3d angler, Translation3d target) {
+        // right triangle spam
+        // theta 0 is parallel to the ground and facing the front of the robot
+        Translation3d anglerToTarget = target.minus(angler);
+        double anglerToTargetAngle1 = Math.atan2(anglerToTarget.getZ(), anglerToTarget.getX());
+        // double check this
+        double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
+        double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
+
+        SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
+        SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
     }
 
     // Called once the command ends or is interrupted.
