@@ -149,7 +149,7 @@ public class RobotContainer {
         // m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         // m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
-        m_subsystemController.y().whileTrue(new FeederCommandIn(m_feederSubsystem));
+        m_subsystemController.x().whileTrue(new FeederCommandIn(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
         m_subsystemController.start().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
