@@ -22,7 +22,6 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
-import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
@@ -163,7 +162,7 @@ public class RobotContainer {
     // activates the useOutput() methods of PID-implemented subsystems 
     // (Please let Jacoby know if you have a better way of doing this)
     public void useSubsystemOutputs(){
-        m_angleSubsystem.useOutput();
+        // m_angleSubsystem.useOutput();
         m_shooterSubsystem.useOutput();
     }
 

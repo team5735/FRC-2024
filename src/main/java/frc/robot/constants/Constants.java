@@ -25,9 +25,10 @@ public final class Constants {
 
     public static final int ANGLE_MOTOR_RIGHT_ID = 10; // TALON
     public static final int ANGLE_MOTOR_LEFT_ID = 15; // TALON
+    public static final int ANGLE_ENCODER_PIN = 0;
 
     public static final int CLIMBER_MOTOR_RIGHT_ID = 31; // SPARKMAX
-    public static final int CLIMBER_MOTOR_LEFT_ID = 61; // SPARKMAX
+    public static final int CLIMBER_MOTOR_LEFT_ID = 5; // SPARKMAX
 
     public static final int FEEDER_MOTOR_ID = 40; // SPARKMAX
     public static final int FEEDER_SWITCH_CHANNEL = 0; // LIGHT-BASED SENSOR
