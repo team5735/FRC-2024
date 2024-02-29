@@ -159,9 +159,9 @@ public class RobotContainer {
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem));
     }
 
-    // activates the useOutput() methods of PID-implemented subsystems 
+    // activates the useOutput() methods of PID-implemented subsystems
     // (Please let Jacoby know if you have a better way of doing this)
-    public void useSubsystemOutputs(){
+    public void useSubsystemOutputs() {
         // m_angleSubsystem.useOutput();
         m_shooterSubsystem.useOutput();
     }
