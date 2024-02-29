@@ -133,13 +133,13 @@ public class RobotContainer {
         m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> deadband(m_drivingController.getLeftX()),
-                () -> m_drivingController.povUp().getAsBoolean() ? -1.0 : deadband(m_drivingController.getLeftY()),
+                () -> m_drivingController.getHID().getPOV() == 0 ? -1.0 : deadband(m_drivingController.getLeftY()),
                 () -> {
                     return deadband(
                             m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
                 }, () -> {
-                    return m_drivingController.leftStick().getAsBoolean() ? m_slowMultiplier
-                            : (m_drivingController.a().getAsBoolean() ? m_turboMultiplier : m_normalMultiplier);
+                    return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
+                            : (m_drivingController.getHID().getAButton() ? m_turboMultiplier : m_normalMultiplier);
                 }));
 
         // some lines were not copied from the drivetrain
