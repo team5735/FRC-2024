@@ -187,6 +187,7 @@ public class LimelightAimCommandV2 extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
+        m_angler.setSetpoint(angleChangerDesiredAngle);
 
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
         SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
