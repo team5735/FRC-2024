@@ -176,6 +176,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return Autos.auto(m_limelightSubsystem, m_drivetrain, m_candleSubsystem);
+        return Autos.auto();
     }
 }
