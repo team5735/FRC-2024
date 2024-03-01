@@ -28,7 +28,13 @@ public class Turn90Command extends Command {
         m_startPos = getCurrentAngle.get() % (Math.PI * 2);
     }
 
+    @Override
     public void execute() {
         m_drivetrain.drive(m_controller.calculate(getCurrentAngle.get(), m_startPos + m_distance));
+    }
+
+    @Override
+    public boolean isFinished() {
+        return m_controller.atSetpoint();
     }
 }
