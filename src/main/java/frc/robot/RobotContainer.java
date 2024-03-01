@@ -6,11 +6,13 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Autos;
 import frc.robot.commands.angle.AngleCommandPIDReset;
 import frc.robot.commands.angle.AngleCommandReleaseMotors;
 import frc.robot.commands.angle.AngleCommandSetAngle;
@@ -72,6 +74,8 @@ public class RobotContainer {
     private double m_normalMultiplier = 2;
     private double m_slowMultiplier = 1;
 
+    private final SendableChooser<Command> m_autoChooser = AutoBuilder.buildAutoChooser();
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and
      * commands.
@@ -108,10 +112,6 @@ public class RobotContainer {
         // is pressed, cancelling on release.
 
         m_drivingController.b().whileTrue(new BrakeCommand(m_drivetrain));
-        // m_drivingController.b().whileTrue(m_drivetrain.applyRequest(() ->
-        // m_pointWheelsAt
-        // .withModuleDirection(new Rotation2d(m_drivingController.getLeftY(),
-        // m_drivingController.getLeftX()))));
         m_drivingController.x()
                 .whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
@@ -145,9 +145,7 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
-        // m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        // m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.x().whileTrue(new FeederCommandIn(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
@@ -173,6 +171,11 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return Autos.auto();
+        Command auto = m_autoChooser.getSelected();
+        if (auto == null) {
+            System.out.println("auto is null");
+            return new BrakeCommand(m_drivetrain);
+        }
+        return auto;
     }
 }
