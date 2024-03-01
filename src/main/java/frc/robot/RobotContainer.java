@@ -24,6 +24,7 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
+import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
@@ -108,9 +109,7 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button
-        // is pressed, cancelling on release.
-
+        // A is bound to acceleration
         m_drivingController.b().whileTrue(new BrakeCommand(m_drivetrain));
         m_drivingController.x()
                 .whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
@@ -146,10 +145,8 @@ public class RobotContainer {
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        m_subsystemController.x().whileTrue(new FeederCommandIn(m_feederSubsystem));
-        m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
-
-        m_subsystemController.start().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
+        m_subsystemController.x().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
+        m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));

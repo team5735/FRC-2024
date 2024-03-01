@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,8 +20,7 @@ public class AngleSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
     private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless);
 
-    // private final RelativeEncoder m_encoder_right =
-    // m_sparkMax_right.getEncoder();
+    // private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
     // private final AnalogEncoder m_encoder = new AnalogEncoder(Constants.ANGLE_ENCODER_PIN);
     private final DutyCycleEncoder m_encoder = new DutyCycleEncoder(Constants.ANGLE_ENCODER_PIN);
 

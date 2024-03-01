@@ -10,7 +10,7 @@ public class AngleConstants {
     public static final double ANGLE_KV = 0;
 
 
-    public static final double ANGLE_START_POS_ROT = 335./360; // This means 335 degrees (unit of device rotations)
+    public static final double ANGLE_START_POS_ROT = 270./360; // This means 335 degrees (unit of device rotations)
     public static final double ANGLE_START_POS_DEG = convertRotationsToDegrees(ANGLE_START_POS_ROT);
 
     public static final double ANGLE_HIGHEST_DEG = 338;
