@@ -22,6 +22,7 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
+import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
@@ -146,10 +147,12 @@ public class RobotContainer {
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
         // m_subsystemController.b().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
-        m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
+        // m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
+        m_subsystemController.b().whileTrue(new FeederCommandOut(m_feederSubsystem));
         // m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.x().whileTrue(new FeederCommandIn(m_feederSubsystem));
-        m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
+        // m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
+        m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
 
         m_subsystemController.start().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
 
