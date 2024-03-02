@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +36,6 @@ public class LimelightAimCommandV2 extends Command {
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
-    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     /**
      * Creates a new ExampleCommand.
      *
@@ -107,6 +107,7 @@ public class LimelightAimCommandV2 extends Command {
 
         Translation3d hoodPos = getHoodPos();
         Pose3d currentRobotPose = m_limelight.getBotPose3d();
+        m_drivetrain.addVisionMeasurement(currentRobotPose.toPose2d(), Timer.getFPGATimestamp());
         m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
         m_watchdog.addEpoch("fieldRelative seeded");
 
@@ -139,10 +140,7 @@ public class LimelightAimCommandV2 extends Command {
             Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
-            // TODO: check coordinate systems (could be okay due to seedFieldRelative
-            // above?)
             m_drivetrain.drive(desiredVelocity);
-            // TODO: look into drivetrain.addVisionMeasurement
             return;
         }
     }
