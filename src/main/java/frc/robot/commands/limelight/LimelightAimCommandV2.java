@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +36,6 @@ public class LimelightAimCommandV2 extends Command {
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
-    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     /**
      * Creates a new ExampleCommand.
      *
@@ -93,7 +93,7 @@ public class LimelightAimCommandV2 extends Command {
         if (targets.length < 2) {
             System.out.println("spinning");
             resetPID_SRL();
-            m_drivetrain.drive(0, 0, 1);
+            m_drivetrain.drive(1);
             return;
         }
         m_targetAcquired = true;
@@ -107,6 +107,7 @@ public class LimelightAimCommandV2 extends Command {
 
         Translation3d hoodPos = getHoodPos();
         Pose3d currentRobotPose = m_limelight.getBotPose3d();
+        m_drivetrain.addVisionMeasurement(currentRobotPose.toPose2d(), Timer.getFPGATimestamp());
         m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
         m_watchdog.addEpoch("fieldRelative seeded");
 
@@ -114,8 +115,15 @@ public class LimelightAimCommandV2 extends Command {
         m_watchdog.addEpoch("checked bot can aim");
 
         Translation3d robotToHood = hoodPos.minus(currentRobotPose.getTranslation());
-        aim(robotToHood, currentRobotPose.toPose2d());
-        m_watchdog.addEpoch("aimed");
+        aimHorizontally(robotToHood, currentRobotPose.toPose2d());
+        m_watchdog.addEpoch("aimed horizontally");
+
+        Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
+        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
+        aimVertically(angleChangerPosition, getHoodPos());
+        m_watchdog.addEpoch("aimed vertically");
+
+        SmartDashboard.putNumber("llv2_hoodDst", hoodPos.minus(currentRobotPose.getTranslation()).getNorm());
         m_watchdog.disable();
         m_watchdog.printEpochs();
     }
@@ -132,15 +140,12 @@ public class LimelightAimCommandV2 extends Command {
             Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
-            // TODO: check coordinate systems (could be okay due to seedFieldRelative
-            // above?)
             m_drivetrain.drive(desiredVelocity);
-            // TODO: look into drivetrain.addVisionMeasurement
             return;
         }
     }
 
-    private void aim(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
+    private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
                 - Math.PI;
         double thetaActual = robotPoseInField.getRotation().getRadians();
@@ -150,25 +155,10 @@ public class LimelightAimCommandV2 extends Command {
         omega = m_rateLimiter.calculate(omega);
         m_drivetrain.drive(omega);
 
-        Translation3d robotPosTranslation3d = new Translation3d(robotPoseInField.getX(), robotPoseInField.getY(), 0);
-        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
-        Translation3d angleChangerToHood = currentRobotPoseToTarget.minus(LimelightConstants.ANGLE_CHANGER_POS);
-        solveTangentForAngler(angleChangerPosition, getHoodPos());
-
         SmartDashboard.putNumber("llv2_omega", omega);
         SmartDashboard.putNumber("llv2_omegaPre", omegaPre);
-        SmartDashboard.putNumber("llv2_hoodDst", angleChangerToHood.getNorm());
         SmartDashboard.putNumber("llv2_thetaSetpoint", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_thetaActual", thetaActual);
-    }
-
-    private double sign(double in) {
-        if (in > 0) {
-            return 1;
-        } else if (in < 0) {
-            return -1;
-        }
-        return 0;
     }
 
     private double radiansEnsureInBounds(double angle) {
@@ -176,10 +166,10 @@ public class LimelightAimCommandV2 extends Command {
             return angle;
         }
         double diff = Math.abs(Math.abs(angle) - Math.PI);
-        return Math.PI * -sign(angle) + diff * sign(angle);
+        return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
-    private void solveTangentForAngler(Translation3d angler, Translation3d target) {
+    private void aimVertically(Translation3d angler, Translation3d target) {
         // right triangle spam
         // theta 0 is parallel to the ground and facing the front of the robot
         Translation3d anglerToTarget = target.minus(angler);
