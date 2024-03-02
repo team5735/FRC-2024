@@ -162,21 +162,12 @@ public class LimelightAimCommandV2 extends Command {
         SmartDashboard.putNumber("llv2_thetaActual", thetaActual);
     }
 
-    private double sign(double in) {
-        if (in > 0) {
-            return 1;
-        } else if (in < 0) {
-            return -1;
-        }
-        return 0;
-    }
-
     private double radiansEnsureInBounds(double angle) {
         if (angle > -Math.PI && angle < Math.PI) {
             return angle;
         }
         double diff = Math.abs(Math.abs(angle) - Math.PI);
-        return Math.PI * -sign(angle) + diff * sign(angle);
+        return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
     private void solveTangentForAngler(Translation3d angler, Translation3d target) {
