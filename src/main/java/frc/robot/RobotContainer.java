@@ -33,7 +33,8 @@ import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.CANdleSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberLeftSubsystem;
+import frc.robot.subsystems.climber.ClimberRightSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -61,7 +62,8 @@ public class RobotContainer {
     private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
     private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-    private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+    private final ClimberLeftSubsystem m_climberLeftSubsystem = new ClimberLeftSubsystem();
+    private final ClimberRightSubsystem m_climberRightSubsystem = new ClimberRightSubsystem();
     private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
@@ -147,10 +149,10 @@ public class RobotContainer {
         m_subsystemController.x().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
         m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
 
-        m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberSubsystem));
-        m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberSubsystem));
-        m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberSubsystem));
-        m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberSubsystem));
+        m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
+        m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
+        m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
+        m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
     }
 
     // activates the useOutput() methods of PID-implemented subsystems

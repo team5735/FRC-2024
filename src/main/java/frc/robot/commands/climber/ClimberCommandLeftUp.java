@@ -1,13 +1,13 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberLeftSubsystem;
 
 
 public class ClimberCommandLeftUp extends Command {
-    ClimberSubsystem m_subsystem;
+    ClimberLeftSubsystem m_subsystem;
 
-    public ClimberCommandLeftUp(ClimberSubsystem s) {
+    public ClimberCommandLeftUp(ClimberLeftSubsystem s) {
         addRequirements(s);
         m_subsystem = s;
     }
