@@ -93,7 +93,7 @@ public class LimelightAimCommandV2 extends Command {
         if (targets.length < 2) {
             System.out.println("spinning");
             resetPID_SRL();
-            m_drivetrain.drive(0, 0, 1);
+            m_drivetrain.drive(1);
             return;
         }
         m_targetAcquired = true;
