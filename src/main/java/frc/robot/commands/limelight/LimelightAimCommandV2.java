@@ -114,8 +114,15 @@ public class LimelightAimCommandV2 extends Command {
         m_watchdog.addEpoch("checked bot can aim");
 
         Translation3d robotToHood = hoodPos.minus(currentRobotPose.getTranslation());
-        aim(robotToHood, currentRobotPose.toPose2d());
-        m_watchdog.addEpoch("aimed");
+        aimHorizontally(robotToHood, currentRobotPose.toPose2d());
+        m_watchdog.addEpoch("aimed horizontally");
+
+        Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
+        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
+        aimVertically(angleChangerPosition, getHoodPos());
+        m_watchdog.addEpoch("aimed vertically");
+
+        SmartDashboard.putNumber("llv2_hoodDst", hoodPos.minus(currentRobotPose.getTranslation()).getNorm());
         m_watchdog.disable();
         m_watchdog.printEpochs();
     }
@@ -140,7 +147,7 @@ public class LimelightAimCommandV2 extends Command {
         }
     }
 
-    private void aim(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
+    private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
                 - Math.PI;
         double thetaActual = robotPoseInField.getRotation().getRadians();
@@ -150,14 +157,8 @@ public class LimelightAimCommandV2 extends Command {
         omega = m_rateLimiter.calculate(omega);
         m_drivetrain.drive(omega);
 
-        Translation3d robotPosTranslation3d = new Translation3d(robotPoseInField.getX(), robotPoseInField.getY(), 0);
-        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
-        Translation3d angleChangerToHood = currentRobotPoseToTarget.minus(LimelightConstants.ANGLE_CHANGER_POS);
-        solveTangentForAngler(angleChangerPosition, getHoodPos());
-
         SmartDashboard.putNumber("llv2_omega", omega);
         SmartDashboard.putNumber("llv2_omegaPre", omegaPre);
-        SmartDashboard.putNumber("llv2_hoodDst", angleChangerToHood.getNorm());
         SmartDashboard.putNumber("llv2_thetaSetpoint", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_thetaActual", thetaActual);
     }
@@ -170,7 +171,7 @@ public class LimelightAimCommandV2 extends Command {
         return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
-    private void solveTangentForAngler(Translation3d angler, Translation3d target) {
+    private void aimVertically(Translation3d angler, Translation3d target) {
         // right triangle spam
         // theta 0 is parallel to the ground and facing the front of the robot
         Translation3d anglerToTarget = target.minus(angler);
