@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -21,6 +22,9 @@ public class ShooterSubsystem extends SubsystemBase {
         // m_talon_top.setInverted(true);
         // m_talon_bottom.setInverted(true);
 
+        m_talon_top.setNeutralMode(NeutralModeValue.Coast);
+        m_talon_bottom.setNeutralMode(NeutralModeValue.Coast);
+        m_talon_top.setInverted(false);
 
         m_pid_top = new PIDController(0, 0, 0);
         m_feedForward_top = new SimpleMotorFeedforward(0, 0);
