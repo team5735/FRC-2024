@@ -33,8 +33,10 @@ public class FeederSubsystem extends SubsystemBase {
         m_sparkMax_pull.setVoltage(0);
     }
 
+    @Override
     public void periodic() {
         SmartDashboard.putBoolean("feederSwitchStatus", getSwitchStatus());
+        SmartDashboard.putNumber("feederVoltage", m_sparkMax_pull.getBusVoltage());
     }
 
     public boolean getSwitchStatus() {
