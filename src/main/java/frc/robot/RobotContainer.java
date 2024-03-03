@@ -145,8 +145,8 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
-        m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        m_subsystemController.x().onTrue(new AngleCommandPIDReset(m_angleSubsystem));
+        m_subsystemController.b().whileTrue(new IntakeCommandOut(m_intakeSubsystem));
+        m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
