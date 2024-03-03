@@ -123,7 +123,7 @@ public class LimelightAimCommandV2 extends Command {
         aimVertically(angleChangerPosition, getHoodPos());
         m_watchdog.addEpoch("aimed vertically");
 
-        SmartDashboard.putNumber("llv2_hoodDst", hoodPos.minus(currentRobotPose.getTranslation()).getNorm());
+        SmartDashboard.putNumber("llv2_hoodDst", robotToHood.getNorm());
         m_watchdog.disable();
         m_watchdog.printEpochs();
     }
@@ -140,17 +140,23 @@ public class LimelightAimCommandV2 extends Command {
             Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
-            m_drivetrain.drive(desiredVelocity);
+            // m_drivetrain.drive(desiredVelocity);
+            SmartDashboard.putNumber("llv2_moveXCorrection", desiredVelocity.getX());
+            SmartDashboard.putNumber("llv2_moveYCorrection", desiredVelocity.getY());
             return;
         }
     }
 
     private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
-                - Math.PI;
+                + Math.PI;
+        if (drivetrainDesiredAngle > Math.PI) {
+            drivetrainDesiredAngle -= 2 * Math.PI;
+        }
         double thetaActual = robotPoseInField.getRotation().getRadians();
         double omega = m_pidController.calculate(thetaActual,
-                drivetrainDesiredAngle);
+        drivetrainDesiredAngle);
+        // double omega = drivetrainDesiredAngle - thetaActual;
         double omegaPre = omega;
         omega = m_rateLimiter.calculate(omega);
         m_drivetrain.drive(omega);
