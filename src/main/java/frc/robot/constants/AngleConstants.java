@@ -10,11 +10,11 @@ public class AngleConstants {
     public static final double ANGLE_KV = 0;
 
 
-    public static final double ANGLE_START_POS_ROT = 180./360; // This means 335 degrees (unit of device rotations)
+    public static final double ANGLE_START_POS_ROT = 125./360; // This means 335 degrees (unit of device rotations)
     public static final double ANGLE_START_POS_DEG = convertRotationsToDegrees(ANGLE_START_POS_ROT);
 
-    public static final double ANGLE_HIGHEST_DEG = 338;
-    public static final double ANGLE_LOWEST_DEG = 230;
+    public static final double ANGLE_HIGHEST_DEG = 248;
+    public static final double ANGLE_LOWEST_DEG = 123;
 
     public static final double ANGLE_MOTOR_TO_OUTPUT_RATIO = 1./9 * 22./42; 
     // planetary 9:1, chain drive 22:42 (they are divided by one another, leading to this inverse ratio above)
