@@ -110,8 +110,9 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
 
-        SmartDashboard.putNumber("PD 6 current", m_PD.getCurrent(6));
-        SmartDashboard.putNumber("PD total current", m_PD.getTotalCurrent());
+        // (debugging) dump all PD values to smartdashboard
+        SmartDashboard.putNumber("PD 6", m_PD.getCurrent(6));
+        SmartDashboard.putNumber("PD total", m_PD.getTotalCurrent());
         SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
     }
 

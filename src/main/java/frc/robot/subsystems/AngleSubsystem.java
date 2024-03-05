@@ -17,8 +17,6 @@ public class AngleSubsystem extends SubsystemBase {
     private ArmFeedforward m_feedForward;
     private boolean enabled = true;
     private double startPosition = 0;
-    private double offset;
-    
 
     private final CANSparkMax m_sparkMax_right = new CANSparkMax(
         Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless
