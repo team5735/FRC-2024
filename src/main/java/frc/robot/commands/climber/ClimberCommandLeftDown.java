@@ -3,7 +3,6 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberLeftSubsystem;
 
-
 public class ClimberCommandLeftDown extends Command {
     ClimberLeftSubsystem m_subsystem;
 
