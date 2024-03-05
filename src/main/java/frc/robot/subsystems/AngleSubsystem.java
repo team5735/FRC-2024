@@ -20,8 +20,12 @@ public class AngleSubsystem extends SubsystemBase {
     private double offset;
     
 
-    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
-    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless);
+    private final CANSparkMax m_sparkMax_right = new CANSparkMax(
+        Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless
+    );
+    private final CANSparkMax m_sparkMax_left = new CANSparkMax(
+        Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless
+    );
 
     // private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
     // private final AnalogEncoder m_encoder = new AnalogEncoder(Constants.ANGLE_ENCODER_PIN);
@@ -47,7 +51,6 @@ public class AngleSubsystem extends SubsystemBase {
 
 
         m_pid.setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
-        m_pid.disableContinuousInput();
         // This is the actual value we are working with, when doing feedforward, we need
         // to offset so that 0rad is parallel to base :)
     }
@@ -71,7 +74,9 @@ public class AngleSubsystem extends SubsystemBase {
         // return AngleConstants.convertRotationsToDegrees(m_encoder.getDistance());
         if(startPosition == 0)
             startPosition = m_encoder.get();
-        double num = AngleConstants.convertRotationsToDegrees(m_encoder.getDistance() + startPosition + AngleConstants.ANGLE_START_POS_ROT);
+        double num = AngleConstants.convertRotationsToDegrees(
+            m_encoder.getDistance() + startPosition + AngleConstants.ANGLE_START_POS_ROT
+        );
         return (num % 0.1 > 0.05) ? num - (num % 0.1) : num - (num % 0.1) + 0.1;
     }
 
@@ -87,7 +92,9 @@ public class AngleSubsystem extends SubsystemBase {
                 m_pid.setSetpoint(m_pid.getSetpoint() - 1);
 
             double rightOutput = m_pid.calculate(getMeasurement());
-            m_sparkMax_right.setVoltage(rightOutput + m_feedForward.calculate(Math.toRadians(getMeasurement()), rightOutput));
+            m_sparkMax_right.setVoltage(
+                rightOutput + m_feedForward.calculate(Math.toRadians(getMeasurement()), rightOutput)
+            );
         } else {
             m_sparkMax_right.setVoltage(0);
         }

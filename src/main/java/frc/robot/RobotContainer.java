@@ -156,7 +156,7 @@ public class RobotContainer {
     // activates the useOutput() methods of PID-implemented subsystems
     // (Please let Jacoby know if you have a better way of doing this)
     public void useSubsystemOutputs() {
-        // m_angleSubsystem.useOutput();
+        m_angleSubsystem.useOutput();
         m_shooterSubsystem.useOutput();
     }
 
