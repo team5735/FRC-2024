@@ -134,7 +134,7 @@ public class RobotContainer {
                 () -> m_drivingController.getHID().getPOV() == 0 ? -1.0 : deadband(m_drivingController.getLeftY()),
                 () -> {
                     return deadband(
-                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
+                            m_drivingController.getRightTriggerAxis() - m_drivingController.getLeftTriggerAxis());
                 }, () -> {
                     return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
                             : (m_drivingController.getHID().getAButton() ? m_turboMultiplier : m_normalMultiplier);

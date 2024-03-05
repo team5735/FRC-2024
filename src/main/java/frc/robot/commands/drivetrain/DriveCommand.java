@@ -41,8 +41,8 @@ public class DriveCommand extends Command {
         m_watchdog.reset();
 
         double multiplier = m_multiplier.get();
-        double speedX = -m_stickY.get() * multiplier;
-        double speedY = -m_stickX.get() * multiplier;
+        double speedX = m_stickY.get() * multiplier;
+        double speedY = m_stickX.get() * multiplier;
         double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
         if (DrivetrainConstants.USING_THETA_MAGNITUDE_LIMITING) {
             double theta = m_thetaLimiter.calculate(new Rotation2d(speedX, speedY).getRadians());
@@ -52,8 +52,8 @@ public class DriveCommand extends Command {
             SmartDashboard.putNumber("drive_magnitude", magnitude);
             m_drivetrain.drive(thetaMagnitudeMovement, speedOmega);
         } else {
-            speedX = m_xLimiter.calculate(-m_stickY.get() * multiplier);
-            speedY = m_yLimiter.calculate(-m_stickX.get() * multiplier);
+            speedX = m_xLimiter.calculate(m_stickY.get() * multiplier);
+            speedY = m_yLimiter.calculate(m_stickX.get() * multiplier);
             SmartDashboard.putNumber("drive_speedX", speedX);
             SmartDashboard.putNumber("drive_speedY", speedY);
             SmartDashboard.putNumber("drive_speedOmega", speedOmega);
