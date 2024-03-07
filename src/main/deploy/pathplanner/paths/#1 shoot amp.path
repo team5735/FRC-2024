@@ -57,19 +57,30 @@
       "name": "New Event Marker",
       "waypointRelativePos": 1.0,
       "command": {
-        "type": "race",
+        "type": "sequential",
         "data": {
           "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
-              }
-            },
             {
               "type": "named",
               "data": {
                 "name": "startShooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.25,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "stopShooter"
               }
             }
           ]

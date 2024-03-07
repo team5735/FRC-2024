@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0,
+        "x": 1.15,
         "y": 7.0
       },
       "isLocked": false,
@@ -16,16 +16,32 @@
     },
     {
       "anchor": {
-        "x": 1.4506880408850102,
-        "y": 5.549777154241808
+        "x": 2.65,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.3377834657213215,
-        "y": 5.21473602705424
+        "x": 2.4,
+        "y": 7.0
       },
       "nextControl": {
-        "x": 1.5624578679003287,
-        "y": 5.881450948456796
+        "x": 2.9,
+        "y": 7.0
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.65,
+        "y": 7.36
+      },
+      "prevControl": {
+        "x": 2.884140021752117,
+        "y": 7.272373233461926
+      },
+      "nextControl": {
+        "x": 2.228547960846189,
+        "y": 7.517728179768533
       },
       "isLocked": false,
       "linkedName": null
@@ -36,7 +52,7 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.0,
+        "x": 1.15,
         "y": 7.0
       },
       "nextControl": null,
@@ -44,18 +60,12 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "sequential",
         "data": {
@@ -63,7 +73,7 @@
             {
               "type": "named",
               "data": {
-                "name": "startShooter"
+                "name": "startIntake"
               }
             }
           ]
@@ -72,7 +82,7 @@
     },
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 1.85,
       "command": {
         "type": "sequential",
         "data": {
@@ -80,7 +90,7 @@
             {
               "type": "named",
               "data": {
-                "name": "stopShooter"
+                "name": "stopIntake"
               }
             }
           ]
