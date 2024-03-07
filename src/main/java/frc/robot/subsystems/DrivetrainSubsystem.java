@@ -175,6 +175,7 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         setControl(m_robotCentric
                 .withVelocityX(discrete.vxMetersPerSecond)
                 .withVelocityY(discrete.vyMetersPerSecond)
+                .withDriveRequestType(DriveRequestType.Velocity)
                 .withRotationalRate(discrete.omegaRadiansPerSecond));
     }
 
