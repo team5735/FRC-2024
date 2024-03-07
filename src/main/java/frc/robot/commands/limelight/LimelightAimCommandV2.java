@@ -149,14 +149,13 @@ public class LimelightAimCommandV2 extends Command {
 
     private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
-                + Math.PI;
+                + Math.PI - 0.01; // don't question it
         if (drivetrainDesiredAngle > Math.PI) {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
         double thetaActual = robotPoseInField.getRotation().getRadians();
         double omega = m_pidController.calculate(thetaActual,
-        drivetrainDesiredAngle);
-        // double omega = drivetrainDesiredAngle - thetaActual;
+                drivetrainDesiredAngle);
         double omegaPre = omega;
         omega = m_rateLimiter.calculate(omega);
         m_drivetrain.drive(omega);

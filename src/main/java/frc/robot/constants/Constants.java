@@ -24,7 +24,7 @@ public final class Constants {
     public static final int CANDLE_ID = 33;
 
     public static final int ANGLE_MOTOR_RIGHT_ID = 15; // TALON
-    public static final int ANGLE_MOTOR_LEFT_ID = 10; // TALON
+    public static final int ANGLE_MOTOR_LEFT_ID = 23; // TALON
     public static final int ANGLE_ENCODER_PIN = 1; // ENCODER (DIO)
 
     public static final int CLIMBER_MOTOR_RIGHT_ID = 31; // SPARKMAX

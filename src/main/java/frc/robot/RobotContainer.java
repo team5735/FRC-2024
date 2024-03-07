@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.angle.AngleCommandReleaseMotors;
+import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -143,9 +145,9 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
-        m_subsystemController.b().whileTrue(new IntakeCommandOut(m_intakeSubsystem));
+        m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
-        m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
+        m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -156,7 +158,7 @@ public class RobotContainer {
     // activates the useOutput() methods of PID-implemented subsystems
     // (Please let Jacoby know if you have a better way of doing this)
     public void useSubsystemOutputs() {
-        // m_angleSubsystem.useOutput();
+        m_angleSubsystem.useOutput();
         m_shooterSubsystem.useOutput();
     }
 

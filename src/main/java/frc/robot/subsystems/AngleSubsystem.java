@@ -34,18 +34,19 @@ public class AngleSubsystem extends SubsystemBase {
         m_pid = new PIDController(0, 0, 0);
         m_feedForward = new ArmFeedforward(0, 0, 0);
 
+        m_pid.setIZone(1);
+
         updateProportions();
 
         // startPosition = m_encoder.get();
         // offset = -startPosition + AngleConstants.ANGLE_START_POS_ROT;
 
         // m_encoder.setPositionOffset(AngleConstants.ANGLE_START_POS_ROT);
-        m_encoder.setDistancePerRotation(-1);
+        m_encoder.setDistancePerRotation(1);
         // m_encoder.reset();
 
 
         m_pid.setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
-        m_pid.disableContinuousInput();
         // This is the actual value we are working with, when doing feedforward, we need
         // to offset so that 0rad is parallel to base :)
     }
@@ -60,7 +61,7 @@ public class AngleSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("angleCurrentSetpoint", m_pid.getSetpoint());
         SmartDashboard.putNumber("angleLeftAmps", m_sparkMax_left.getOutputCurrent());
         SmartDashboard.putNumber("angleRightAmps", m_sparkMax_right.getOutputCurrent());
-        SmartDashboard.putNumber("anglePIDError", m_pid.getPositionError());
+        SmartDashboard.putNumber("anglePIDError", Math.abs(m_pid.getPositionError()));
     }
 
     // reads the motor's position and multiplies it by the constant ratio to
@@ -68,8 +69,10 @@ public class AngleSubsystem extends SubsystemBase {
     public double getMeasurement() {
         // return AngleConstants.convertRotationsToDegrees(m_encoder.getDistance());
         if(startPosition == 0)
-            startPosition = m_encoder.get();
-        double num = AngleConstants.convertRotationsToDegrees(m_encoder.getDistance() + startPosition + AngleConstants.ANGLE_START_POS_ROT);
+            startPosition = m_encoder.getDistance();
+        double num = AngleConstants.convertRotationsToDegrees(
+            m_encoder.getDistance() - startPosition + AngleConstants.ANGLE_START_POS_ROT
+        );
         return (num % 0.1 > 0.05) ? num - (num % 0.1) : num - (num % 0.1) + 0.1;
     }
 
@@ -85,7 +88,12 @@ public class AngleSubsystem extends SubsystemBase {
                 m_pid.setSetpoint(m_pid.getSetpoint() - 1);
 
             double rightOutput = m_pid.calculate(getMeasurement());
-            m_sparkMax_right.setVoltage(rightOutput + m_feedForward.calculate(Math.toRadians(getMeasurement()), rightOutput));
+            double feedOutput = (Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) > 2)
+                ? m_feedForward.calculate(Math.toRadians(getMeasurement()), rightOutput) 
+                : 0;
+            double volts = rightOutput + feedOutput;
+            m_sparkMax_right.setVoltage(volts);
+            SmartDashboard.putNumber("angleHypotheticalOutput", volts);
         } else {
             m_sparkMax_right.setVoltage(0);
         }
@@ -94,16 +102,16 @@ public class AngleSubsystem extends SubsystemBase {
     // updates PID & FeedForward values by the NetworkTables (can probably be
     // removed for the final robot)
     public void updateProportions() {
-        double rkp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
-        double rki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
-        double rkd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
+        double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
+        double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
+        double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
 
-        double rks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
-        double rkg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
-        double rkv = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
+        double ks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
+        double kg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
+        double kv = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
 
-        m_feedForward = new ArmFeedforward(rks, rkg, rkv);
-        m_pid.setPID(rkp, rki, rkd);
+        m_feedForward = new ArmFeedforward(ks, kg, kv);
+        m_pid.setPID(kp, ki, kd);
     }
 
     // resets PID
