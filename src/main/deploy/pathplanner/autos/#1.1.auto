@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.0,
+      "y": 7.0
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1-1 turn"
+            "pathName": "#1 shoot speaker"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "shooterStart"
+            "pathName": "#1 leave"
           }
         }
       ]
