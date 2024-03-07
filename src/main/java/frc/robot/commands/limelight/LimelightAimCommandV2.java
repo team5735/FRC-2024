@@ -156,6 +156,7 @@ public class LimelightAimCommandV2 extends Command {
         double thetaActual = robotPoseInField.getRotation().getRadians();
         double omega = m_pidController.calculate(thetaActual,
                 drivetrainDesiredAngle);
+        // double omega = drivetrainDesiredAngle - thetaActual;
         double omegaPre = omega;
         omega = m_rateLimiter.calculate(omega);
         m_drivetrain.drive(omega);

@@ -18,8 +18,12 @@ public class AngleSubsystem extends SubsystemBase {
     private boolean enabled = true;
     private double startPosition = 0;
 
-    private final CANSparkMax m_sparkMax_right = new CANSparkMax(Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
-    private final CANSparkMax m_sparkMax_left = new CANSparkMax(Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless);
+    private final CANSparkMax m_sparkMax_right = new CANSparkMax(
+        Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless
+    );
+    private final CANSparkMax m_sparkMax_left = new CANSparkMax(
+        Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless
+    );
 
     // private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
     // private final AnalogEncoder m_encoder = new AnalogEncoder(Constants.ANGLE_ENCODER_PIN);
