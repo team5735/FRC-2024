@@ -24,7 +24,6 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
-import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
