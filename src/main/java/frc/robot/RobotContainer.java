@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.angle.AngleCommandReleaseMotors;
-import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -164,11 +163,10 @@ public class RobotContainer {
         m_shooterSubsystem.useOutput();
     }
 
-    private Command feedNShoot(FeederSubsystem feeder, ShooterSubsystem shooter){
+    private Command feedNShoot(FeederSubsystem feeder, ShooterSubsystem shooter) {
         return new SequentialCommandGroup(
-            new ShooterSpinUpCommand(shooter), 
-            new ParallelCommandGroup(new FeederCommandIn(feeder), new ShooterHoldNStopCommand(shooter))
-        );
+                new ShooterSpinUpCommand(shooter),
+                new ParallelCommandGroup(new FeederCommandIn(feeder), new ShooterHoldNStopCommand(shooter)));
     }
 
     /**
