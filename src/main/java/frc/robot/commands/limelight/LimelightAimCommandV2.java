@@ -101,7 +101,7 @@ public class LimelightAimCommandV2 extends Command {
         m_watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
-        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
+        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_OFFSET);
         aimVertically(angleChangerPosition, getHoodPos());
         m_watchdog.addEpoch("aimed vertically");
 
