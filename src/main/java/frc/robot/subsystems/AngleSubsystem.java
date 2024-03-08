@@ -140,4 +140,5 @@ public class AngleSubsystem extends SubsystemBase {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         enabled = true;
     }
+    
 }

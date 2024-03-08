@@ -107,4 +107,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_pid_top.setSetpoint(0);
         m_pid_bottom.setSetpoint(0);
     }
+
+    public boolean isSpunUp(){
+        return (Math.abs(m_pid_top.getVelocityError()) < 10 && Math.abs(m_pid_bottom.getVelocityError()) < 10);
+    }
 }

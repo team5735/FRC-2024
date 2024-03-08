@@ -16,7 +16,7 @@ public class AngleConstants {
     public static final double ANGLE_HIGHEST_DEG = 237;
     public static final double ANGLE_LOWEST_DEG = 130;
 
-    public static final double ANGLE_MOTOR_TO_OUTPUT_RATIO = 1./9 * 22./42; 
+    public static final double ANGLE_MOTOR_TO_OUTPUT_RATIO = 1./9 * 16./42; 
     // planetary 9:1, chain drive 22:42 (they are divided by one another, leading to this inverse ratio above)
     public static final double ANGLE_OUTPUT_TO_MOTOR_RATIO = 1./ANGLE_MOTOR_TO_OUTPUT_RATIO;
     // inverse of the previous ratio
