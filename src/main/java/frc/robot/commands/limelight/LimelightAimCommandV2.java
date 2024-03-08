@@ -7,7 +7,6 @@ package frc.robot.commands.limelight;
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,6 +17,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.AngleSubsystem;
@@ -31,8 +32,6 @@ public class LimelightAimCommandV2 extends Command {
     private AngleSubsystem m_angler;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
-    private PIDController m_pidController;
-    private SlewRateLimiter m_rateLimiter;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
@@ -50,27 +49,11 @@ public class LimelightAimCommandV2 extends Command {
         m_angler = angler;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
-
-        SmartDashboard.putNumber("llv2_turnP", LimelightConstants.TURN_P);
-        SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
-        SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
-        SmartDashboard.putNumber("llv2_turnSRL", LimelightConstants.TURN_SRL);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        resetPID_SRL();
-    }
-
-    private void resetPID_SRL() {
-        double p = SmartDashboard.getNumber("llv2_turnP", LimelightConstants.TURN_P);
-        double i = SmartDashboard.getNumber("llv2_turnI", LimelightConstants.TURN_I);
-        double d = SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D);
-        double srl = SmartDashboard.getNumber("llv2_turnSRL", LimelightConstants.TURN_SRL);
-        m_pidController = new PIDController(p, i, d);
-        m_pidController.enableContinuousInput(-Math.PI, Math.PI);
-        m_rateLimiter = new SlewRateLimiter(srl);
     }
 
     private Translation3d getHoodPos() {
@@ -92,7 +75,6 @@ public class LimelightAimCommandV2 extends Command {
         m_watchdog.addEpoch("get fiducial info");
         if (targets.length < 2) {
             System.out.println("spinning");
-            resetPID_SRL();
             m_drivetrain.drive(1);
             return;
         }
@@ -153,18 +135,15 @@ public class LimelightAimCommandV2 extends Command {
         if (drivetrainDesiredAngle > Math.PI) {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
-        double thetaActual = robotPoseInField.getRotation().getRadians();
-        double omega = m_pidController.calculate(thetaActual,
-                drivetrainDesiredAngle);
-        // double omega = drivetrainDesiredAngle - thetaActual;
-        double omegaPre = omega;
-        omega = m_rateLimiter.calculate(omega);
-        m_drivetrain.drive(omega);
 
-        SmartDashboard.putNumber("llv2_omega", omega);
-        SmartDashboard.putNumber("llv2_omegaPre", omegaPre);
-        SmartDashboard.putNumber("llv2_thetaSetpoint", drivetrainDesiredAngle);
-        SmartDashboard.putNumber("llv2_thetaActual", thetaActual);
+        // CommandScheduler.getInstance().schedule(new TurnToCommand(m_drivetrain,
+        // drivetrainDesiredAngle));
+        CommandScheduler.getInstance()
+                .schedule(new PIDCommand(
+                        new PIDController(LimelightConstants.TURN_P, LimelightConstants.TURN_I,
+                                LimelightConstants.TURN_D),
+                        () -> m_drivetrain.getRotation3d().getZ(), drivetrainDesiredAngle,
+                        (double output) -> m_drivetrain.drive(output), m_drivetrain));
     }
 
     private double radiansEnsureInBounds(double angle) {
