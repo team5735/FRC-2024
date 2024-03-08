@@ -125,7 +125,8 @@ public class AngleSubsystem extends SubsystemBase {
 
     // changes the PID setpoint (desired angle)
     public void setSetpoint(double angle) {
-        m_pid.setSetpoint(angle);
+        if(angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
+            m_pid.setSetpoint(angle);
     }
 
     // disables the PID & FeedForward, sets the motors to loose, and holds the
@@ -140,4 +141,5 @@ public class AngleSubsystem extends SubsystemBase {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         enabled = true;
     }
+    
 }

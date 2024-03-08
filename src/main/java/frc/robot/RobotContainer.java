@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.angle.AngleCommandReleaseMotors;
@@ -27,7 +28,8 @@ import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
-import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.commands.shooter.ShooterHoldNStopCommand;
+import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -146,9 +148,10 @@ public class RobotContainer {
 
         // some lines were not copied from the drivetrain
 
-        m_subsystemController.a().whileTrue(new ShooterCommand(m_shooterSubsystem));
+        m_subsystemController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
+        // m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
@@ -162,6 +165,12 @@ public class RobotContainer {
     public void useSubsystemOutputs() {
         m_angleSubsystem.useOutput();
         m_shooterSubsystem.useOutput();
+    }
+
+    private Command feedNShoot(FeederSubsystem feeder, ShooterSubsystem shooter) {
+        return new SequentialCommandGroup(
+                new ShooterSpinUpCommand(shooter),
+                new ParallelCommandGroup(new FeederCommandIn(feeder), new ShooterHoldNStopCommand(shooter)));
     }
 
     /**
