@@ -1,14 +1,16 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
+import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 
 public class ShooterHoldNStopCommand extends Command{
-        ShooterSubsystem m_subsystem;
+        ShooterTopSubsystem m_subsystemTop;
+        ShooterBottomSubsystem m_subsystemBottom;
 
-    public ShooterHoldNStopCommand(ShooterSubsystem s) {
-        addRequirements(s);
-        m_subsystem = s;
+    public ShooterHoldNStopCommand(ShooterTopSubsystem st, ShooterBottomSubsystem sb) {
+        m_subsystemTop = st;
+        m_subsystemBottom = sb;
     }
 
     // Called when the command is initially scheduled.
@@ -26,7 +28,8 @@ public class ShooterHoldNStopCommand extends Command{
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        m_subsystem.stop();
+        m_subsystemTop.stop();
+        m_subsystemBottom.stop();
     }
 
     // Returns true when the command should end.

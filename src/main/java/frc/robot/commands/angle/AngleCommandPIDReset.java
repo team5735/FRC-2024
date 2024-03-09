@@ -7,7 +7,6 @@ public class AngleCommandPIDReset extends Command{
     AngleSubsystem m_subsystem;
 
     public AngleCommandPIDReset(AngleSubsystem s) {
-        addRequirements(s);
         m_subsystem = s;
     }
 

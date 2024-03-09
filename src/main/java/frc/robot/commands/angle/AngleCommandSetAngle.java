@@ -8,7 +8,6 @@ public class AngleCommandSetAngle extends Command{
     AngleSubsystem m_subsystem;
 
     public AngleCommandSetAngle(AngleSubsystem s) {
-        addRequirements(s);
         m_subsystem = s;
     }
 
