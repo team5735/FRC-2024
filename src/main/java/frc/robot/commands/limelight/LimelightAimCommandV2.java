@@ -87,23 +87,23 @@ public class LimelightAimCommandV2 extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
-        Pose3d currentRobotPose = m_limelight.getBotPose3d();
+        Pose2d currentRobotPose = m_limelight.getBotPose2d();
         m_watchdog.addEpoch("get robot pose");
         Translation3d hoodPos = getHoodPos();
-        m_drivetrain.addVisionMeasurement(currentRobotPose.toPose2d(), Timer.getFPGATimestamp());
-        m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
+        m_drivetrain.addVisionMeasurement(currentRobotPose, Timer.getFPGATimestamp());
+        m_drivetrain.seedFieldRelative(currentRobotPose);
         m_watchdog.addEpoch("fieldRelative seeded");
 
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
         m_watchdog.addEpoch("checked bot can aim");
 
-        Translation3d robotToHood = hoodPos.minus(currentRobotPose.getTranslation());
-        aimHorizontally(robotToHood, currentRobotPose.toPose2d());
+        Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
+        aimHorizontally(robotToHood);
         m_watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
         Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_OFFSET);
-        aimVertically(angleChangerPosition, getHoodPos());
+        aimVertically(angleChangerPosition, hoodPos);
         m_watchdog.addEpoch("aimed vertically");
 
         SmartDashboard.putNumber("llv2_hoodDst", robotToHood.getNorm());
@@ -112,14 +112,14 @@ public class LimelightAimCommandV2 extends Command {
     }
 
     // checks to see if the robot is within reasonable shooting range of the target
-    private void checkBotCanAim(Translation3d robotPosition, Translation3d targetPosition) {
-        boolean botIsCloseEnough = robotPosition.toTranslation2d()
+    private void checkBotCanAim(Translation2d robotPosition, Translation3d targetPosition) {
+        boolean botIsCloseEnough = robotPosition
                 .getDistance(targetPosition.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
         if (!botIsCloseEnough) {
             SmartDashboard.putNumber("llv2_can'tAim",
-                    robotPosition.toTranslation2d().getDistance(getHoodPos().toTranslation2d()));
+                    robotPosition.getDistance(getHoodPos().toTranslation2d()));
             System.out.println("moving towards the hood");
-            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition.toTranslation2d());
+            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
             Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
@@ -130,7 +130,7 @@ public class LimelightAimCommandV2 extends Command {
         }
     }
 
-    private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
+    private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
                 + Math.PI;
         if (drivetrainDesiredAngle > Math.PI) {
