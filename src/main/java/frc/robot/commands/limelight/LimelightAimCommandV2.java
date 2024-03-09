@@ -137,8 +137,6 @@ public class LimelightAimCommandV2 extends Command {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
 
-        // CommandScheduler.getInstance().schedule(new TurnToCommand(m_drivetrain,
-        // drivetrainDesiredAngle));
         CommandScheduler.getInstance()
                 .schedule(new PIDCommand(
                         new PIDController(LimelightConstants.TURN_P, LimelightConstants.TURN_I,
