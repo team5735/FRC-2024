@@ -11,7 +11,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,12 +27,11 @@ import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
-import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
+import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
-import frc.robot.libraries.LimelightHelpers;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -199,8 +197,9 @@ public class RobotContainer {
         }
 
         // we need to get the starting pose from the Limelight
-        SequentialCommandGroup group = new SequentialCommandGroup(new SetStartingPoseCommand(m_drivetrain, m_limelightSubsystem), 
-                                                                  auto);
-        return auto;
+        SequentialCommandGroup group = new SequentialCommandGroup(
+                new SetStartingPoseCommand(m_drivetrain, m_limelightSubsystem),
+                auto);
+        return group;
     }
 }
