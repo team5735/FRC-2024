@@ -35,9 +35,14 @@ public class LimelightAimCommandV2 extends Command {
     });
 
     /**
-     * Creates a new ExampleCommand.
+     * Creates a new LimelightAimCommandV2. This is responsible for turning the
+     * robot to face the hood and for setting the angle changer to the correct angle
+     * to shoot a NOTE into the hood.
      *
-     * @param subsystem The subsystem used by this command.
+     * @param limelight  The limelight that is used for aiming
+     * @param drivetrain The drivetrain, used to turn automatically and aim
+     *                   horizontally
+     * @param angler     The angle changer, used to aim vertically
      */
     public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
             final AngleSubsystem angler) {
