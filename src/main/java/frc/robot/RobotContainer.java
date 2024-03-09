@@ -156,7 +156,7 @@ public class RobotContainer {
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         // m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
-        m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem)); 
+        m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
@@ -168,13 +168,6 @@ public class RobotContainer {
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPidCommand(m_shooterTopSubsystem));
         m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPidCommand(m_shooterBottomSubsystem));
     }
-
-    // activates the useOutput() methods of PID-implemented subsystems
-    // (Please let Jacoby know if you have a better way of doing this)
-    // public void useSubsystemOutputs() {
-    // m_angleSubsystem.useOutput();
-    // m_shooterSubsystem.useOutput();
-    // }
 
     private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
             ShooterBottomSubsystem shootBottom) {
