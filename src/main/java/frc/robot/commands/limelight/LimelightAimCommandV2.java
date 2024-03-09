@@ -79,7 +79,7 @@ public class LimelightAimCommandV2 extends Command {
         m_watchdog.addEpoch("get fiducial info");
         if (targets.length < 2) {
             System.out.println("spinning");
-            m_drivetrain.drive(1);
+            m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
         }
         m_targetAcquired = true;
@@ -128,8 +128,8 @@ public class LimelightAimCommandV2 extends Command {
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
             // m_drivetrain.drive(desiredVelocity);
-            SmartDashboard.putNumber("llv2_moveXCorrection", desiredVelocity.getX());
-            SmartDashboard.putNumber("llv2_moveYCorrection", desiredVelocity.getY());
+            SmartDashboard.putNumber("llv2_deltaX", desiredVelocity.getX());
+            SmartDashboard.putNumber("llv2_deltaY", desiredVelocity.getY());
             return;
         }
     }
