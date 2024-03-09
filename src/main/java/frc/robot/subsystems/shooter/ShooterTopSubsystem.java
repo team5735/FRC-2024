@@ -50,12 +50,15 @@ public class ShooterTopSubsystem extends SubsystemBase {
         updateProportions();
         
         SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
+        SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
     }
 
     public void useOutput(double pidOutput){
         if(m_pid_top.getSetpoint() != 0){
+            // double feedOutput = m_feedForward_top.calculate(pidOutput);
+            double feedOutput = m_feedForward_top.calculate(m_pid_top.getSetpoint());
             m_talon_top.setVoltage(
-                pidOutput + m_feedForward_top.calculate(pidOutput)
+                pidOutput + feedOutput
             );
         } else {
             m_talon_top.setVoltage(0);
@@ -67,7 +70,6 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
     
     public void start() {
-
         System.out.println("shootersubsystem");
 
         double topRPM =
@@ -81,7 +83,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
 
     public boolean isSpunUp(){
-        return (Math.abs(m_pid_top.getVelocityError()) < 100 );
+        return (Math.abs(m_pid_top.getPositionError()) < 100 );
     }
 
     public PIDCommand shootPidCommand(ShooterTopSubsystem s){
