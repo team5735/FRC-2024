@@ -73,14 +73,10 @@ public class AngleSubsystem extends SubsystemBase {
         // return AngleConstants.convertRotationsToDegrees(m_encoder.getDistance());
         if (startPosition == 0)
             startPosition = m_encoder.getDistance();
-        double num = AngleConstants.convertRotationsToDegrees(
+        double currentAngleDegrees = AngleConstants.convertRotationsToDegrees(
                 m_encoder.getDistance() - startPosition + AngleConstants.ANGLE_START_POS_ROT);
-        if (num % 0.1 > 0.05) {
-            return num - (num % 0.1);
-        } else {
-            return num - (num % 0.1) + 0.1;
-        }
-        // return (num % 0.1 > 0.05) ? num - (num % 0.1) : num - (num % 0.1) + 0.1;
+
+        return 0.1 * Math.round(currentAngleDegrees * 10);
     }
 
     // sets the motor voltage to the PID & FeedForward calculations
