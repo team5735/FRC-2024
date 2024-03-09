@@ -39,9 +39,10 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.climber.ClimberLeftSubsystem;
 import frc.robot.subsystems.climber.ClimberRightSubsystem;
+import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
+import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -63,7 +64,8 @@ public class RobotContainer {
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
     private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
-    private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    private final ShooterTopSubsystem m_shooterTopSubsystem = new ShooterTopSubsystem();
+    private final ShooterBottomSubsystem m_shooterBottomSubsystem = new ShooterBottomSubsystem();
     private final ClimberLeftSubsystem m_climberLeftSubsystem = new ClimberLeftSubsystem();
     private final ClimberRightSubsystem m_climberRightSubsystem = new ClimberRightSubsystem();
     private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
@@ -148,7 +150,8 @@ public class RobotContainer {
 
         // some lines were not copied from the drivetrain
 
-        m_subsystemController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterSubsystem));
+        m_subsystemController.a()
+                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         // m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
@@ -158,19 +161,25 @@ public class RobotContainer {
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
         m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
+
+        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePidCommand(m_angleSubsystem));
+        m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPidCommand(m_shooterTopSubsystem));
+        m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPidCommand(m_shooterBottomSubsystem));
     }
 
     // activates the useOutput() methods of PID-implemented subsystems
     // (Please let Jacoby know if you have a better way of doing this)
-    public void useSubsystemOutputs() {
-        m_angleSubsystem.useOutput();
-        m_shooterSubsystem.useOutput();
-    }
+    // public void useSubsystemOutputs() {
+    // m_angleSubsystem.useOutput();
+    // m_shooterSubsystem.useOutput();
+    // }
 
-    private Command feedNShoot(FeederSubsystem feeder, ShooterSubsystem shooter) {
+    private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
+            ShooterBottomSubsystem shootBottom) {
         return new SequentialCommandGroup(
-                new ShooterSpinUpCommand(shooter),
-                new ParallelCommandGroup(new FeederCommandIn(feeder), new ShooterHoldNStopCommand(shooter)));
+                new ShooterSpinUpCommand(shootTop, shootBottom),
+                new ParallelCommandGroup(new FeederCommandIn(feeder),
+                        new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
     /**
