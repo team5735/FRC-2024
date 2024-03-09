@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -43,7 +42,7 @@ public class LimelightAimCommandV2 extends Command {
     public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
             final AngleSubsystem angler) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(limelight, drivetrain);
+        addRequirements(limelight, drivetrain, angler);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
         m_angler = angler;
