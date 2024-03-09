@@ -144,7 +144,7 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
 
     // helper function because the resetPose passed to Pathplanner is only given a
     // pose
-    private void setPose(Pose2d pose) {
+    public void setPose(Pose2d pose) {
         if (!odometryIsValid())
             return;
         m_stateLock.writeLock().lock();
