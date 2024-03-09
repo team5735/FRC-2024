@@ -12,8 +12,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -79,7 +79,7 @@ public class LimelightAimCommandV2 extends Command {
             return;
         }
         m_targetAcquired = true;
-        m_watchdog.addEpoch("conclude that a target has been acquired");
+        m_watchdog.addEpoch("a target has been acquired");
 
         // coordinate system for field-oriented limelight targeting: x along long side
         // with positive towards red alliance, y along short side such that positive is
@@ -87,8 +87,9 @@ public class LimelightAimCommandV2 extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
-        Translation3d hoodPos = getHoodPos();
         Pose3d currentRobotPose = m_limelight.getBotPose3d();
+        m_watchdog.addEpoch("get robot pose");
+        Translation3d hoodPos = getHoodPos();
         m_drivetrain.addVisionMeasurement(currentRobotPose.toPose2d(), Timer.getFPGATimestamp());
         m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
         m_watchdog.addEpoch("fieldRelative seeded");
@@ -131,7 +132,7 @@ public class LimelightAimCommandV2 extends Command {
 
     private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
-                + Math.PI - 0.01; // don't question it
+                + Math.PI;
         if (drivetrainDesiredAngle > Math.PI) {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
