@@ -30,7 +30,7 @@ public final class Constants {
     public static final int CLIMBER_MOTOR_RIGHT_ID = 31; // SPARKMAX
     public static final int CLIMBER_MOTOR_LEFT_ID = 61; // SPARKMAX
 
-    public static final int FEEDER_MOTOR_ID = 40; // SPARKMAX
+    public static final int FEEDER_MOTOR_ID = 30; // SPARKMAX
     public static final int FEEDER_BEAM_PIN = 0; // LIGHT-BASED SENSOR (DIO)
 
     public static final int INTAKE_MOTOR_ID = 60; // SPARKMAX

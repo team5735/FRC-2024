@@ -49,12 +49,15 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         updateProportions();
         
         SmartDashboard.putNumber("shootBottomOutput", Math.abs(getBottomMeasurement()));
+        SmartDashboard.putNumber("shootBottomPIDError", Math.abs(m_pid_bottom.getPositionError()));
     }
 
     public void useOutput(double pidOutput){
         if(m_pid_bottom.getSetpoint() != 0){
+            // double feedOutput = m_feedForward_top.calculate(pidOutput);
+            double feedOutput = m_feedForward_bottom.calculate(m_pid_bottom.getSetpoint());
             m_talon_bottom.setVoltage(
-                pidOutput + m_feedForward_bottom.calculate(pidOutput)
+                pidOutput + feedOutput
             );
         } else {
             m_talon_bottom.setVoltage(0);
@@ -80,7 +83,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
     }
 
     public boolean isSpunUp(){
-        return (Math.abs(m_pid_bottom.getVelocityError()) < 100 );
+        return (Math.abs(m_pid_bottom.getPositionError()) < 100 );
     }
 
     public PIDCommand shootPidCommand(ShooterBottomSubsystem s){

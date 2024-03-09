@@ -18,6 +18,7 @@ public class AngleSubsystem extends SubsystemBase {
     private ArmFeedforward m_feedForward;
     private boolean enabled = true;
     private double startPosition = 0;
+    private double m_setpoint, m_activeOutput;
 
     private final CANSparkMax m_sparkMax_right = new CANSparkMax(
             Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
@@ -40,8 +41,10 @@ public class AngleSubsystem extends SubsystemBase {
         updateProportions();
 
         m_encoder.setDistancePerRotation(1);
+        // m_encoder.reset();
 
-        m_pid.setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
+
+        setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
         // This is the actual value we are working with, when doing feedforward, we need
         // to offset so that 0rad is parallel to base :)
     }
@@ -53,7 +56,7 @@ public class AngleSubsystem extends SubsystemBase {
         updateProportions();
 
         SmartDashboard.putNumber("anglePos", getMeasurement());
-        SmartDashboard.putNumber("angleCurrentSetpoint", m_pid.getSetpoint());
+        SmartDashboard.putNumber("angleCurrentSetpoint", m_setpoint);
         SmartDashboard.putNumber("angleLeftAmps", m_sparkMax_left.getOutputCurrent());
         SmartDashboard.putNumber("angleRightAmps", m_sparkMax_right.getOutputCurrent());
         SmartDashboard.putNumber("anglePIDError", Math.abs(m_pid.getPositionError()));
@@ -75,13 +78,14 @@ public class AngleSubsystem extends SubsystemBase {
     // sets the motor voltage to the PID & FeedForward calculations
     public void useOutput(double pidOutput) {
         if (enabled) {
+            m_activeOutput = pidOutput;
             if (getMeasurement() < AngleConstants.ANGLE_LOWEST_DEG
-                    && m_pid.getSetpoint() < AngleConstants.ANGLE_HIGHEST_DEG)
-                m_pid.setSetpoint(m_pid.getSetpoint() + 1);
+                    && m_setpoint < AngleConstants.ANGLE_HIGHEST_DEG)
+                setSetpoint(m_pid.getSetpoint() + 1);
 
             if (getMeasurement() > AngleConstants.ANGLE_HIGHEST_DEG
-                    && m_pid.getSetpoint() > AngleConstants.ANGLE_LOWEST_DEG)
-                m_pid.setSetpoint(m_pid.getSetpoint() - 1);
+                    && m_setpoint > AngleConstants.ANGLE_LOWEST_DEG)
+                setSetpoint(m_pid.getSetpoint() - 1);
 
             double feedOutput = (Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) > 2)
                     ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput)
@@ -116,9 +120,8 @@ public class AngleSubsystem extends SubsystemBase {
 
     // changes the PID setpoint (desired angle)
     public void setSetpoint(double angle) {
-        if (angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG) {
-            m_pid.setSetpoint(angle);
-        }
+        if(angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
+            m_setpoint = angle;
     }
 
     // disables the PID & FeedForward, sets the motors to loose, and holds the
@@ -134,7 +137,11 @@ public class AngleSubsystem extends SubsystemBase {
         enabled = true;
     }
 
-    public PIDCommand anglePidCommand(AngleSubsystem s) {
-        return new PIDCommand(m_pid, () -> getMeasurement(), () -> m_pid.getSetpoint(), a -> useOutput(a), s);
+    public PIDCommand anglePidCommand(AngleSubsystem s){
+        return new PIDCommand(m_pid, () -> getMeasurement(), () ->  {return m_setpoint;}, a -> useOutput(a), s);
+    }
+
+    public boolean isAtSetpoint(){
+        return m_activeOutput < 1;
     }
 }
