@@ -155,7 +155,6 @@ public class RobotContainer {
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        // m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
