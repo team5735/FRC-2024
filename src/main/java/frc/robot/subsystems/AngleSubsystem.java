@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
@@ -81,7 +82,7 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     // sets the motor voltage to the PID & FeedForward calculations
-    public void useOutput() {
+    public void useOutput(double pidOutput) {
         if (enabled) {
             if (getMeasurement() < AngleConstants.ANGLE_LOWEST_DEG
                     && m_pid.getSetpoint() < AngleConstants.ANGLE_HIGHEST_DEG)
@@ -91,11 +92,10 @@ public class AngleSubsystem extends SubsystemBase {
                     && m_pid.getSetpoint() > AngleConstants.ANGLE_LOWEST_DEG)
                 m_pid.setSetpoint(m_pid.getSetpoint() - 1);
 
-            double rightOutput = m_pid.calculate(getMeasurement());
             double feedOutput = (Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) > 2)
-                ? m_feedForward.calculate(Math.toRadians(getMeasurement()), rightOutput) 
+                ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput) 
                 : 0;
-            double volts = rightOutput + feedOutput;
+            double volts = pidOutput + feedOutput;
             m_sparkMax_right.setVoltage(volts);
             SmartDashboard.putNumber("angleHypotheticalOutput", volts);
         } else {
@@ -140,6 +140,10 @@ public class AngleSubsystem extends SubsystemBase {
     public void engageBrakes() {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         enabled = true;
+    }
+
+    public PIDCommand anglePidCommand(AngleSubsystem s){
+        return new PIDCommand(m_pid, () -> getMeasurement(), () ->  m_pid.getSetpoint(), a -> useOutput(a), s);
     }
     
 }
