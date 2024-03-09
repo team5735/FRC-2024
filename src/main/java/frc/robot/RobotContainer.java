@@ -10,7 +10,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -148,7 +147,8 @@ public class RobotContainer {
 
         // some lines were not copied from the drivetrain
 
-        m_subsystemController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        m_subsystemController.a()
+                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         // m_subsystemController.y().onTrue(new FeederPrimeNote(m_feederSubsystem));
@@ -167,14 +167,16 @@ public class RobotContainer {
     // activates the useOutput() methods of PID-implemented subsystems
     // (Please let Jacoby know if you have a better way of doing this)
     // public void useSubsystemOutputs() {
-    //     m_angleSubsystem.useOutput();
-    //     m_shooterSubsystem.useOutput();
+    // m_angleSubsystem.useOutput();
+    // m_shooterSubsystem.useOutput();
     // }
 
-    private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop, ShooterBottomSubsystem shootBottom) {
+    private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
+            ShooterBottomSubsystem shootBottom) {
         return new SequentialCommandGroup(
                 new ShooterSpinUpCommand(shootTop, shootBottom),
-                new ParallelCommandGroup(new FeederCommandIn(feeder), new ShooterHoldNStopCommand(shootTop, shootBottom)));
+                new ParallelCommandGroup(new FeederCommandIn(feeder),
+                        new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
     /**
