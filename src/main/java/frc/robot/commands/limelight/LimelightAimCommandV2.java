@@ -7,17 +7,20 @@ package frc.robot.commands.limelight;
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.AngleSubsystem;
@@ -31,46 +34,35 @@ public class LimelightAimCommandV2 extends Command {
     private AngleSubsystem m_angler;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
-    private PIDController m_pidController;
-    private SlewRateLimiter m_rateLimiter;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
     /**
-     * Creates a new ExampleCommand.
+     * Creates a new LimelightAimCommandV2. This is responsible for turning the
+     * robot to face the hood and for setting the angle changer to the correct angle
+     * to shoot a NOTE into the hood.
      *
-     * @param subsystem The subsystem used by this command.
+     * @param limelight  The limelight that is used for aiming
+     * @param drivetrain The drivetrain, used to turn automatically and aim
+     *                   horizontally
+     * @param angler     The angle changer, used to aim vertically
      */
     public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
             final AngleSubsystem angler) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(limelight, drivetrain);
+        addRequirements(limelight, drivetrain, angler);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
         m_angler = angler;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
-        SmartDashboard.putNumber("llv2_turnP", LimelightConstants.TURN_P);
-        SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
-        SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
-        SmartDashboard.putNumber("llv2_turnSRL", LimelightConstants.TURN_SRL);
+        SmartDashboard.putBoolean("llv2_aimed", false);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        resetPID_SRL();
-    }
-
-    private void resetPID_SRL() {
-        double p = SmartDashboard.getNumber("llv2_turnP", LimelightConstants.TURN_P);
-        double i = SmartDashboard.getNumber("llv2_turnI", LimelightConstants.TURN_I);
-        double d = SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D);
-        double srl = SmartDashboard.getNumber("llv2_turnSRL", LimelightConstants.TURN_SRL);
-        m_pidController = new PIDController(p, i, d);
-        m_pidController.enableContinuousInput(-Math.PI, Math.PI);
-        m_rateLimiter = new SlewRateLimiter(srl);
     }
 
     private Translation3d getHoodPos() {
@@ -92,12 +84,14 @@ public class LimelightAimCommandV2 extends Command {
         m_watchdog.addEpoch("get fiducial info");
         if (targets.length < 2) {
             System.out.println("spinning");
-            resetPID_SRL();
-            m_drivetrain.drive(1);
+            m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
         }
+        SmartDashboard.putBoolean("llv2_aimed", true);
+        CommandScheduler.getInstance().schedule(Commands.sequence(new WaitCommand(LimelightConstants.AIMED_ON_TIMER),
+                Commands.runOnce(() -> SmartDashboard.putBoolean("llv2_aimed", false))));
         m_targetAcquired = true;
-        m_watchdog.addEpoch("conclude that a target has been acquired");
+        m_watchdog.addEpoch("a target has been acquired");
 
         // coordinate system for field-oriented limelight targeting: x along long side
         // with positive towards red alliance, y along short side such that positive is
@@ -105,22 +99,23 @@ public class LimelightAimCommandV2 extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
+        Pose2d currentRobotPose = m_limelight.getBotPose2d();
+        m_watchdog.addEpoch("get robot pose");
         Translation3d hoodPos = getHoodPos();
-        Pose3d currentRobotPose = m_limelight.getBotPose3d();
-        m_drivetrain.addVisionMeasurement(currentRobotPose.toPose2d(), Timer.getFPGATimestamp());
-        m_drivetrain.seedFieldRelative(currentRobotPose.toPose2d());
+        m_drivetrain.addVisionMeasurement(currentRobotPose, Timer.getFPGATimestamp());
+        m_drivetrain.seedFieldRelative(currentRobotPose);
         m_watchdog.addEpoch("fieldRelative seeded");
 
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
         m_watchdog.addEpoch("checked bot can aim");
 
-        Translation3d robotToHood = hoodPos.minus(currentRobotPose.getTranslation());
-        aimHorizontally(robotToHood, currentRobotPose.toPose2d());
+        Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
+        aimHorizontally(robotToHood);
         m_watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
-        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_POS);
-        aimVertically(angleChangerPosition, getHoodPos());
+        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_OFFSET);
+        aimVertically(angleChangerPosition, hoodPos);
         m_watchdog.addEpoch("aimed vertically");
 
         SmartDashboard.putNumber("llv2_hoodDst", robotToHood.getNorm());
@@ -129,42 +124,37 @@ public class LimelightAimCommandV2 extends Command {
     }
 
     // checks to see if the robot is within reasonable shooting range of the target
-    private void checkBotCanAim(Translation3d robotPosition, Translation3d targetPosition) {
-        boolean botIsCloseEnough = robotPosition.toTranslation2d()
+    private void checkBotCanAim(Translation2d robotPosition, Translation3d targetPosition) {
+        boolean botIsCloseEnough = robotPosition
                 .getDistance(targetPosition.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
         if (!botIsCloseEnough) {
             SmartDashboard.putNumber("llv2_can'tAim",
-                    robotPosition.toTranslation2d().getDistance(getHoodPos().toTranslation2d()));
+                    robotPosition.getDistance(getHoodPos().toTranslation2d()));
             System.out.println("moving towards the hood");
-            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition.toTranslation2d());
+            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
             Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
             // m_drivetrain.drive(desiredVelocity);
-            SmartDashboard.putNumber("llv2_moveXCorrection", desiredVelocity.getX());
-            SmartDashboard.putNumber("llv2_moveYCorrection", desiredVelocity.getY());
+            SmartDashboard.putNumber("llv2_deltaX", desiredVelocity.getX());
+            SmartDashboard.putNumber("llv2_deltaY", desiredVelocity.getY());
             return;
         }
     }
 
-    private void aimHorizontally(Translation3d currentRobotPoseToTarget, Pose2d robotPoseInField) {
+    private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
-                + Math.PI - 0.01; // don't question it
+                + Math.PI;
         if (drivetrainDesiredAngle > Math.PI) {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
-        double thetaActual = robotPoseInField.getRotation().getRadians();
-        double omega = m_pidController.calculate(thetaActual,
-                drivetrainDesiredAngle);
-        // double omega = drivetrainDesiredAngle - thetaActual;
-        double omegaPre = omega;
-        omega = m_rateLimiter.calculate(omega);
-        m_drivetrain.drive(omega);
 
-        SmartDashboard.putNumber("llv2_omega", omega);
-        SmartDashboard.putNumber("llv2_omegaPre", omegaPre);
-        SmartDashboard.putNumber("llv2_thetaSetpoint", drivetrainDesiredAngle);
-        SmartDashboard.putNumber("llv2_thetaActual", thetaActual);
+        CommandScheduler.getInstance()
+                .schedule(new PIDCommand(
+                        new PIDController(LimelightConstants.TURN_P, LimelightConstants.TURN_I,
+                                LimelightConstants.TURN_D),
+                        () -> m_drivetrain.getRotation3d().getZ(), drivetrainDesiredAngle,
+                        (double output) -> m_drivetrain.drive(output), m_drivetrain));
     }
 
     private double radiansEnsureInBounds(double angle) {
@@ -197,6 +187,10 @@ public class LimelightAimCommandV2 extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return LimelightConstants.INFINITE_AIM ? false : m_targetAcquired;
+        if (LimelightConstants.INFINITE_AIM) {
+            return false;
+        } else {
+            return m_targetAcquired;
+        }
     }
 }

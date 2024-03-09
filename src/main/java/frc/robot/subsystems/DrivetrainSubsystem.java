@@ -27,8 +27,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
- * subsystem
- * so it can be used in command-based projects easily.
+ * subsystem so it can be used in command-based projects easily.
  */
 public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -145,7 +144,7 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
 
     // helper function because the resetPose passed to Pathplanner is only given a
     // pose
-    private void setPose(Pose2d pose) {
+    public void setPose(Pose2d pose) {
         if (!odometryIsValid())
             return;
         m_stateLock.writeLock().lock();

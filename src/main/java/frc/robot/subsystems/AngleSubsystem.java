@@ -21,14 +21,10 @@ public class AngleSubsystem extends SubsystemBase {
     private double m_setpoint, m_activeOutput;
 
     private final CANSparkMax m_sparkMax_right = new CANSparkMax(
-        Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless
-    );
+            Constants.ANGLE_MOTOR_RIGHT_ID, MotorType.kBrushless);
     private final CANSparkMax m_sparkMax_left = new CANSparkMax(
-        Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless
-    );
+            Constants.ANGLE_MOTOR_LEFT_ID, MotorType.kBrushless);
 
-    // private final RelativeEncoder m_encoder_right = m_sparkMax_right.getEncoder();
-    // private final AnalogEncoder m_encoder = new AnalogEncoder(Constants.ANGLE_ENCODER_PIN);
     private final DutyCycleEncoder m_encoder = new DutyCycleEncoder(Constants.ANGLE_ENCODER_PIN);
 
     public AngleSubsystem() {
@@ -44,10 +40,6 @@ public class AngleSubsystem extends SubsystemBase {
 
         updateProportions();
 
-        // startPosition = m_encoder.get();
-        // offset = -startPosition + AngleConstants.ANGLE_START_POS_ROT;
-
-        // m_encoder.setPositionOffset(AngleConstants.ANGLE_START_POS_ROT);
         m_encoder.setDistancePerRotation(1);
         // m_encoder.reset();
 
@@ -74,12 +66,13 @@ public class AngleSubsystem extends SubsystemBase {
     // determine the arm's position
     public double getMeasurement() {
         // return AngleConstants.convertRotationsToDegrees(m_encoder.getDistance());
-        if(startPosition == 0)
+        if (startPosition == 0) {
             startPosition = m_encoder.getDistance();
-        double num = AngleConstants.convertRotationsToDegrees(
-            m_encoder.getDistance() - startPosition + AngleConstants.ANGLE_START_POS_ROT
-        );
-        return (num % 0.1 > 0.05) ? num - (num % 0.1) : num - (num % 0.1) + 0.1;
+        }
+        double currentAngleDegrees = AngleConstants.convertRotationsToDegrees(
+                m_encoder.getDistance() - startPosition + AngleConstants.ANGLE_START_POS_ROT);
+
+        return 0.1 * Math.round(currentAngleDegrees * 10);
     }
 
     // sets the motor voltage to the PID & FeedForward calculations
@@ -95,8 +88,8 @@ public class AngleSubsystem extends SubsystemBase {
                 setSetpoint(m_pid.getSetpoint() - 1);
 
             double feedOutput = (Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) > 2)
-                ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput) 
-                : 0;
+                    ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput)
+                    : 0;
             double volts = pidOutput + feedOutput;
             m_sparkMax_right.setVoltage(volts);
             SmartDashboard.putNumber("angleHypotheticalOutput", volts);
@@ -151,5 +144,4 @@ public class AngleSubsystem extends SubsystemBase {
     public boolean isAtSetpoint(){
         return m_activeOutput < 1;
     }
-    
 }

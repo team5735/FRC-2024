@@ -9,8 +9,9 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,10 +29,12 @@ import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
+import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.libraries.LimelightHelpers;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -91,6 +94,8 @@ public class RobotContainer {
         // m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
         configureBindings();
+
+        SmartDashboard.putData("pick an auto", m_autoChooser);
     }
 
     private static double deadband(double input) {
@@ -149,7 +154,8 @@ public class RobotContainer {
 
         // some lines were not copied from the drivetrain
 
-        m_subsystemController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        m_subsystemController.a()
+                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         // m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem)); 
@@ -168,14 +174,16 @@ public class RobotContainer {
     // activates the useOutput() methods of PID-implemented subsystems
     // (Please let Jacoby know if you have a better way of doing this)
     // public void useSubsystemOutputs() {
-    //     m_angleSubsystem.useOutput();
-    //     m_shooterSubsystem.useOutput();
+    // m_angleSubsystem.useOutput();
+    // m_shooterSubsystem.useOutput();
     // }
 
-    private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop, ShooterBottomSubsystem shootBottom) {
+    private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
+            ShooterBottomSubsystem shootBottom) {
         return new SequentialCommandGroup(
                 new ShooterSpinUpCommand(shootTop, shootBottom),
-                new ParallelCommandGroup(new FeederCommandIn(feeder), new ShooterHoldNStopCommand(shootTop, shootBottom)));
+                new ParallelCommandGroup(new FeederCommandIn(feeder),
+                        new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
     /**
@@ -190,6 +198,10 @@ public class RobotContainer {
             System.out.println("auto is null");
             return new BrakeCommand(m_drivetrain);
         }
+
+        // we need to get the starting pose from the Limelight
+        SequentialCommandGroup group = new SequentialCommandGroup(new SetStartingPoseCommand(m_drivetrain, m_limelightSubsystem), 
+                                                                  auto);
         return auto;
     }
 }
