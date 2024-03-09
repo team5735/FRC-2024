@@ -25,6 +25,8 @@ public class LimelightConstants {
     public static final Translation3d ANGLE_CHANGER_OFFSET = new Translation3d();
     public static final double ANGLE_CHANGER_RADIUS = 0;
 
+    public static final double AIMED_ON_TIMER = 1;
+
     public static final boolean INFINITE_AIM = false;
     public static final PIDConstants ROTATION_PID = new PIDConstants(2, .2, .15);
     public static final double TURN_P = 6;

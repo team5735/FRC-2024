@@ -17,7 +17,10 @@ import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.AngleSubsystem;
@@ -53,6 +56,8 @@ public class LimelightAimCommandV2 extends Command {
         m_angler = angler;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
+
+        SmartDashboard.putBoolean("llv2_aimed", false);
     }
 
     // Called when the command is initially scheduled.
@@ -82,6 +87,9 @@ public class LimelightAimCommandV2 extends Command {
             m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
         }
+        SmartDashboard.putBoolean("llv2_aimed", true);
+        CommandScheduler.getInstance().schedule(Commands.sequence(new WaitCommand(LimelightConstants.AIMED_ON_TIMER),
+                Commands.runOnce(() -> SmartDashboard.putBoolean("llv2_aimed", false))));
         m_targetAcquired = true;
         m_watchdog.addEpoch("a target has been acquired");
 
