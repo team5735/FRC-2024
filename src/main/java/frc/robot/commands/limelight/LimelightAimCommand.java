@@ -27,7 +27,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class LimelightAimCommandV2 extends Command {
+public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
     private AngleSubsystem m_angler;
@@ -46,7 +46,7 @@ public class LimelightAimCommandV2 extends Command {
      *                   horizontally
      * @param angler     The angle changer, used to aim vertically
      */
-    public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
+    public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
             final AngleSubsystem angler) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
