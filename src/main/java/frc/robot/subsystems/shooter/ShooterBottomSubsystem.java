@@ -75,7 +75,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         return (Math.abs(m_pid_bottom.getPositionError()) < 100);
     }
 
-    public PIDCommand shootPidCommand(ShooterBottomSubsystem s) {
+    public PIDCommand shootPIDCommand(ShooterBottomSubsystem s) {
         return new PIDCommand(m_pid_bottom, () -> getBottomMeasurement(), () -> m_pid_bottom.getSetpoint(),
                 a -> useOutput(a), s);
     }

@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.angle.AngleCommandReleaseMotors;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -121,7 +120,8 @@ public class RobotContainer {
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
-                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
+                .whileTrue(new ParallelDeadlineGroup(
+                        new FeederPrimeNote(m_feederSubsystem),
                         new IntakeCommandIn(m_intakeSubsystem)));
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
@@ -151,34 +151,34 @@ public class RobotContainer {
 
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        m_subsystemController.x().onTrue(
-                new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem)));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
         m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
 
-        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePidCommand(m_angleSubsystem));
-        m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPidCommand(m_shooterTopSubsystem));
-        m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPidCommand(m_shooterBottomSubsystem));
+        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem));
+        m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand(m_shooterTopSubsystem));
+        m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand(m_shooterBottomSubsystem));
     }
 
     private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
             ShooterBottomSubsystem shootBottom) {
         return new SequentialCommandGroup(
                 new ShooterSpinUpCommand(shootTop, shootBottom),
-                new ParallelCommandGroup(new FeederCommandIn(feeder),
+                new ParallelCommandGroup(
+                        new FeederCommandIn(feeder),
                         new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
     private Command angleUpdateWithIntake(AngleSubsystem angle, Command angleSetCommand, IntakeSubsystem intake) {
-        return new ParallelCommandGroup(
-                angleSetCommand,
-                new ParallelDeadlineGroup(
-                        new WaitCommand(2),
-                        new IntakeCommandIn(intake)));
+        return (m_angleSubsystem.isAtBase())
+                ? new ParallelCommandGroup(
+                        angleSetCommand,
+                        new ParallelDeadlineGroup(
+                                new WaitCommand(2),
+                                new IntakeCommandIn(intake)))
+                : angleSetCommand;
     }
 
     private void updateMultipliers() {

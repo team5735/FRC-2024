@@ -31,6 +31,6 @@ public class AngleCommandSetAngle extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_subsystem.isAtSetpoint();
+        return m_subsystem.isAtPosition(m_setpoint);
     }
 }
