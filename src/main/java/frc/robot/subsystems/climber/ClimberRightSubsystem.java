@@ -18,7 +18,6 @@ public class ClimberRightSubsystem extends SubsystemBase {
 
     public ClimberRightSubsystem() {
         m_encoder_right.setPosition(0);
-        // m_sparkMax_right.setSoftLimit(SoftLimitDirection.kForward, -4f);
 
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
     }
@@ -39,7 +38,6 @@ public class ClimberRightSubsystem extends SubsystemBase {
     public void stopRight() {
         m_sparkMax_right.setVoltage(0);
     }
-
 
     public void periodic() {
         SmartDashboard.putNumber("climbRightPos", m_encoder_right.getPosition());
