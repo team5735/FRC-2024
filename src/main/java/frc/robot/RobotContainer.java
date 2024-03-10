@@ -38,7 +38,6 @@ import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
-import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -72,7 +71,6 @@ public class RobotContainer {
     private final ShooterBottomSubsystem m_shooterBottomSubsystem = new ShooterBottomSubsystem();
     private final ClimberLeftSubsystem m_climberLeftSubsystem = new ClimberLeftSubsystem();
     private final ClimberRightSubsystem m_climberRightSubsystem = new ClimberRightSubsystem();
-    private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
     // Programming war crime :3
@@ -126,15 +124,6 @@ public class RobotContainer {
         m_drivingController.rightBumper()
                 .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
                         new IntakeCommandIn(m_intakeSubsystem)));
-
-        m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
-        m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
-        m_drivingController.povRight().onTrue(m_candleSubsystem.colorAiming());
-        m_drivingController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
-        m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
-        m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
-
-        m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
