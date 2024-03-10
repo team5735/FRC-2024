@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.FeederConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.ShooterConstants;
@@ -90,6 +91,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_RPM);
         SmartDashboard.putNumber("shootTopOutput", 0);
         SmartDashboard.putNumber("shootBottomOutput", 0);
+
+        SmartDashboard.getNumber("drivetrain_slowSpeed", DrivetrainConstants.SLOW_SPEED);
+        SmartDashboard.getNumber("drivetrain_normalSpeed", DrivetrainConstants.NORMAL_SPEED);
+        SmartDashboard.getNumber("drivetrain_turboSpeed", DrivetrainConstants.TURBO_SPEED);
     }
 
     /**

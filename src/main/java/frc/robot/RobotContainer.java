@@ -80,9 +80,9 @@ public class RobotContainer {
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
     // private final Telemetry m_telemetry = new Telemetry(.1);
 
-    private double m_turboMultiplier = 12;
-    private double m_normalMultiplier = 8;
-    private double m_slowMultiplier = 1;
+    private double m_slowMultiplier = DrivetrainConstants.SLOW_SPEED;
+    private double m_normalMultiplier = DrivetrainConstants.NORMAL_SPEED;
+    private double m_turboMultiplier = DrivetrainConstants.TURBO_SPEED;
 
     private final SendableChooser<Command> m_autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -136,6 +136,8 @@ public class RobotContainer {
 
         m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
+        m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
+
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
                 () -> -deadband(m_drivingController.getLeftY()),
                 () -> {
@@ -164,8 +166,8 @@ public class RobotContainer {
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
-        m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
+        m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
 
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePidCommand(m_angleSubsystem));
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPidCommand(m_shooterTopSubsystem));
@@ -193,6 +195,12 @@ public class RobotContainer {
                 new ParallelDeadlineGroup(
                         new WaitCommand(2),
                         new IntakeCommandIn(intake)));
+    }
+
+    private void updateMultipliers() {
+        m_slowMultiplier = SmartDashboard.getNumber("drivetrain_slowSpeed", m_slowMultiplier);
+        m_normalMultiplier = SmartDashboard.getNumber("drivetrain_normalSpeed", m_normalMultiplier);
+        m_turboMultiplier = SmartDashboard.getNumber("drivetrain_turboSpeed", m_turboMultiplier);
     }
 
     /**
