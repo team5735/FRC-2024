@@ -44,7 +44,7 @@ public class DriveCommand extends Command {
             driveWithSRL();
         } else {
             double multiplier = m_multiplier.get();
-            m_drivetrain.drive(m_stickX.get() * multiplier, m_stickY.get() * multiplier, m_rotate.get() * multiplier);
+            m_drivetrain.drive(m_stickY.get() * multiplier, m_stickX.get() * multiplier, m_rotate.get() * multiplier);
         }
 
         m_watchdog.addEpoch("drivetrain_update");

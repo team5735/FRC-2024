@@ -75,12 +75,12 @@ public class RobotContainer {
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
     // Programming war crime :3
-    private static boolean m_isFieldCentric = false;
+    private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
     // private final Telemetry m_telemetry = new Telemetry(.1);
 
-    private double m_turboMultiplier = 10;
-    private double m_normalMultiplier = 2;
+    private double m_turboMultiplier = 12;
+    private double m_normalMultiplier = 8;
     private double m_slowMultiplier = 1;
 
     private final SendableChooser<Command> m_autoChooser = AutoBuilder.buildAutoChooser();
