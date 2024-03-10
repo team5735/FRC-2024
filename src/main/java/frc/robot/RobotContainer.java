@@ -75,7 +75,7 @@ public class RobotContainer {
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
     // Programming war crime :3
-    private static boolean m_isFieldCentric = true;
+    private static boolean m_isFieldCentric = false;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
     // private final Telemetry m_telemetry = new Telemetry(.1);
 
