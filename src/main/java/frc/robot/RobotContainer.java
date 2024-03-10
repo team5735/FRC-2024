@@ -159,8 +159,10 @@ public class RobotContainer {
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
-        m_subsystemController.y().whileTrue(angleWithIntake(m_angleSubsystem, m_intakeSubsystem));
+        m_subsystemController.x().onTrue(
+                new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem))
+        );
+        // m_subsystemController.y().whileTrue(angleUpdateWithIntake(m_angleSubsystem, m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -170,6 +172,13 @@ public class RobotContainer {
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePidCommand(m_angleSubsystem));
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPidCommand(m_shooterTopSubsystem));
         m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPidCommand(m_shooterBottomSubsystem));
+
+        m_subsystemController.povUp().whileTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
+        );
+        m_subsystemController.povDown().whileTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
+        );
     }
 
     private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
@@ -180,11 +189,9 @@ public class RobotContainer {
                         new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
-    private Command angleWithIntake(AngleSubsystem angle, IntakeSubsystem intake) {
+    private Command angleUpdateWithIntake(AngleSubsystem angle, Command angleSetCommand, IntakeSubsystem intake) {
         return new ParallelCommandGroup(
-                new AngleCommandSetAngle(
-                        angle,
-                        SmartDashboard.getNumber("angleNewSetpoint", 90)),
+                angleSetCommand,
                 new ParallelDeadlineGroup(
                         new WaitCommand(2),
                         new IntakeCommandIn(intake)));

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.angle.AngleCommandSetAngle;
@@ -162,5 +163,13 @@ public class AngleSubsystem extends SubsystemBase {
 
     public Command angleToFarthestSpeaker(){
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_FARTHEST_SHOOT_DEG);
+    }
+
+    public Command angleIncrease(){
+        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 5));
+    }
+
+    public Command angleDecrease(){
+        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 5));
     }
 }
