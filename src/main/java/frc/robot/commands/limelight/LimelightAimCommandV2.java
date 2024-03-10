@@ -49,7 +49,7 @@ public class LimelightAimCommandV2 extends Command {
     public LimelightAimCommandV2(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
             final AngleSubsystem angler) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(limelight, drivetrain, angler);
+        addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
         m_angler = angler;

@@ -63,6 +63,7 @@ public class AngleSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("angleLeftAmps", m_sparkMax_left.getOutputCurrent());
         SmartDashboard.putNumber("angleRightAmps", m_sparkMax_right.getOutputCurrent());
         SmartDashboard.putNumber("anglePIDError", Math.abs(m_pid.getPositionError()));
+        SmartDashboard.putNumber("anglePIDOutput", m_activeOutput);
     }
 
     // reads the motor's position and multiplies it by the constant ratio to
@@ -81,7 +82,6 @@ public class AngleSubsystem extends SubsystemBase {
     // sets the motor voltage to the PID & FeedForward calculations
     public void useOutput(double pidOutput) {
         if (enabled) {
-            m_activeOutput = pidOutput;
             if (getMeasurement() < AngleConstants.ANGLE_LOWEST_DEG
                     && m_setpoint < AngleConstants.ANGLE_HIGHEST_DEG)
                 setSetpoint(m_pid.getSetpoint() + 1);
@@ -99,6 +99,7 @@ public class AngleSubsystem extends SubsystemBase {
         } else {
             m_sparkMax_right.setVoltage(0);
         }
+        m_activeOutput = pidOutput;
     }
 
     // updates PID & FeedForward values by the NetworkTables (can probably be
@@ -147,7 +148,7 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public boolean isAtSetpoint() {
-        return m_activeOutput < 1;
+        return Math.abs(m_pid.getPositionError()) < 5;
     }
 
     public Command angleToBase(){
@@ -166,10 +167,10 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public Command angleIncrease(){
-        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 5));
+        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 10));
     }
 
     public Command angleDecrease(){
-        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 5));
+        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 10));
     }
 }
