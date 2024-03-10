@@ -3,7 +3,7 @@ package frc.robot.commands.angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AngleSubsystem;
 
-public class AngleCommandReleaseMotors extends Command{
+public class AngleCommandReleaseMotors extends Command {
     AngleSubsystem m_subsystem;
 
     public AngleCommandReleaseMotors(AngleSubsystem s) {
@@ -20,7 +20,6 @@ public class AngleCommandReleaseMotors extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // System.out.println("hellotest");
     }
 
     // Called once the command ends or is interrupted.
@@ -34,5 +33,4 @@ public class AngleCommandReleaseMotors extends Command{
     public boolean isFinished() {
         return false;
     }
-    
 }

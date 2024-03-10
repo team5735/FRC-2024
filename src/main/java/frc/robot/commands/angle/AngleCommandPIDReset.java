@@ -31,5 +31,4 @@ public class AngleCommandPIDReset extends Command {
     public boolean isFinished() {
         return true;
     }
-
 }
