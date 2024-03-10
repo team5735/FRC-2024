@@ -90,7 +90,7 @@ public class AngleSubsystem extends SubsystemBase {
                     && m_setpoint > AngleConstants.ANGLE_LOWEST_DEG)
                 setSetpoint(m_pid.getSetpoint() - 1);
 
-            double feedOutput = (isAtBase())
+            double feedOutput = (!isAtBase())
                     ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput)
                     : 0;
             double volts = pidOutput + feedOutput;
@@ -150,7 +150,11 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public boolean isAtBase(){
-        return Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) > 2;
+        return Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) < 2;
+    }
+
+    public boolean isAtPosition(double setPos){
+        return Math.abs(getMeasurement() - setPos) < 5;
     }
 
     public Command angleToBase(){
