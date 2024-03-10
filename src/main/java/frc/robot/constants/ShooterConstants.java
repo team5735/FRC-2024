@@ -17,6 +17,4 @@ public class ShooterConstants {
 
     public static final double SHOOTER_BOTTOM_KS = 0;
     public static final double SHOOTER_BOTTOM_KV = 0.00194;
-
-
 }
