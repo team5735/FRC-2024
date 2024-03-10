@@ -70,8 +70,6 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
     
     public void start() {
-        System.out.println("shootersubsystem");
-
         double topRPM =
             SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
 
