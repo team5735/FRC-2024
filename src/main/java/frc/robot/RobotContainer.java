@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.angle.AngleCommandReleaseMotors;
@@ -156,7 +158,7 @@ public class RobotContainer {
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
-        m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
+        m_subsystemController.y().whileTrue(angleWithIntake(m_angleSubsystem, m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -174,6 +176,19 @@ public class RobotContainer {
                 new ShooterSpinUpCommand(shootTop, shootBottom),
                 new ParallelCommandGroup(new FeederCommandIn(feeder),
                         new ShooterHoldNStopCommand(shootTop, shootBottom)));
+    }
+
+    private Command angleWithIntake(AngleSubsystem angle, IntakeSubsystem intake){
+        return new ParallelCommandGroup(
+                new AngleCommandSetAngle(
+                        angle, 
+                        SmartDashboard.getNumber("angleNewSetpoint", 90)
+                ), 
+                new ParallelDeadlineGroup(
+                        new WaitCommand(2),
+                        new IntakeCommandIn(intake)
+                )
+        );
     }
 
     /**
