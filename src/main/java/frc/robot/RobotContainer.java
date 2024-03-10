@@ -38,7 +38,6 @@ import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
-import frc.robot.subsystems.CANdleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -72,7 +71,6 @@ public class RobotContainer {
     private final ShooterBottomSubsystem m_shooterBottomSubsystem = new ShooterBottomSubsystem();
     private final ClimberLeftSubsystem m_climberLeftSubsystem = new ClimberLeftSubsystem();
     private final ClimberRightSubsystem m_climberRightSubsystem = new ClimberRightSubsystem();
-    private final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
     // Programming war crime :3
