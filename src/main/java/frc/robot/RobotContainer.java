@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -36,8 +35,8 @@ import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
-import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.AngleConstants;
+import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -123,12 +122,6 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // A is bound to acceleration
-        m_drivingController.b().whileTrue(new BrakeCommand(m_drivetrain));
-        m_drivingController.x()
-                .whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
-        m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
-
         m_drivingController.leftBumper()
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
@@ -155,13 +148,12 @@ public class RobotContainer {
                             : (m_drivingController.getHID().getRightStickButton() ? m_turboMultiplier
                                     : m_normalMultiplier);
                 }));
-        // driver preference controls
+
         m_drivingController.a().onTrue(new ShooterSpinUpCommand(m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_drivingController.b().onTrue(new AngleCommandSetAngle(m_angleSubsystem, AngleConstants.ANGLE_LOWEST_DEG));
         m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
-        //
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a()
