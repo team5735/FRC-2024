@@ -40,6 +40,22 @@ public class DriveCommand extends Command {
     public void execute() {
         m_watchdog.reset();
 
+        if (DrivetrainConstants.USING_SLEW_RATE_LIMITER) {
+            driveWithSRL();
+        } else {
+            double multiplier = m_multiplier.get();
+            m_drivetrain.drive(m_stickX.get() * multiplier, m_stickY.get() * multiplier, m_rotate.get() * multiplier);
+        }
+
+        m_watchdog.addEpoch("drivetrain_update");
+        m_watchdog.disable();
+        if (m_watchdog.isExpired()) {
+            System.out.println("watchdog expired :( ");
+            m_watchdog.printEpochs();
+        }
+    }
+
+    private void driveWithSRL() {
         double multiplier = m_multiplier.get();
         double speedX = m_stickY.get() * multiplier;
         double speedY = m_stickX.get() * multiplier;
@@ -58,13 +74,6 @@ public class DriveCommand extends Command {
             SmartDashboard.putNumber("drive_speedY", speedY);
             SmartDashboard.putNumber("drive_speedOmega", speedOmega);
             m_drivetrain.drive(speedX, speedY, speedOmega);
-        }
-
-        m_watchdog.addEpoch("drivetrain_update");
-        m_watchdog.disable();
-        if (m_watchdog.isExpired()) {
-            System.out.println("watchdog expired :( ");
-            m_watchdog.printEpochs();
         }
     }
 }

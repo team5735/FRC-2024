@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -128,8 +129,7 @@ public class RobotContainer {
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
-                .whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
-                        new FeederCommandIn(m_feederSubsystem)));
+                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem), new IntakeCommandIn(m_intakeSubsystem)));
 
         m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
         m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
@@ -140,11 +140,11 @@ public class RobotContainer {
 
         m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
-        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> deadband(m_drivingController.getLeftX()),
-                () -> m_drivingController.getHID().getPOV() == 0 ? -1.0 : deadband(m_drivingController.getLeftY()),
+        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
+                () -> -deadband(m_drivingController.getLeftY()),
                 () -> {
                     return deadband(
-                            m_drivingController.getRightTriggerAxis() - m_drivingController.getLeftTriggerAxis());
+                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
                 }, () -> {
                     return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
                             : (m_drivingController.getHID().getAButton() ? m_turboMultiplier : m_normalMultiplier);
@@ -155,7 +155,6 @@ public class RobotContainer {
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        // m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
         m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
 
