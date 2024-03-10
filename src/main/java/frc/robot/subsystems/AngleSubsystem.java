@@ -153,8 +153,8 @@ public class AngleSubsystem extends SubsystemBase {
 
     public Command angleToBase(){
         return new SequentialCommandGroup(
-            new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG - 5),
-            new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG)
+            new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG - 5),
+            new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG)
         );
     }
 
