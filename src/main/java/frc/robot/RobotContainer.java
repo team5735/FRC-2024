@@ -78,9 +78,9 @@ public class RobotContainer {
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
     // private final Telemetry m_telemetry = new Telemetry(.1);
 
-    private double m_turboMultiplier = 10;
-    private double m_normalMultiplier = 2;
-    private double m_slowMultiplier = 1;
+    private double m_slowMultiplier = DrivetrainConstants.SLOW_SPEED;
+    private double m_normalMultiplier = DrivetrainConstants.NORMAL_SPEED;
+    private double m_turboMultiplier = DrivetrainConstants.TURBO_SPEED;
 
     private final SendableChooser<Command> m_autoChooser = AutoBuilder.buildAutoChooser();
 
