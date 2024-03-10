@@ -16,6 +16,7 @@ public class AngleCommandSetAngle extends Command {
     @Override
     public void initialize() {
         m_subsystem.setSetpoint(m_setpoint);
+        System.out.println(m_setpoint);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
