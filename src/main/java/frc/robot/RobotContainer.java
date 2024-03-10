@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -34,6 +35,7 @@ import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.constants.AngleConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -151,6 +153,8 @@ public class RobotContainer {
 
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        m_subsystemController.y().onTrue(new AngleCommandSetAngle(
+                m_angleSubsystem, SmartDashboard.getNumber("angleNewSetpoint", AngleConstants.ANGLE_START_POS_DEG)));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
