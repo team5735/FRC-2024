@@ -76,7 +76,6 @@ public class RobotContainer {
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
-    // private final Telemetry m_telemetry = new Telemetry(.1);
 
     private double m_slowMultiplier = DrivetrainConstants.SLOW_SPEED;
     private double m_normalMultiplier = DrivetrainConstants.NORMAL_SPEED;
@@ -140,18 +139,8 @@ public class RobotContainer {
 
         m_drivingController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        // m_drivingController.b().onTrue(m_angleSubsystem.);
         m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
-
-        // m_drivingController.povUp().whileTrue(
-        // angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(),
-        // m_intakeSubsystem)
-        // );
-        // m_drivingController.povDown().whileTrue(
-        // angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(),
-        // m_intakeSubsystem)
-        // );
 
         m_drivingController.povUp().onTrue(
                 angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem));
@@ -165,8 +154,6 @@ public class RobotContainer {
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
         m_subsystemController.x().onTrue(
                 new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem)));
-        // m_subsystemController.y().whileTrue(angleUpdateWithIntake(m_angleSubsystem,
-        // m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
