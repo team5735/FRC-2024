@@ -45,11 +45,10 @@ public class AngleSubsystem extends SubsystemBase {
         updateProportions();
 
         m_encoder.setDistancePerRotation(1);
-        // m_encoder.reset();
 
-        setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
         // This is the actual value we are working with, when doing feedforward, we need
         // to offset so that 0rad is parallel to base :)
+        setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
     }
 
     // overriden method called every 20ms, calls updateProportions
@@ -116,12 +115,10 @@ public class AngleSubsystem extends SubsystemBase {
         m_pid.setPID(kp, ki, kd);
     }
 
-    // resets PID
     public void pidReset() {
         m_pid.reset();
     }
 
-    // changes the PID setpoint (desired angle)
     public void setSetpoint(double angle) {
         if (angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
             m_setpoint = angle;
@@ -150,26 +147,25 @@ public class AngleSubsystem extends SubsystemBase {
         return m_activeOutput < 1;
     }
 
-    public Command angleToBase(){
+    public Command angleToBase() {
         return new SequentialCommandGroup(
-            new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG - 5),
-            new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG)
-        );
+                new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG - 5),
+                new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG));
     }
 
-    public Command angleToMax(){
+    public Command angleToMax() {
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_LOWEST_DEG);
     }
 
-    public Command angleToFarthestSpeaker(){
+    public Command angleToFarthestSpeaker() {
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_FARTHEST_SHOOT_DEG);
     }
 
-    public Command angleIncrease(){
+    public Command angleIncrease() {
         return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 5));
     }
 
-    public Command angleDecrease(){
+    public Command angleDecrease() {
         return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 5));
     }
 }
