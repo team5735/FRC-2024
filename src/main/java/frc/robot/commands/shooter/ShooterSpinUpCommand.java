@@ -23,14 +23,12 @@ public class ShooterSpinUpCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // System.out.println("hellotest");
-        // System.out.println("shootercommand");
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        if(interrupted){
+        if (interrupted) {
             m_subsystemTop.stop();
             m_subsystemBottom.stop();
         }

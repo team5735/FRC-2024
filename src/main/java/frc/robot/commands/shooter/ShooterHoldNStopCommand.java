@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
 import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 
-public class ShooterHoldNStopCommand extends Command{
-        ShooterTopSubsystem m_subsystemTop;
-        ShooterBottomSubsystem m_subsystemBottom;
+public class ShooterHoldNStopCommand extends Command {
+    ShooterTopSubsystem m_subsystemTop;
+    ShooterBottomSubsystem m_subsystemBottom;
 
     public ShooterHoldNStopCommand(ShooterTopSubsystem st, ShooterBottomSubsystem sb) {
         m_subsystemTop = st;
@@ -21,8 +21,6 @@ public class ShooterHoldNStopCommand extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // System.out.println("hellotest");
-        // System.out.println("shootercommand");
     }
 
     // Called once the command ends or is interrupted.
