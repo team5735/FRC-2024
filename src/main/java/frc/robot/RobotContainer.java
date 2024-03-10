@@ -11,8 +11,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.angle.AngleCommandReleaseMotors;
@@ -32,6 +35,7 @@ import frc.robot.commands.limelight.LimelightAimCommandV2;
 import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
+import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -118,18 +122,12 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // A is bound to acceleration
-        m_drivingController.b().whileTrue(new BrakeCommand(m_drivetrain));
-        m_drivingController.x()
-                .whileTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
-        m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.seedFieldRelative()));
-
         m_drivingController.leftBumper()
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
-                .whileTrue(new ParallelCommandGroup(new IntakeCommandIn(m_intakeSubsystem),
-                        new FeederCommandIn(m_feederSubsystem)));
+                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
+                        new IntakeCommandIn(m_intakeSubsystem)));
 
         m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
         m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
@@ -140,24 +138,29 @@ public class RobotContainer {
 
         m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
-        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> deadband(m_drivingController.getLeftX()),
-                () -> m_drivingController.getHID().getPOV() == 0 ? -1.0 : deadband(m_drivingController.getLeftY()),
+        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
+                () -> -deadband(m_drivingController.getLeftY()),
                 () -> {
                     return deadband(
-                            m_drivingController.getRightTriggerAxis() - m_drivingController.getLeftTriggerAxis());
+                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
                 }, () -> {
                     return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
-                            : (m_drivingController.getHID().getAButton() ? m_turboMultiplier : m_normalMultiplier);
+                            : (m_drivingController.getHID().getRightStickButton() ? m_turboMultiplier
+                                    : m_normalMultiplier);
                 }));
+
+        m_drivingController.a().onTrue(new ShooterSpinUpCommand(m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        m_drivingController.b().onTrue(m_angleSubsystem.angleToBase());
+        m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+        m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        // m_subsystemController.x().whileTrue(new IntakeCommandIn(m_intakeSubsystem));
         m_subsystemController.x().onTrue(new FeederPrimeNote(m_feederSubsystem));
-        m_subsystemController.y().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
+        m_subsystemController.y().whileTrue(angleWithIntake(m_angleSubsystem, m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -175,6 +178,16 @@ public class RobotContainer {
                 new ShooterSpinUpCommand(shootTop, shootBottom),
                 new ParallelCommandGroup(new FeederCommandIn(feeder),
                         new ShooterHoldNStopCommand(shootTop, shootBottom)));
+    }
+
+    private Command angleWithIntake(AngleSubsystem angle, IntakeSubsystem intake) {
+        return new ParallelCommandGroup(
+                new AngleCommandSetAngle(
+                        angle,
+                        SmartDashboard.getNumber("angleNewSetpoint", 90)),
+                new ParallelDeadlineGroup(
+                        new WaitCommand(2),
+                        new IntakeCommandIn(intake)));
     }
 
     /**

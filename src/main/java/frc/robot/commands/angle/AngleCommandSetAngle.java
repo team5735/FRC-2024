@@ -1,20 +1,21 @@
 package frc.robot.commands.angle;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AngleSubsystem;
 
-public class AngleCommandSetAngle extends Command{
+public class AngleCommandSetAngle extends Command {
     AngleSubsystem m_subsystem;
+    double m_setpoint;
 
-    public AngleCommandSetAngle(AngleSubsystem s) {
+    public AngleCommandSetAngle(AngleSubsystem s, double angle) {
         m_subsystem = s;
+        m_setpoint = angle;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_subsystem.setSetpoint(SmartDashboard.getNumber("angleNewSetpoint", 90));
+        m_subsystem.setSetpoint(m_setpoint);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -33,5 +34,5 @@ public class AngleCommandSetAngle extends Command{
     public boolean isFinished() {
         return m_subsystem.isAtSetpoint();
     }
-    
+
 }

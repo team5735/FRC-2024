@@ -8,8 +8,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
@@ -42,7 +45,6 @@ public class AngleSubsystem extends SubsystemBase {
 
         m_encoder.setDistancePerRotation(1);
         // m_encoder.reset();
-
 
         setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
         // This is the actual value we are working with, when doing feedforward, we need
@@ -120,7 +122,7 @@ public class AngleSubsystem extends SubsystemBase {
 
     // changes the PID setpoint (desired angle)
     public void setSetpoint(double angle) {
-        if(angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
+        if (angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
             m_setpoint = angle;
     }
 
@@ -137,11 +139,28 @@ public class AngleSubsystem extends SubsystemBase {
         enabled = true;
     }
 
-    public PIDCommand anglePidCommand(AngleSubsystem s){
-        return new PIDCommand(m_pid, () -> getMeasurement(), () ->  {return m_setpoint;}, a -> useOutput(a), s);
+    public PIDCommand anglePidCommand(AngleSubsystem s) {
+        return new PIDCommand(m_pid, () -> getMeasurement(), () -> {
+            return m_setpoint;
+        }, a -> useOutput(a), s);
     }
 
-    public boolean isAtSetpoint(){
+    public boolean isAtSetpoint() {
         return m_activeOutput < 1;
+    }
+
+    public Command angleToBase(){
+        return new SequentialCommandGroup(
+            new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG - 5),
+            new AngleCommandSetAngle(this, AngleConstants.ANGLE_HIGHEST_DEG)
+        );
+    }
+
+    public Command angleToMax(){
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_LOWEST_DEG);
+    }
+
+    public Command angleToFarthestSpeaker(){
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_FARTHEST_SHOOT_DEG);
     }
 }
