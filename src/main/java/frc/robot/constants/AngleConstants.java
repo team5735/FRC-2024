@@ -18,6 +18,7 @@ public class AngleConstants {
     public static final double ANGLE_LOWEST_DEG = 120;
 
     public static final double ANGLE_AMP_DEG = 125;
+    public static final double ANGLE_FARTHEST_SHOOT_DEG = 190;
 
     public static final double ANGLE_MOTOR_TO_OUTPUT_RATIO = 1./9 * 16./42; 
     // planetary 9:1, chain drive 16:42 
