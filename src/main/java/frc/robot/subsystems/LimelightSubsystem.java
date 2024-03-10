@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightResults;
@@ -18,19 +17,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     /** Creates a new ExampleSubsystem. */
     public LimelightSubsystem() {
-    }
-
-    /**
-     * Example command factory method.
-     *
-     * @return a command
-     */
-    public Command exampleMethodCommand() {
-        // Inline construction of command goes here.
-        // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(() -> {
-            /* one-time action goes here */
-        });
     }
 
     /**
