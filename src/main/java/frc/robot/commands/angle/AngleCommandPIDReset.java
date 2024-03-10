@@ -3,7 +3,7 @@ package frc.robot.commands.angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AngleSubsystem;
 
-public class AngleCommandPIDReset extends Command{
+public class AngleCommandPIDReset extends Command {
     AngleSubsystem m_subsystem;
 
     public AngleCommandPIDReset(AngleSubsystem s) {
@@ -19,7 +19,6 @@ public class AngleCommandPIDReset extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // System.out.println("hellotest");
     }
 
     // Called once the command ends or is interrupted.
@@ -32,5 +31,5 @@ public class AngleCommandPIDReset extends Command{
     public boolean isFinished() {
         return true;
     }
-    
+
 }
