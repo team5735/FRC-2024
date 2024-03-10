@@ -138,6 +138,8 @@ public class RobotContainer {
 
         m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
+        m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
+
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
                 () -> -deadband(m_drivingController.getLeftY()),
                 () -> {
@@ -188,6 +190,12 @@ public class RobotContainer {
                 new ParallelDeadlineGroup(
                         new WaitCommand(2),
                         new IntakeCommandIn(intake)));
+    }
+
+    private void updateMultipliers() {
+        m_slowMultiplier = SmartDashboard.getNumber("drivetrain_slowSpeed", m_slowMultiplier);
+        m_normalMultiplier = SmartDashboard.getNumber("drivetrain_normalSpeed", m_normalMultiplier);
+        m_turboMultiplier = SmartDashboard.getNumber("drivetrain_turboSpeed", m_turboMultiplier);
     }
 
     /**
