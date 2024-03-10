@@ -37,6 +37,7 @@ import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
+import frc.robot.constants.AngleConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -132,7 +133,8 @@ public class RobotContainer {
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
-                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem), new IntakeCommandIn(m_intakeSubsystem)));
+                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
+                        new IntakeCommandIn(m_intakeSubsystem)));
 
         m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
         m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
@@ -155,7 +157,7 @@ public class RobotContainer {
                 }));
         // driver preference controls
         m_drivingController.a().onTrue(new ShooterSpinUpCommand(m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_drivingController.b().onTrue(new AngleCommandSetAngle(m_angleSubsystem));
+        m_drivingController.b().onTrue(new AngleCommandSetAngle(m_angleSubsystem, AngleConstants.ANGLE_LOWEST_DEG));
         m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
@@ -186,17 +188,14 @@ public class RobotContainer {
                         new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
-    private Command angleWithIntake(AngleSubsystem angle, IntakeSubsystem intake){
+    private Command angleWithIntake(AngleSubsystem angle, IntakeSubsystem intake) {
         return new ParallelCommandGroup(
                 new AngleCommandSetAngle(
-                        angle, 
-                        SmartDashboard.getNumber("angleNewSetpoint", 90)
-                ), 
+                        angle,
+                        SmartDashboard.getNumber("angleNewSetpoint", 90)),
                 new ParallelDeadlineGroup(
                         new WaitCommand(2),
-                        new IntakeCommandIn(intake)
-                )
-        );
+                        new IntakeCommandIn(intake)));
     }
 
     /**

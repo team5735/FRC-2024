@@ -1,10 +1,9 @@
 package frc.robot.commands.angle;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AngleSubsystem;
 
-public class AngleCommandSetAngle extends Command{
+public class AngleCommandSetAngle extends Command {
     AngleSubsystem m_subsystem;
     double m_setpoint;
 
@@ -35,5 +34,5 @@ public class AngleCommandSetAngle extends Command{
     public boolean isFinished() {
         return m_subsystem.isAtSetpoint();
     }
-    
+
 }
