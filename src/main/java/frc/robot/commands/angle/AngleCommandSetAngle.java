@@ -21,7 +21,6 @@ public class AngleCommandSetAngle extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        // System.out.println("hellotest");
     }
 
     // Called once the command ends or is interrupted.
@@ -34,5 +33,4 @@ public class AngleCommandSetAngle extends Command {
     public boolean isFinished() {
         return m_subsystem.isAtSetpoint();
     }
-
 }
