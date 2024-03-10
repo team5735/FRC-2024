@@ -115,7 +115,6 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
 
-        // (debugging) dump all PD values to smartdashboard
         SmartDashboard.putNumber("PD 6", m_PD.getCurrent(6));
         SmartDashboard.putNumber("PD total", m_PD.getTotalCurrent());
         SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
@@ -140,7 +139,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-        // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -149,7 +147,6 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        // m_robotContainer.useSubsystemOutputs();
     }
 
     @Override
@@ -166,7 +163,6 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        // m_robotContainer.useSubsystemOutputs();
     }
 
     @Override
