@@ -124,7 +124,8 @@ public class RobotContainer {
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
-                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
+                .whileTrue(new ParallelDeadlineGroup(
+                        new FeederPrimeNote(m_feederSubsystem),
                         new IntakeCommandIn(m_intakeSubsystem)));
 
         // m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
@@ -151,7 +152,7 @@ public class RobotContainer {
 
         m_drivingController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         // m_drivingController.b().onTrue(m_angleSubsystem.);
-        m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+        // m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         // m_drivingController.povUp().whileTrue(
@@ -173,10 +174,10 @@ public class RobotContainer {
 
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        m_subsystemController.x().onTrue(
-                new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem))
-        );
+        // m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
+        // m_subsystemController.x().onTrue(
+        //         new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem))
+        // );
         // m_subsystemController.y().whileTrue(angleUpdateWithIntake(m_angleSubsystem, m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
