@@ -17,11 +17,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
     private final TalonFX m_talon_top = new TalonFX(Constants.SHOOTER_MOTOR_TOP_ID);
 
-
-    public ShooterTopSubsystem(){
-        // m_talon_top.setInverted(true);
-        // m_talon_bottom.setInverted(true);
-
+    public ShooterTopSubsystem() {
         m_talon_top.setNeutralMode(NeutralModeValue.Coast);
         m_talon_top.setInverted(false);
 
@@ -32,7 +28,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
 
     // changes PID & FeedForward values based on the NetworkTables
-    public void updateProportions(){
+    public void updateProportions() {
         double tkp = SmartDashboard.getNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         double tki = SmartDashboard.getNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
         double tkd = SmartDashboard.getNumber("shootTopKD", ShooterConstants.SHOOTER_TOP_KD);
@@ -44,34 +40,30 @@ public class ShooterTopSubsystem extends SubsystemBase {
         m_feedForward_top = new SimpleMotorFeedforward(tks, tkv);
     }
 
-    
     @Override
-    public void periodic(){
+    public void periodic() {
         updateProportions();
-        
+
         SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
     }
 
-    public void useOutput(double pidOutput){
-        if(m_pid_top.getSetpoint() != 0){
-            // double feedOutput = m_feedForward_top.calculate(pidOutput);
+    public void useOutput(double pidOutput) {
+        if (m_pid_top.getSetpoint() != 0) {
             double feedOutput = m_feedForward_top.calculate(m_pid_top.getSetpoint());
             m_talon_top.setVoltage(
-                pidOutput + feedOutput
-            );
+                    pidOutput + feedOutput);
         } else {
             m_talon_top.setVoltage(0);
         }
     }
 
-    public double getTopMeasurement(){
-        return m_talon_top.getVelocity().getValueAsDouble()*60;
+    public double getTopMeasurement() {
+        return m_talon_top.getVelocity().getValueAsDouble() * 60;
     }
-    
+
     public void start() {
-        double topRPM =
-            SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
+        double topRPM = SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
 
         m_pid_top.setSetpoint(topRPM);
     }
@@ -80,11 +72,12 @@ public class ShooterTopSubsystem extends SubsystemBase {
         m_pid_top.setSetpoint(0);
     }
 
-    public boolean isSpunUp(){
-        return (Math.abs(m_pid_top.getPositionError()) < 100 );
+    public boolean isSpunUp() {
+        return (Math.abs(m_pid_top.getPositionError()) < 100);
     }
 
-    public PIDCommand shootPidCommand(ShooterTopSubsystem s){
-        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_pid_top.getSetpoint(), a -> useOutput(a), s);
+    public PIDCommand shootPidCommand(ShooterTopSubsystem s) {
+        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_pid_top.getSetpoint(), a -> useOutput(a),
+                s);
     }
 }
