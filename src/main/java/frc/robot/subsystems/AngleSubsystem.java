@@ -166,10 +166,10 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public Command angleIncrease(){
-        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 5));
+        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 5));
     }
 
     public Command angleDecrease(){
-        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 5));
+        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 5));
     }
 }

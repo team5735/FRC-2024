@@ -127,14 +127,14 @@ public class RobotContainer {
                 .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
                         new IntakeCommandIn(m_intakeSubsystem)));
 
-        m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
-        m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
-        m_drivingController.povRight().onTrue(m_candleSubsystem.colorAiming());
-        m_drivingController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
-        m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
-        m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
+        // m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
+        // m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
+        // m_drivingController.povRight().onTrue(m_candleSubsystem.colorAiming());
+        // m_drivingController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
+        // m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
+        // m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
 
-        m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
+        // m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
 
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
                 () -> -deadband(m_drivingController.getLeftY()),
@@ -148,9 +148,24 @@ public class RobotContainer {
                 }));
 
         m_drivingController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_drivingController.b().onTrue(m_angleSubsystem.angleToBase());
+        // m_drivingController.b().onTrue(m_angleSubsystem.);
         m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
+
+        // m_drivingController.povUp().whileTrue(
+        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
+        // );
+        // m_drivingController.povDown().whileTrue(
+        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
+        // );
+
+        m_drivingController.povUp().onTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
+        );
+        m_drivingController.povDown().onTrue(
+                m_angleSubsystem.angleToBase()
+        );
+
 
         // some lines were not copied from the drivetrain
 
@@ -170,13 +185,6 @@ public class RobotContainer {
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePidCommand(m_angleSubsystem));
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPidCommand(m_shooterTopSubsystem));
         m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPidCommand(m_shooterBottomSubsystem));
-
-        m_subsystemController.povUp().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
-        );
-        m_subsystemController.povDown().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
-        );
     }
 
     private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
