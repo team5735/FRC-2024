@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -147,9 +148,16 @@ public class RobotContainer {
                             m_drivingController.getRightTriggerAxis() - m_drivingController.getLeftTriggerAxis());
                 }, () -> {
                     return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
-                            : (m_drivingController.getHID().getAButton() ? m_turboMultiplier : m_normalMultiplier);
+                            : (m_drivingController.getHID().getRightStickButton() ? m_turboMultiplier : m_normalMultiplier);
                 }));
+        //driver preference controls
+        m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+        m_drivingController.a().onTrue(new ShooterSpinUpCommand(m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        m_drivingController.y().onTrue(Commands.runOnce(() -> , null));
+        m_drivingController.b().onTrue();
 
+
+        //
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a()
