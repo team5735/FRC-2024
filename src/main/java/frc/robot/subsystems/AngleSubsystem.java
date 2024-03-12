@@ -11,9 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
@@ -159,9 +157,9 @@ public class AngleSubsystem extends SubsystemBase {
 
     public Command angleToBase() {
         // return new SequentialCommandGroup(
-                // new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG - 15),
-               return new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG);
-            // );
+        // new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG - 15),
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG);
+        // );
     }
 
     public Command angleToMax() {
