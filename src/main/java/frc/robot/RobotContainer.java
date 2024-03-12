@@ -205,7 +205,7 @@ public class RobotContainer {
 
         // we need to get the starting pose from the Limelight
         SequentialCommandGroup group = new SequentialCommandGroup(
-                new SetStartingPoseCommand(m_drivetrain, m_limelightSubsystem),
+                m_limelightSubsystem.seedSwerveDrivetrain(m_drivetrain),
                 auto);
         return group;
     }

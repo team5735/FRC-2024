@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightResults;
@@ -64,6 +66,10 @@ public class LimelightSubsystem extends SubsystemBase {
             LimelightResults latestResults = LimelightHelpers.getLatestResults("");
             m_targetingResults = latestResults.targetingResults;
         }
+    }
+
+    public Command seedSwerveDrivetrain(DrivetrainSubsystem drivetrain) {
+        return Commands.runOnce(() -> drivetrain.seedFieldRelative(), drivetrain, this);
     }
 
     @Override
