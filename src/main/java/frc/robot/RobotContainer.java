@@ -31,7 +31,6 @@ import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
-import frc.robot.commands.limelight.SetStartingPoseCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -145,11 +144,9 @@ public class RobotContainer {
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         m_drivingController.back().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
-        );
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem));
         m_drivingController.start().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToBase(), m_intakeSubsystem)
-        );
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToBase(), m_intakeSubsystem));
 
         // some lines were not copied from the drivetrain
 
