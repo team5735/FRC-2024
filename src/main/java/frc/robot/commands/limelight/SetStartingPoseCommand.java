@@ -16,7 +16,7 @@ public class SetStartingPoseCommand extends Command {
 
     @Override
     public void initialize() {
-        m_drivetrain.seedFieldRelative(m_limelight.getBotPose2d());
+        // m_drivetrain.seedFieldRelative(m_limelight.getBotPose2d());
         m_done = true;
     }
 

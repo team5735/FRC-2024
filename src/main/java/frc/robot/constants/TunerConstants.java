@@ -120,7 +120,7 @@ public class TunerConstants {
             .withKS(0).withKV(1.5).withKA(0);
 
     public static final Slot0Configs kFrontRightDriveGains = new Slot0Configs()
-            .withKP(.05).withKI(0).withKD(0.00)
+            .withKP(.055).withKI(0).withKD(0.00)
             .withKS(0).withKV(0).withKA(0);
 
     // Back Left
@@ -154,7 +154,7 @@ public class TunerConstants {
             .withKS(0).withKV(1.5).withKA(0);
 
     public static final Slot0Configs kBackRightDriveGains = new Slot0Configs()
-            .withKP(.05).withKI(0).withKD(0.00)
+            .withKP(.055).withKI(0).withKD(0.00)
             .withKS(0).withKV(0).withKA(0);
 
     private static final SwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(

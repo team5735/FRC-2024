@@ -178,12 +178,12 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
 
     // Returns the config for pathplanner use
     private HolonomicPathFollowerConfig getConfig() {
-        var drivePid = new PIDConstants(15, 0, 0);
-        var turnPid = new PIDConstants(1, 0, 0);
+        var drivePid = new PIDConstants(45, 2, 0);
+        var turnPid = new PIDConstants(10, 0, 0); // this is another great magic number that fixes everything :D
 
         return new HolonomicPathFollowerConfig(drivePid,
                 turnPid,
-                7.27, // TODO: this number is Cookiezi. Please give a non-arbitrary value
+                25, // TODO: this number is Cookiezi. Please give a non-arbitrary value
                 Math.sqrt(9.75 * 9.75 + 12.5 * 12.5), // radius (wtf)
                 new ReplanningConfig());
     }
