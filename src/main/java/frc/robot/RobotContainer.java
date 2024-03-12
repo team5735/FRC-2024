@@ -144,10 +144,12 @@ public class RobotContainer {
         m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
-        m_drivingController.povUp().onTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem));
-        m_drivingController.povDown().onTrue(
-                m_angleSubsystem.angleToBase());
+        m_drivingController.back().whileTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
+        );
+        m_drivingController.start().whileTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToBase(), m_intakeSubsystem)
+        );
 
         // some lines were not copied from the drivetrain
 

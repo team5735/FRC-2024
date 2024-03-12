@@ -3,7 +3,7 @@ package frc.robot.constants;
 public class AngleConstants {
     public static final double ANGLE_KP = 0.0625;
     public static final double ANGLE_KI = 0;
-    public static final double ANGLE_KD = 0;
+    public static final double ANGLE_KD = 0.005;
 
     public static final double ANGLE_KS = 0;
     public static final double ANGLE_KG = 0.78;
