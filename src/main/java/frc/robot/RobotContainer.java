@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -30,11 +29,9 @@ import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
-import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
-import frc.robot.constants.AngleConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -76,12 +73,14 @@ public class RobotContainer {
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
+    // private final Telemetry m_telemetry = new Telemetry(.1);
+
 
     private double m_slowMultiplier = DrivetrainConstants.SLOW_SPEED;
     private double m_normalMultiplier = DrivetrainConstants.NORMAL_SPEED;
     private double m_turboMultiplier = DrivetrainConstants.TURBO_SPEED;
 
-    private final SendableChooser<Command> m_autoChooser = AutoBuilder.buildAutoChooser();
+    private final SendableChooser<Command> m_autoChooser;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and
@@ -90,9 +89,11 @@ public class RobotContainer {
     public RobotContainer() {
         // m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
-        configureBindings();
-
+        AutoCommands.registerCommands(m_intakeSubsystem, m_feederSubsystem);
+        m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("pick an auto", m_autoChooser);
+
+        configureBindings();
     }
 
     private static double deadband(double input) {
@@ -125,6 +126,15 @@ public class RobotContainer {
                         new FeederPrimeNote(m_feederSubsystem),
                         new IntakeCommandIn(m_intakeSubsystem)));
 
+        // m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
+        // m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
+        // m_drivingController.povRight().onTrue(m_candleSubsystem.colorAiming());
+        // m_drivingController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
+        // m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
+        // m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
+
+        // m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
+
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
@@ -138,22 +148,35 @@ public class RobotContainer {
                                     : m_normalMultiplier);
                 }));
 
-        m_drivingController.a()
-                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+        m_drivingController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        // m_drivingController.b().onTrue(m_angleSubsystem.);
+        // m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
-        m_drivingController.back().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem));
-        m_drivingController.start().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToBase(), m_intakeSubsystem));
+        m_drivingController.povUp().whileTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
+        );
+        m_drivingController.povDown().whileTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
+        );
+
+        // m_drivingController.povUp().onTrue(
+        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
+        // );
+        // m_drivingController.povDown().onTrue(
+        //         m_angleSubsystem.angleToBase()
+        // );
+
 
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_subsystemController.y().onTrue(new AngleCommandSetAngle(
-                m_angleSubsystem, SmartDashboard.getNumber("angleNewSetpoint", AngleConstants.ANGLE_START_POS_DEG)));
+        // m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
+        // m_subsystemController.x().onTrue(
+        //         new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem))
+        // );
+        // m_subsystemController.y().whileTrue(angleUpdateWithIntake(m_angleSubsystem, m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -171,16 +194,20 @@ public class RobotContainer {
                 new ShooterSpinUpCommand(shootTop, shootBottom),
                 new ParallelCommandGroup(
                         new FeederCommandIn(feeder),
-                        new ShooterHoldNStopCommand(shootTop, shootBottom)));
+                        new ShooterHoldNStopCommand(shootTop, shootBottom)
+                )
+        );
     }
 
     private Command angleUpdateWithIntake(AngleSubsystem angle, Command angleSetCommand, IntakeSubsystem intake) {
-        return (m_angleSubsystem.isAtBase())
+        return (m_angleSubsystem.isAtBase()) 
                 ? new ParallelCommandGroup(
                         angleSetCommand,
                         new ParallelDeadlineGroup(
                                 new WaitCommand(2),
-                                new IntakeCommandIn(intake)))
+                                new IntakeCommandIn(intake)
+                        )
+                ) 
                 : angleSetCommand;
     }
 
@@ -204,9 +231,6 @@ public class RobotContainer {
         }
 
         // we need to get the starting pose from the Limelight
-        SequentialCommandGroup group = new SequentialCommandGroup(
-                m_limelightSubsystem.seedSwerveDrivetrain(m_drivetrain),
-                auto);
-        return group;
+        return auto;
     }
 }
