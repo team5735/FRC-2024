@@ -45,8 +45,6 @@ public class AngleSubsystem extends SubsystemBase {
 
         m_encoder.setDistancePerRotation(1);
 
-        // This is the actual value we are working with, when doing feedforward, we need
-        // to offset so that 0rad is parallel to base :)
         setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
     }
 
