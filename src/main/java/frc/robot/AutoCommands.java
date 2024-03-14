@@ -27,10 +27,10 @@ public class AutoCommands {
         FeederCommandOut feederOutCmd = new FeederCommandOut(feeder);
         ShooterSpinUpCommand shootCmd = new ShooterSpinUpCommand(top, bot);
                 
-        commandsToRegister.put("getNote", new ParallelDeadlineGroup(feederInCmd, intakeCmd));
-        commandsToRegister.put("primeIt", new ParallelCommandGroup(feederInCmd, intakeCmd, shootCmd));
-        commandsToRegister.put("shoot", new ParallelCommandGroup(feederOutCmd, shootCmd));
+        //commandsToRegister.put("getNote", new ParallelDeadlineGroup(feederInCmd, intakeCmd));
+        //commandsToRegister.put("prime", new ParallelCommandGroup(feederInCmd, intakeCmd, shootCmd));
+        //commandsToRegister.put("shoot", new ParallelCommandGroup(feederOutCmd, shootCmd));
 
-        NamedCommands.registerCommands(commandsToRegister);
+        //NamedCommands.registerCommands(commandsToRegister);
     }
 }

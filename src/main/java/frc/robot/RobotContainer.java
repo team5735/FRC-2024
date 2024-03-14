@@ -153,19 +153,19 @@ public class RobotContainer {
         // m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
-        m_drivingController.povUp().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
-        );
-        m_drivingController.povDown().whileTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
-        );
+        // m_drivingController.back().whileTrue(
+        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
+        // );
+        // m_drivingController.start().whileTrue(
+        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
+        // );
 
-        // m_drivingController.povUp().onTrue(
-        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
-        // );
-        // m_drivingController.povDown().onTrue(
-        //         m_angleSubsystem.angleToBase()
-        // );
+        m_drivingController.povUp().onTrue(
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
+        );
+        m_drivingController.povDown().onTrue(
+                m_angleSubsystem.angleToBase()
+        );
 
 
         // some lines were not copied from the drivetrain
@@ -183,7 +183,7 @@ public class RobotContainer {
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
         m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
 
-        // m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem)); TODO: fix
+        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem)); // TODO: fix
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand(m_shooterTopSubsystem));
         m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand(m_shooterBottomSubsystem));
     }
