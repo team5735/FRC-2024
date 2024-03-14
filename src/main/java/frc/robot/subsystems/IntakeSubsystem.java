@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IntakeConstants;
@@ -29,5 +30,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void stop() {
         m_sparkMax_pull.setVoltage(0);
+    }
+
+    public Command getPull() {
+        return runOnce(() -> pull());
+    }
+
+    public Command getPush() {
+        return runOnce(() -> push());
+    }
+
+    public Command getStop() {
+        return runOnce(() -> stop());
     }
 }
