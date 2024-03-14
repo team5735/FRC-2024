@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
@@ -24,14 +22,11 @@ import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightUp;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
-import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
-import frc.robot.commands.shooter.ShooterHoldNStopCommand;
-import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -141,19 +136,21 @@ public class RobotContainer {
                 }));
 
         m_drivingController.a()
-                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+                .whileTrue(
+                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         m_drivingController.povUp().onTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem));
+                Compositions.angleUpdateWithIntake(m_angleSubsystem.angleToMax(), m_angleSubsystem, m_intakeSubsystem));
         m_drivingController.povDown().onTrue(
                 m_angleSubsystem.angleToBase());
 
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a()
-                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+                .whileTrue(
+                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -163,25 +160,6 @@ public class RobotContainer {
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem)); // TODO: fix
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand(m_shooterTopSubsystem));
         m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand(m_shooterBottomSubsystem));
-    }
-
-    private Command feedNShoot(FeederSubsystem feeder, ShooterTopSubsystem shootTop,
-            ShooterBottomSubsystem shootBottom) {
-        return new SequentialCommandGroup(
-                new ShooterSpinUpCommand(shootTop, shootBottom),
-                new ParallelCommandGroup(
-                        new FeederCommandIn(feeder),
-                        new ShooterHoldNStopCommand(shootTop, shootBottom)));
-    }
-
-    private Command angleUpdateWithIntake(AngleSubsystem angle, Command angleSetCommand, IntakeSubsystem intake) {
-        return (m_angleSubsystem.isAtBase())
-                ? new ParallelCommandGroup(
-                        angleSetCommand,
-                        new ParallelDeadlineGroup(
-                                new WaitCommand(2),
-                                new IntakeCommandIn(intake)))
-                : angleSetCommand;
     }
 
     private void updateMultipliers() {
