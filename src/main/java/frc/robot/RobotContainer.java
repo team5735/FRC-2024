@@ -76,7 +76,6 @@ public class RobotContainer {
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
     // private final Telemetry m_telemetry = new Telemetry(.1);
 
-
     private double m_slowMultiplier = DrivetrainConstants.SLOW_SPEED;
     private double m_normalMultiplier = DrivetrainConstants.NORMAL_SPEED;
     private double m_turboMultiplier = DrivetrainConstants.TURBO_SPEED;
@@ -90,7 +89,8 @@ public class RobotContainer {
     public RobotContainer() {
         // m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
-        AutoCommands.registerCommands(m_intakeSubsystem, m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem);
+        AutoCommands.registerCommands(m_intakeSubsystem, m_feederSubsystem, m_shooterTopSubsystem,
+                m_shooterBottomSubsystem);
         m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("pick an auto", m_autoChooser);
 
@@ -140,17 +140,15 @@ public class RobotContainer {
                                     : m_normalMultiplier);
                 }));
 
-        m_drivingController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+        m_drivingController.a()
+                .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         m_drivingController.povUp().onTrue(
-                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
-        );
+                angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem));
         m_drivingController.povDown().onTrue(
-                m_angleSubsystem.angleToBase()
-        );
-
+                m_angleSubsystem.angleToBase());
 
         // some lines were not copied from the drivetrain
 
@@ -173,20 +171,16 @@ public class RobotContainer {
                 new ShooterSpinUpCommand(shootTop, shootBottom),
                 new ParallelCommandGroup(
                         new FeederCommandIn(feeder),
-                        new ShooterHoldNStopCommand(shootTop, shootBottom)
-                )
-        );
+                        new ShooterHoldNStopCommand(shootTop, shootBottom)));
     }
 
     private Command angleUpdateWithIntake(AngleSubsystem angle, Command angleSetCommand, IntakeSubsystem intake) {
-        return (m_angleSubsystem.isAtBase()) 
+        return (m_angleSubsystem.isAtBase())
                 ? new ParallelCommandGroup(
                         angleSetCommand,
                         new ParallelDeadlineGroup(
                                 new WaitCommand(2),
-                                new IntakeCommandIn(intake)
-                        )
-                ) 
+                                new IntakeCommandIn(intake)))
                 : angleSetCommand;
     }
 
