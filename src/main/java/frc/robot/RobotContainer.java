@@ -29,6 +29,7 @@ import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
+import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -126,15 +127,6 @@ public class RobotContainer {
                         new FeederPrimeNote(m_feederSubsystem),
                         new IntakeCommandIn(m_intakeSubsystem)));
 
-        // m_drivingController.povUp().onTrue(m_candleSubsystem.colorReady());
-        // m_drivingController.povUpRight().onTrue(m_candleSubsystem.colorAuto());
-        // m_drivingController.povRight().onTrue(m_candleSubsystem.colorAiming());
-        // m_drivingController.povDownRight().onTrue(m_candleSubsystem.colorAimed());
-        // m_drivingController.povDown().onTrue(m_candleSubsystem.colorShooting());
-        // m_drivingController.povDownLeft().onTrue(m_candleSubsystem.colorIntakeRunning());
-
-        // m_drivingController.povLeft().whileTrue(m_drivetrain.nyoom());
-
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
         m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
@@ -149,16 +141,8 @@ public class RobotContainer {
                 }));
 
         m_drivingController.a().whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        // m_drivingController.b().onTrue(m_angleSubsystem.);
-        // m_drivingController.x().onTrue(new LimelightAimCommandV2(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+        m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
-
-        // m_drivingController.back().whileTrue(
-        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleIncrease(), m_intakeSubsystem)
-        // );
-        // m_drivingController.start().whileTrue(
-        //         angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleDecrease(), m_intakeSubsystem)
-        // );
 
         m_drivingController.povUp().onTrue(
                 angleUpdateWithIntake(m_angleSubsystem, m_angleSubsystem.angleToMax(), m_intakeSubsystem)
@@ -172,11 +156,6 @@ public class RobotContainer {
 
         m_subsystemController.a()
                 .whileTrue(feedNShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        // m_subsystemController.b().whileTrue(new AngleCommandReleaseMotors(m_angleSubsystem));
-        // m_subsystemController.x().onTrue(
-        //         new SequentialCommandGroup(m_angleSubsystem.angleToBase(), new FeederPrimeNote(m_feederSubsystem))
-        // );
-        // m_subsystemController.y().whileTrue(angleUpdateWithIntake(m_angleSubsystem, m_intakeSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
