@@ -131,10 +131,8 @@ public class RobotContainer {
                                     : m_normalMultiplier);
                 }));
 
-        m_drivingController.a()
-                .whileTrue(
-                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
-                                m_shooterBottomSubsystem));
+        m_drivingController.a().whileTrue(
+                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
