@@ -114,32 +114,22 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        m_drivingController.leftBumper()
-                .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
-                        new FeederCommandOut(m_feederSubsystem)));
-        m_drivingController.rightBumper()
-                .whileTrue(new ParallelDeadlineGroup(
-                        new FeederPrimeNote(m_feederSubsystem),
-                        new IntakeCommandIn(m_intakeSubsystem)));
+        m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
+                new FeederCommandOut(m_feederSubsystem)));
+        m_drivingController.rightBumper().whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
+                new IntakeCommandIn(m_intakeSubsystem)));
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
-        m_drivetrain.setDefaultCommand(
-                new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
-                        () -> -deadband(m_drivingController.getLeftY()),
-                        () -> {
-                            return deadband(
-                                    m_drivingController.getLeftTriggerAxis()
-                                            - m_drivingController
-                                                    .getRightTriggerAxis());
-                        }, () -> {
-                            return m_drivingController.getHID().getLeftStickButton()
-                                    ? m_slowMultiplier
-                                    : (m_drivingController.getHID()
-                                            .getRightStickButton()
-                                                    ? m_turboMultiplier
-                                                    : m_normalMultiplier);
-                        }));
+        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
+                () -> -deadband(m_drivingController.getLeftY()), () -> {
+                    return deadband(
+                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
+                }, () -> {
+                    return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
+                            : (m_drivingController.getHID().getRightStickButton() ? m_turboMultiplier
+                                    : m_normalMultiplier);
+                }));
 
         m_drivingController.a()
                 .whileTrue(
@@ -157,10 +147,8 @@ public class RobotContainer {
 
         // some lines were not copied from the drivetrain
 
-        m_subsystemController.a()
-                .whileTrue(
-                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
-                                m_shooterBottomSubsystem));
+        m_subsystemController.a().whileTrue(
+                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
