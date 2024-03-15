@@ -113,9 +113,9 @@ public class RobotContainer {
      */
     private void configureBindings() {
         m_drivingController.leftBumper().whileTrue(
-                new ParallelCommandGroup(new FeederCommandOut(m_feederSubsystem), m_intakeSubsystem.getPushCommand()));
+                new ParallelCommandGroup(new FeederCommandOut(m_feederSubsystem), m_intakeSubsystem.pushCommand()));
         m_drivingController.rightBumper().whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
-                m_intakeSubsystem.getPullCommand()));
+                m_intakeSubsystem.pullCommand()));
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 

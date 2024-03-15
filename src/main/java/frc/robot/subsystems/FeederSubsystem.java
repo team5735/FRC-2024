@@ -45,11 +45,11 @@ public class FeederSubsystem extends SubsystemBase {
         return m_switch.get();
     }
 
-    public Command getPullCommand() {
+    public Command pullCommand() {
         return new StartEndCommand(() -> pull(), () -> stop(), this);
     }
 
-    public Command getPushCommand() {
+    public Command pushCommand() {
         return new StartEndCommand(() -> push(), () -> stop(), this);
     }
 }

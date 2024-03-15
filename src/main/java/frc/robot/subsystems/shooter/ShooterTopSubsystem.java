@@ -82,7 +82,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
                 s);
     }
 
-    public Command getStop() {
+    public Command stopCommand() {
         return runOnce(() -> stop());
     }
 }

@@ -81,7 +81,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
                 a -> useOutput(a), s);
     }
 
-    public Command getStop() {
+    public Command stopCommand() {
         return runOnce(() -> stop());
     }
 }
