@@ -10,22 +10,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class LimelightAimToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
+    LimelightSubsystem m_limelight;
     PIDController m_pid = new PIDController(
             SmartDashboard.getNumber("llv2_turnP", LimelightConstants.TURN_P),
             SmartDashboard.getNumber("llv2_turnI", LimelightConstants.TURN_I),
-            SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D), LimelightConstants.SPF);
+            SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D));
 
     /** Creates a new LimelightAimToCommand. */
-    public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, double setpoint) {
+    public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
+            double setpoint) {
         // Use addRequirements() here to declare subsystem dependencies.
         m_drivetrain = drivetrain;
+        m_limelight = limelight;
 
         addRequirements(m_drivetrain);
 
         m_pid.setTolerance(DrivetrainConstants.TOLERANCE);
+        m_pid.setSetpoint(setpoint);
     }
 
     // Called when the command is initially scheduled.
@@ -36,7 +41,9 @@ public class LimelightAimToCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_drivetrain.drive(m_pid.calculate(m_drivetrain.getRotation3d().getZ()));
+        double omega = m_pid.calculate(m_drivetrain.getRotation3d().getZ());
+        m_drivetrain.drive(omega);
+        SmartDashboard.putNumber("llTurnTo_omega", omega);
     }
 
     // Called once the command ends or is interrupted.
