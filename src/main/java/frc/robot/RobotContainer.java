@@ -24,8 +24,6 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
-import frc.robot.commands.intake.IntakeCommandIn;
-import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
@@ -114,10 +112,10 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
+        m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(m_intakeSubsystem.getPushCommand(),
                 new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper().whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
-                new IntakeCommandIn(m_intakeSubsystem)));
+                m_intakeSubsystem.getPullCommand()));
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
