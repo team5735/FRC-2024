@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.DrivetrainConstants.SlewRateLimiterMode;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class DriveCommand extends Command {
@@ -25,6 +26,14 @@ public class DriveCommand extends Command {
     private SlewRateLimiter m_yLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_AXES);
     private SlewRateLimiter m_omegaLimiter = new SlewRateLimiter(DrivetrainConstants.ACCEL_LIMIT_OMEGA);
 
+    /**
+     * Creates a new DriveCommand. This class takes the drivetrain to drive, the
+     * stick x and y inputs, the rotate inputs, and a final supplier that it
+     * multiplies the stick inputs by to determine the speed to drive the drivetrain
+     * at. Depending on the value of {@link DrivetrainConstants.SLEW_RATE_LIMITER},
+     * behavior changes. See execute() to understand what happens based on each
+     * mode.
+     */
     public DriveCommand(DrivetrainSubsystem drivetrain, Supplier<Double> stickX, Supplier<Double> stickY,
             Supplier<Double> rotate, Supplier<Double> multiplier) {
         m_drivetrain = drivetrain;
@@ -40,11 +49,16 @@ public class DriveCommand extends Command {
     public void execute() {
         m_watchdog.reset();
 
-        if (DrivetrainConstants.USING_SLEW_RATE_LIMITER) {
-            driveWithSRL();
+        double multiplier = m_multiplier.get();
+        double speedX = m_stickY.get() * multiplier;
+        double speedY = m_stickX.get() * multiplier;
+        double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
+        if (DrivetrainConstants.SLEW_RATE_LIMITER_MODE == SlewRateLimiterMode.THETA_MAGNITUDE) {
+            driveThetaMagnitudeSRL(speedX, speedY, speedOmega);
+        } else if (DrivetrainConstants.SLEW_RATE_LIMITER_MODE == SlewRateLimiterMode.AXES) {
+            driveAxesSRL(speedX, speedY, speedOmega);
         } else {
-            double multiplier = m_multiplier.get();
-            m_drivetrain.drive(m_stickY.get() * multiplier, m_stickX.get() * multiplier, m_rotate.get() * multiplier);
+            m_drivetrain.drive(speedX, speedY, speedOmega);
         }
 
         m_watchdog.addEpoch("drivetrain_update");
@@ -55,25 +69,45 @@ public class DriveCommand extends Command {
         }
     }
 
-    private void driveWithSRL() {
-        double multiplier = m_multiplier.get();
-        double speedX = m_stickY.get() * multiplier;
-        double speedY = m_stickX.get() * multiplier;
-        double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
-        if (DrivetrainConstants.USING_THETA_MAGNITUDE_LIMITING) {
-            double theta = m_thetaLimiter.calculate(new Rotation2d(speedX, speedY).getRadians());
-            double magnitude = m_magnitudeLimiter.calculate(Math.sqrt(speedX * speedX + speedY * speedY));
-            Translation2d thetaMagnitudeMovement = new Translation2d(magnitude, theta);
-            SmartDashboard.putNumber("drive_theta", theta);
-            SmartDashboard.putNumber("drive_magnitude", magnitude);
-            m_drivetrain.drive(thetaMagnitudeMovement, speedOmega);
-        } else {
-            speedX = m_xLimiter.calculate(m_stickY.get() * multiplier);
-            speedY = m_yLimiter.calculate(m_stickX.get() * multiplier);
-            SmartDashboard.putNumber("drive_speedX", speedX);
-            SmartDashboard.putNumber("drive_speedY", speedY);
-            SmartDashboard.putNumber("drive_speedOmega", speedOmega);
-            m_drivetrain.drive(speedX, speedY, speedOmega);
-        }
+    /**
+     * This passes the speedX and speedY values into a {@link SlewRateLimiter}. It
+     * doesn't limit the acceleration at which the drivetrain can change direction
+     * of movement, which means that the steer motors can accelerate unbounded.
+     */
+    private void driveAxesSRL(double speedX, double speedY, double speedOmega) {
+        speedX = m_xLimiter.calculate(m_stickY.get());
+        speedY = m_yLimiter.calculate(m_stickX.get());
+        SmartDashboard.putNumber("drive_speedX", speedX);
+        SmartDashboard.putNumber("drive_speedY", speedY);
+        SmartDashboard.putNumber("drive_speedOmega", speedOmega);
+        m_drivetrain.drive(speedX, speedY, speedOmega);
+    }
+
+    /**
+     * This interprets speedX and speedY as a vector and uses
+     * {@link SlewRateLimiter} to interpolate between one vector and another.
+     *
+     * <p>
+     * Currently, this is implemented using complex numbers. It may be easier to
+     * visualize as vectors, but you should learn complex numbers anyway.
+     *
+     * <ol>
+     * <li>Interpret speedX and speedY as a complex number c, where c = speedX +
+     * speedY * i.
+     * <li>Convert c to polar form, that is, r * e^i*theta.
+     * <li>Pass r and theta to a slew rate limiter.
+     * <li>Convert the resulting polar number back into rectangular form, d =
+     * speedX'
+     * + speedY' * i.
+     * <li>Pass speedX' and speedY' to the drivetrain, and pass speedOmega
+     * unmodified.
+     */
+    private void driveThetaMagnitudeSRL(double speedX, double speedY, double speedOmega) {
+        double theta = m_thetaLimiter.calculate(new Rotation2d(speedX, speedY).getRadians());
+        double r = m_magnitudeLimiter.calculate(Math.sqrt(speedX * speedX + speedY * speedY));
+        Translation2d thetaMagnitudeMovement = new Translation2d(r, theta);
+        SmartDashboard.putNumber("drive_theta", theta);
+        SmartDashboard.putNumber("drive_magnitude", r);
+        m_drivetrain.drive(thetaMagnitudeMovement, speedOmega);
     }
 }
