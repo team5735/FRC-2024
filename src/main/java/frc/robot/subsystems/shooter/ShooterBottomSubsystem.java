@@ -27,7 +27,6 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         updateProportions();
     }
 
-    // changes PID & FeedForward values based on the NetworkTables
     /**
      * Gets values from {@link SmartDashboard} for the {@link PIDController} and the
      * {@link SimpleMotorFeedforward}. Then, m_pid_bottom and m_feedForward_bottom
