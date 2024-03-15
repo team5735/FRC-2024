@@ -148,12 +148,11 @@ public class LimelightAimCommand extends Command {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
 
-        CommandScheduler.getInstance()
-                .schedule(new PIDCommand(
-                        new PIDController(LimelightConstants.TURN_P, LimelightConstants.TURN_I,
-                                LimelightConstants.TURN_D),
-                        () -> m_drivetrain.getRotation3d().getZ(), drivetrainDesiredAngle,
-                        (double output) -> m_drivetrain.drive(output), m_drivetrain));
+        new PIDCommand(
+                new PIDController(LimelightConstants.TURN_P, LimelightConstants.TURN_I,
+                        LimelightConstants.TURN_D),
+                () -> m_drivetrain.getRotation3d().getZ(), drivetrainDesiredAngle,
+                (double output) -> m_drivetrain.drive(output), m_drivetrain).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {
