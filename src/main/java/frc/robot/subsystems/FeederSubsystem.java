@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.FeederConstants;
@@ -41,5 +43,13 @@ public class FeederSubsystem extends SubsystemBase {
 
     public boolean getSwitchStatus() {
         return m_switch.get();
+    }
+
+    public Command getPullCommand() {
+        return new StartEndCommand(() -> pull(), () -> stop(), this);
+    }
+
+    public Command getPushCommand() {
+        return new StartEndCommand(() -> push(), () -> stop(), this);
     }
 }
