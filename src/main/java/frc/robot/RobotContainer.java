@@ -124,25 +124,34 @@ public class RobotContainer {
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
-        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
-                () -> -deadband(m_drivingController.getLeftY()),
-                () -> {
-                    return deadband(
-                            m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
-                }, () -> {
-                    return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
-                            : (m_drivingController.getHID().getRightStickButton() ? m_turboMultiplier
-                                    : m_normalMultiplier);
-                }));
+        m_drivetrain.setDefaultCommand(
+                new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
+                        () -> -deadband(m_drivingController.getLeftY()),
+                        () -> {
+                            return deadband(
+                                    m_drivingController.getLeftTriggerAxis()
+                                            - m_drivingController
+                                                    .getRightTriggerAxis());
+                        }, () -> {
+                            return m_drivingController.getHID().getLeftStickButton()
+                                    ? m_slowMultiplier
+                                    : (m_drivingController.getHID()
+                                            .getRightStickButton()
+                                                    ? m_turboMultiplier
+                                                    : m_normalMultiplier);
+                        }));
 
         m_drivingController.a()
                 .whileTrue(
-                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
-        m_drivingController.x().onTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
+                                m_shooterBottomSubsystem));
+        m_drivingController.x().whileTrue(
+                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         m_drivingController.povUp().onTrue(
-                Compositions.angleUpdateWithIntake(m_angleSubsystem.angleToMax(), m_angleSubsystem, m_intakeSubsystem));
+                Compositions.angleUpdateWithIntake(m_angleSubsystem.angleToMax(), m_angleSubsystem,
+                        m_intakeSubsystem));
         m_drivingController.povDown().onTrue(
                 m_angleSubsystem.angleToBase());
 
@@ -150,7 +159,8 @@ public class RobotContainer {
 
         m_subsystemController.a()
                 .whileTrue(
-                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+                        Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
+                                m_shooterBottomSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -159,7 +169,8 @@ public class RobotContainer {
 
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem)); // TODO: fix
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand(m_shooterTopSubsystem));
-        m_shooterBottomSubsystem.setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand(m_shooterBottomSubsystem));
+        m_shooterBottomSubsystem
+                .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand(m_shooterBottomSubsystem));
     }
 
     private void updateMultipliers() {
