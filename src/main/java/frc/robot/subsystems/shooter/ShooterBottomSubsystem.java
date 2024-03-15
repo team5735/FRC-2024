@@ -73,7 +73,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
     }
 
     public boolean isSpunUp() {
-        return (Math.abs(m_pid_bottom.getPositionError()) < 100);
+        return Math.abs(m_pid_bottom.getPositionError()) < 100;
     }
 
     public PIDCommand shootPIDCommand(ShooterBottomSubsystem s) {
