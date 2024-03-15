@@ -112,8 +112,8 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(m_intakeSubsystem.getPushCommand(),
-                new FeederCommandOut(m_feederSubsystem)));
+        m_drivingController.leftBumper().whileTrue(
+                new ParallelCommandGroup(new FeederCommandOut(m_feederSubsystem), m_intakeSubsystem.getPushCommand()));
         m_drivingController.rightBumper().whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
                 m_intakeSubsystem.getPullCommand()));
 
