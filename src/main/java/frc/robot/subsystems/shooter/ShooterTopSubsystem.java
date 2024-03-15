@@ -28,7 +28,21 @@ public class ShooterTopSubsystem extends SubsystemBase {
         updateProportions();
     }
 
-    // changes PID & FeedForward values based on the NetworkTables
+    /**
+     * Gets values from {@link SmartDashboard} for the {@link PIDController} and the
+     * {@link SimpleMotorFeedforward}. Then, m_pid_bottom and m_feedForward_bottom
+     * are reconstructed based on the values acquired from {@link SmartDashboard.}
+     *
+     * <p>
+     * Uses the following values:
+     * <ul>
+     * <li>shootTopKP
+     * <li>shootTopKI
+     * <li>shootTopKD
+     * <li>shootTopKS
+     * <li>shootTopKV
+     * </ul>
+     */
     public void updateProportions() {
         double tkp = SmartDashboard.getNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         double tki = SmartDashboard.getNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);

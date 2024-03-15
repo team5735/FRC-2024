@@ -98,8 +98,22 @@ public class AngleSubsystem extends SubsystemBase {
         m_activeOutput = pidOutput;
     }
 
-    // updates PID & FeedForward values by the NetworkTables (can probably be
-    // removed for the final robot)
+    /**
+     * Gets values from {@link SmartDashboard} for the {@link PIDController} and the
+     * {@link SimpleMotorFeedforward}. Then, m_pid_bottom and m_feedForward_bottom
+     * are reconstructed based on the values acquired from {@link SmartDashboard.}
+     *
+     * <p>
+     * Uses the following values:
+     * <ul>
+     * <li>angleKP
+     * <li>angleKI
+     * <li>angleKD
+     * <li>angleKS
+     * <li>angleKG
+     * <li>angleKV
+     * </ul>
+     */
     public void updateProportions() {
         double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
         double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
