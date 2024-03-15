@@ -162,6 +162,9 @@ public class LimelightAimCommand extends Command {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
 
+        SmartDashboard.putNumber("llv2_current", m_drivetrain.getRotation3d().getZ());
+        SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
+
         new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
     }
 
