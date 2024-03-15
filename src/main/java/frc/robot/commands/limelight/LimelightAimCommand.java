@@ -62,7 +62,7 @@ public class LimelightAimCommand extends Command {
         updateCoefficients();
     }
 
-    /*
+    /**
      * Updates the turnP, turnI, and turnD members.
      */
     private void updateCoefficients() {
@@ -93,6 +93,7 @@ public class LimelightAimCommand extends Command {
         m_watchdog.reset();
         updateCoefficients();
         m_watchdog.addEpoch("update coefficients");
+
         LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
         m_watchdog.addEpoch("get fiducial info");
         if (targets.length < 2) {
@@ -100,6 +101,7 @@ public class LimelightAimCommand extends Command {
             m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
         }
+
         SmartDashboard.putBoolean("llv2_aimed", true);
         CommandScheduler.getInstance().schedule(Commands.sequence(new WaitCommand(LimelightConstants.AIMED_ON_TIMER),
                 Commands.runOnce(() -> SmartDashboard.putBoolean("llv2_aimed", false))));
