@@ -42,6 +42,9 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer. This will perform all our button
         // bindings, and put our autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+
+        // Put initial values of numbers that are continuously updated from
+        // SmartDashboard.
         SmartDashboard.putNumber("angleKP", AngleConstants.ANGLE_KP);
         SmartDashboard.putNumber("angleKI", AngleConstants.ANGLE_KI);
         SmartDashboard.putNumber("angleKD", AngleConstants.ANGLE_KD);
@@ -93,9 +96,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shootTopOutput", 0);
         SmartDashboard.putNumber("shootBottomOutput", 0);
 
-        SmartDashboard.getNumber("drivetrain_slowSpeed", DrivetrainConstants.SLOW_SPEED);
-        SmartDashboard.getNumber("drivetrain_normalSpeed", DrivetrainConstants.NORMAL_SPEED);
-        SmartDashboard.getNumber("drivetrain_turboSpeed", DrivetrainConstants.TURBO_SPEED);
+        SmartDashboard.putNumber("drivetrain_slowSpeed", DrivetrainConstants.SLOW_SPEED);
+        SmartDashboard.putNumber("drivetrain_normalSpeed", DrivetrainConstants.NORMAL_SPEED);
+        SmartDashboard.putNumber("drivetrain_turboSpeed", DrivetrainConstants.TURBO_SPEED);
 
         SmartDashboard.putNumber("llv2_turnP", LimelightConstants.TURN_P);
         SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
