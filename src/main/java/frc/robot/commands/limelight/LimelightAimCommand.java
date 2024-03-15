@@ -6,7 +6,6 @@ package frc.robot.commands.limelight;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
@@ -164,10 +162,7 @@ public class LimelightAimCommand extends Command {
             drivetrainDesiredAngle -= 2 * Math.PI;
         }
 
-        new PIDCommand(
-                new PIDController(m_turnP, m_turnI, m_turnD),
-                () -> m_drivetrain.getRotation3d().getZ(), drivetrainDesiredAngle,
-                (double output) -> m_drivetrain.drive(output), m_drivetrain).schedule();
+        new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {
