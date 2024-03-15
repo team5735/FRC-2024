@@ -35,6 +35,9 @@ public class LimelightAimCommand extends Command {
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
+    private double m_turnP = LimelightConstants.TURN_P;
+    private double m_turnI = LimelightConstants.TURN_I;
+    private double m_turnD = LimelightConstants.TURN_D;
 
     /**
      * Creates a new LimelightAimCommandV2. This is responsible for turning the
@@ -57,6 +60,17 @@ public class LimelightAimCommand extends Command {
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
         SmartDashboard.putBoolean("llv2_aimed", false);
+
+        updateCoefficients();
+    }
+
+    /*
+     * Updates the turnP, turnI, and turnD members.
+     */
+    private void updateCoefficients() {
+        SmartDashboard.getNumber("llv2_turnP", m_turnP);
+        SmartDashboard.getNumber("llv2_turnI", m_turnI);
+        SmartDashboard.getNumber("llv2_turnD", m_turnD);
     }
 
     // Called when the command is initially scheduled.
@@ -79,6 +93,8 @@ public class LimelightAimCommand extends Command {
     @Override
     public void execute() {
         m_watchdog.reset();
+        updateCoefficients();
+        m_watchdog.addEpoch("update coefficients");
         LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
         m_watchdog.addEpoch("get fiducial info");
         if (targets.length < 2) {
@@ -149,8 +165,7 @@ public class LimelightAimCommand extends Command {
         }
 
         new PIDCommand(
-                new PIDController(LimelightConstants.TURN_P, LimelightConstants.TURN_I,
-                        LimelightConstants.TURN_D),
+                new PIDController(m_turnP, m_turnI, m_turnD),
                 () -> m_drivetrain.getRotation3d().getZ(), drivetrainDesiredAngle,
                 (double output) -> m_drivetrain.drive(output), m_drivetrain).schedule();
     }
