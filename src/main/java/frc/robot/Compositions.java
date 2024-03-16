@@ -28,7 +28,9 @@ public class Compositions {
         static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
                         ShooterBottomSubsystem shooterBottom) {
                 return new SequentialCommandGroup(
-                                new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                                new ParallelCommandGroup(
+                                                new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                                                new WaitCommand(0.5)),
                                 new ParallelCommandGroup(
                                                 new FeederCommandIn(feeder),
                                                 new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
