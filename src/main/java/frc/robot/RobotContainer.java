@@ -119,11 +119,14 @@ public class RobotContainer {
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
-        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain, () -> -deadband(m_drivingController.getLeftX()),
-                () -> -deadband(m_drivingController.getLeftY()), () -> {
+        m_drivetrain.setDefaultCommand(new DriveCommand(m_drivetrain,
+                () -> -deadband(m_drivingController.getLeftX()),
+                () -> -deadband(m_drivingController.getLeftY()),
+                () -> {
                     return deadband(
                             m_drivingController.getLeftTriggerAxis() - m_drivingController.getRightTriggerAxis());
-                }, () -> {
+                },
+                () -> {
                     return m_drivingController.getHID().getLeftStickButton() ? m_slowMultiplier
                             : (m_drivingController.getHID().getRightStickButton() ? m_turboMultiplier
                                     : m_normalMultiplier);
