@@ -33,9 +33,6 @@ public class LimelightAimCommand extends Command {
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
-    private double m_turnP = LimelightConstants.TURN_P;
-    private double m_turnI = LimelightConstants.TURN_I;
-    private double m_turnD = LimelightConstants.TURN_D;
 
     /**
      * Creates a new LimelightAimCommandV2. This is responsible for turning the
@@ -58,17 +55,6 @@ public class LimelightAimCommand extends Command {
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
         SmartDashboard.putBoolean("llv2_aimed", false);
-
-        updateCoefficients();
-    }
-
-    /**
-     * Updates the turnP, turnI, and turnD members.
-     */
-    private void updateCoefficients() {
-        SmartDashboard.getNumber("llv2_turnP", m_turnP);
-        SmartDashboard.getNumber("llv2_turnI", m_turnI);
-        SmartDashboard.getNumber("llv2_turnD", m_turnD);
     }
 
     // Called when the command is initially scheduled.
@@ -76,23 +62,10 @@ public class LimelightAimCommand extends Command {
     public void initialize() {
     }
 
-    private Translation3d getHoodPos() {
-        Translation3d hoodPos;
-        if (m_alliance == Alliance.Red) {
-            hoodPos = LimelightConstants.HOOD_POS;
-        } else {
-            Translation3d hoodPosTmp = LimelightConstants.HOOD_POS;
-            hoodPos = new Translation3d(-hoodPosTmp.getX(), hoodPosTmp.getY(), hoodPosTmp.getZ());
-        }
-        return hoodPos;
-    }
-
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         m_watchdog.reset();
-        updateCoefficients();
-        m_watchdog.addEpoch("update coefficients");
 
         LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
         m_watchdog.addEpoch("get fiducial info");
@@ -155,6 +128,17 @@ public class LimelightAimCommand extends Command {
             SmartDashboard.putNumber("llv2_deltaY", desiredVelocity.getY());
             return;
         }
+    }
+
+    private Translation3d getHoodPos() {
+        Translation3d hoodPos;
+        if (m_alliance == Alliance.Red) {
+            hoodPos = LimelightConstants.HOOD_POS;
+        } else {
+            Translation3d hoodPosTmp = LimelightConstants.HOOD_POS;
+            hoodPos = new Translation3d(-hoodPosTmp.getX(), hoodPosTmp.getY(), hoodPosTmp.getZ());
+        }
+        return hoodPos;
     }
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
