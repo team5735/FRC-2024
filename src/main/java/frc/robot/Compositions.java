@@ -41,7 +41,7 @@ public class Compositions {
                         angleSetCommand,
                         new ParallelDeadlineGroup(
                                 new WaitCommand(2),
-                                intake.pullCommand()))
+                                intake.getPullStop()))
                 : angleSetCommand;
     }
 }
