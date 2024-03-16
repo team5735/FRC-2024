@@ -12,6 +12,36 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "spinUpShooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNote"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShooter"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "leave start"

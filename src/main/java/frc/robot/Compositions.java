@@ -19,20 +19,20 @@ import frc.robot.subsystems.shooter.ShooterTopSubsystem;
  * belong to
  */
 public class Compositions {
-        /*
-         * Creates and returns a new SequentialCommandGroup that first spins up the
-         * shooter, that is to say it gets the shooter to full speed, and then has a
-         * ParallelCommandGroup that feeds the NOTE in, and simultaneously keeps the
-         * shooter at full speed.
-         */
-        static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
-                        ShooterBottomSubsystem shooterBottom) {
-                return new SequentialCommandGroup(
-                                new ShooterSpinUpCommand(shooterTop, shooterBottom),
-                                new ParallelCommandGroup(
-                                                new FeederCommandIn(feeder),
-                                                new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
-        }
+    /*
+     * Creates and returns a new SequentialCommandGroup that first spins up the
+     * shooter, that is to say it gets the shooter to full speed, and then has a
+     * ParallelCommandGroup that feeds the NOTE in, and simultaneously keeps the
+     * shooter at full speed.
+     */
+    static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
+            ShooterBottomSubsystem shooterBottom) {
+        return new SequentialCommandGroup(
+                new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                new ParallelCommandGroup(
+                        new FeederCommandIn(feeder),
+                        new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
+    }
 
     public static Command angleUpdateWithIntake(Command angleSetCommand, AngleSubsystem angler,
             IntakeSubsystem intake) {
