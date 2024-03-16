@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.feeder.FeederPrimeNote;
-import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
@@ -40,7 +39,7 @@ public class AutoCommands {
     }
 
     public static Command getNote(IntakeSubsystem intake, FeederSubsystem feeder) {
-        return new ParallelDeadlineGroup(new FeederPrimeNote(feeder), intake.getPull());
+        return new ParallelDeadlineGroup(new FeederPrimeNote(feeder), intake.getPullStop());
     }
 
     public static Command spinUpShooter(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
