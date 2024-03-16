@@ -28,7 +28,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
-    private AngleSubsystem m_angler;
+    private AngleSubsystem m_angle;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
@@ -45,15 +45,15 @@ public class LimelightAimCommand extends Command {
      * @param limelight  The limelight that is used for aiming
      * @param drivetrain The drivetrain, used to turn automatically and aim
      *                   horizontally
-     * @param angler     The angle changer, used to aim vertically
+     * @param angle      The angle changer, used to aim vertically
      */
     public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
-            final AngleSubsystem angler) {
+            final AngleSubsystem angle) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
-        m_angler = angler;
+        m_angle = angle;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
@@ -186,7 +186,7 @@ public class LimelightAimCommand extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
-        m_angler.setSetpoint(angleChangerDesiredAngle);
+        m_angle.setSetpoint(angleChangerDesiredAngle);
 
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
         SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
