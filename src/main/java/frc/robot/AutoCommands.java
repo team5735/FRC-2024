@@ -6,6 +6,11 @@ import java.util.Map;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import frc.robot.commands.feeder.FeederCommandOut;
+import frc.robot.commands.feeder.FeederPrimeNote;
+import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
@@ -26,6 +31,27 @@ public class AutoCommands {
         commandsToRegister.put("startShooting", startShooting);
         commandsToRegister.put("stopShooting", stopShooting);
 
+        commandsToRegister.put("getNote", getNote(intake, feeder));
+        commandsToRegister.put("spinUpShooter", spinUpShooter(shooterTop, shooterBottom));
+        commandsToRegister.put("stopShooter", stopShooter(shooterTop, shooterBottom));
+        commandsToRegister.put("shootNote", shootNote(feeder));
+
         NamedCommands.registerCommands(commandsToRegister);
+    }
+
+    public static Command getNote(IntakeSubsystem intake, FeederSubsystem feeder) {
+        return new ParallelDeadlineGroup(new FeederPrimeNote(feeder), intake.getPull());
+    }
+
+    public static Command spinUpShooter(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
+        return new ParallelCommandGroup(top.runOnce(() -> top.start()), bottom.runOnce(() -> bottom.start()));
+    }
+
+    public static Command stopShooter(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
+        return new ParallelCommandGroup(top.runOnce(() -> top.stop()), bottom.runOnce(() -> bottom.stop()));
+    }
+
+    public static Command shootNote(FeederSubsystem feeder) {
+        return new FeederCommandOut(feeder);
     }
 }
