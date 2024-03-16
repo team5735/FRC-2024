@@ -32,11 +32,11 @@ public class IntakeSubsystem extends SubsystemBase {
         m_sparkMax_pull.setVoltage(0);
     }
 
-    public Command getPullStop() {
-        return startEnd(() -> pull(), () -> stop());
+    public Command getPull() {
+        return runOnce(() -> pull());
     }
 
-    public Command getPushStop() {
+    public Command getPush() {
         return runOnce(() -> push());
     }
 
