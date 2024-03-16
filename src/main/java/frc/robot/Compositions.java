@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
-import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.subsystems.AngleSubsystem;
@@ -42,7 +41,7 @@ public class Compositions {
                         angleSetCommand,
                         new ParallelDeadlineGroup(
                                 new WaitCommand(2),
-                                new IntakeCommandIn(intake)))
+                                intake.pullCommand()))
                 : angleSetCommand;
     }
 }
