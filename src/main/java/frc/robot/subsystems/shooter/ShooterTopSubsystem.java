@@ -47,6 +47,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
+        SmartDashboard.putNumber("topSetpoint", m_pid_top.getSetpoint());
     }
 
     public void useOutput(double pidOutput) {
@@ -64,6 +65,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
 
     public void start() {
+        //System.out.println("start top running");
         double topRPM = SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
 
         m_pid_top.setSetpoint(topRPM);

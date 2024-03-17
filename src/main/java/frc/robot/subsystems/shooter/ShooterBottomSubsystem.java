@@ -46,6 +46,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("shootBottomOutput", Math.abs(getBottomMeasurement()));
         SmartDashboard.putNumber("shootBottomPIDError", Math.abs(m_pid_bottom.getPositionError()));
+        SmartDashboard.putNumber("botSetpoint", m_pid_bottom.getSetpoint());
     }
 
     public void useOutput(double pidOutput) {
@@ -63,6 +64,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
     }
 
     public void start() {
+        //System.out.println("start bot running");
         double bottomRPM = SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_RPM);
 
         m_pid_bottom.setSetpoint(bottomRPM);
