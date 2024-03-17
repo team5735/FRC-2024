@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.LimelightConstants;
+import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -67,8 +68,10 @@ public class LimelightAimCommand extends Command {
     public void execute() {
         m_watchdog.reset();
 
-        LimelightTarget_Fiducial[] targets = m_limelight.getTargetedFiducials();
-        m_watchdog.addEpoch("get fiducial info");
+        LimelightHelpers.Results results = LimelightHelpers.getLatestResults("").targetingResults;
+        m_watchdog.addEpoch("fetch limelight dump");
+        LimelightTarget_Fiducial[] targets = results.targets_Fiducials;
+        m_watchdog.addEpoch("extract fiducials");
         if (targets.length < 2) {
             System.out.println("spinning");
             m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
@@ -87,8 +90,8 @@ public class LimelightAimCommand extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
-        Pose2d currentRobotPose = m_limelight.getBotPose2d();
-        m_watchdog.addEpoch("get robot pose");
+        Pose2d currentRobotPose = results.getBotPose2d();
+        m_watchdog.addEpoch("extract bot pose");
         Translation3d hoodPos = getHoodPos();
         m_drivetrain.addVisionMeasurement(currentRobotPose, Timer.getFPGATimestamp());
         m_drivetrain.seedFieldRelative(currentRobotPose);
