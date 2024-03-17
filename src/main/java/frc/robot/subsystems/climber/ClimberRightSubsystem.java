@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
@@ -43,5 +44,17 @@ public class ClimberRightSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("climbRightPos", m_encoder_right.getPosition());
 
         SmartDashboard.putNumber("climbRightOutput", m_sparkMax_right.getOutputCurrent());
+    }
+
+    public Command getUpStop() {
+        return startEnd(() -> rightUp(), () -> stopRight());
+    }
+
+    public Command getDownStop() {
+        return startEnd(() -> rightDown(), () -> stopRight());
+    }
+
+    public Command getStop() {
+        return runOnce(() -> stopRight());
     }
 }

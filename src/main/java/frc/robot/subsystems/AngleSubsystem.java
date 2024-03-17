@@ -78,14 +78,6 @@ public class AngleSubsystem extends SubsystemBase {
     // sets the motor voltage to the PID & FeedForward calculations
     public void useOutput(double pidOutput) {
         if (enabled) {
-            if (getMeasurement() < AngleConstants.ANGLE_LOWEST_DEG
-                    && m_setpoint < AngleConstants.ANGLE_HIGHEST_DEG)
-                setSetpoint(m_pid.getSetpoint() + 1);
-
-            if (getMeasurement() > AngleConstants.ANGLE_HIGHEST_DEG
-                    && m_setpoint > AngleConstants.ANGLE_LOWEST_DEG)
-                setSetpoint(m_pid.getSetpoint() - 1);
-
             double feedOutput = (!isAtBase())
                     ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput)
                     : 0;

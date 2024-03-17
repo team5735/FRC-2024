@@ -41,7 +41,8 @@ public class LimelightAimToCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double omega = m_pid.calculate(m_drivetrain.getRotation3d().getZ());
+        SmartDashboard.putNumber("llTurnTo_measurement", getMeasurement());
+        double omega = m_pid.calculate(getMeasurement());
         m_drivetrain.drive(omega);
         SmartDashboard.putNumber("llTurnTo_omega", omega);
     }
@@ -52,9 +53,14 @@ public class LimelightAimToCommand extends Command {
         m_drivetrain.drive(0);
     }
 
+    private double getMeasurement() {
+        return m_drivetrain.getRotation3d().getZ();
+    }
+
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return m_pid.atSetpoint();
+        // return m_pid.atSetpoint();
+        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < DrivetrainConstants.TOLERANCE;
     }
 }

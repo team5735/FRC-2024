@@ -135,7 +135,8 @@ public class RobotContainer {
         m_drivingController.a().whileTrue(
                 Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain,
+                        m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
 
         m_drivingController.povUp().onTrue(
@@ -147,17 +148,18 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(
-                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
+                        m_shooterBottomSubsystem));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
         m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
         m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
 
-        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem)); // TODO: fix
-        m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand(m_shooterTopSubsystem));
+        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem));
+        m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand());
         m_shooterBottomSubsystem
-                .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand(m_shooterBottomSubsystem));
+                .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
     }
 
     private void updateMultipliers() {
