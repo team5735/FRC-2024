@@ -32,7 +32,7 @@ public class AutoCommands {
         commandsToRegister.put("getNote", getNote(intake, feeder));
         commandsToRegister.put("spinUpShooter", spinUpShooter(shooterTop, shooterBottom));
         commandsToRegister.put("stopShooter", stopShooter(shooterTop, shooterBottom));
-        commandsToRegister.put("shootNote", feeder.runOnce(() -> feeder.pull()));
+        commandsToRegister.put("shootNote", feeder.getPull());
 
         NamedCommands.registerCommands(commandsToRegister);
     }
