@@ -24,11 +24,17 @@ public class Compositions {
      * shooter, that is to say it gets the shooter to full speed, and then has a
      * ParallelCommandGroup that feeds the NOTE in, and simultaneously keeps the
      * shooter at full speed.
+     * 
+     * <p>
+     * This command does not run the intake until 0.5 seconds have passed AND the
+     * shooter is at full speed.
      */
     static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
             ShooterBottomSubsystem shooterBottom) {
         return new SequentialCommandGroup(
-                new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                new ParallelCommandGroup(
+                        new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                        new WaitCommand(0.5)),
                 new ParallelCommandGroup(
                         new FeederCommandIn(feeder),
                         new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
