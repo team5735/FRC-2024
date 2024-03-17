@@ -103,6 +103,7 @@ public class LimelightAimCommand extends Command {
 
         Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
         aimHorizontally(robotToHood);
+        SmartDashboard.putNumber("llv2_current", currentRobotPose.getRotation().getRadians());
         m_watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
@@ -148,7 +149,6 @@ public class LimelightAimCommand extends Command {
     private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
 
-        SmartDashboard.putNumber("llv2_current", m_drivetrain.getRotation3d().getZ());
         SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
         SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
