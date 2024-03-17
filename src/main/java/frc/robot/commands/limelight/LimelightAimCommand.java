@@ -29,7 +29,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
-    // private AngleSubsystem m_angle;
+    private AngleSubsystem m_angle;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
@@ -51,7 +51,7 @@ public class LimelightAimCommand extends Command {
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
-        // m_angle = angle;
+        m_angle = angle;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
@@ -173,7 +173,7 @@ public class LimelightAimCommand extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
-        // m_angle.setSetpoint(angleChangerDesiredAngle);
+        m_angle.setSetpoint(Math.toDegrees(angleChangerDesiredAngle));
 
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
         SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
