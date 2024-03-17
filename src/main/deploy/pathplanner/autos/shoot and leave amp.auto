@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.84,
-      "y": 6.56
+      "x": 0.82,
+      "y": 6.57
     },
     "rotation": 60.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startShooter"
+            "name": "shooterStart"
           }
         },
         {
