@@ -29,7 +29,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
-    private AngleSubsystem m_angle;
+    // private AngleSubsystem m_angle;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
@@ -51,7 +51,7 @@ public class LimelightAimCommand extends Command {
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
-        m_angle = angle;
+        // m_angle = angle;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
 
@@ -68,7 +68,8 @@ public class LimelightAimCommand extends Command {
     public void execute() {
         m_watchdog.reset();
 
-        LimelightHelpers.Results results = LimelightHelpers.getLatestResults("").targetingResults;
+        LimelightHelpers.LimelightResults res = LimelightHelpers.getLatestResults("");
+        LimelightHelpers.Results results = res.targetingResults;
         m_watchdog.addEpoch("fetch limelight dump");
         LimelightTarget_Fiducial[] targets = results.targets_Fiducials;
         m_watchdog.addEpoch("extract fiducials");
@@ -90,7 +91,7 @@ public class LimelightAimCommand extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
-        Pose2d currentRobotPose = results.getBotPose2d();
+        Pose2d currentRobotPose = res.targetingResults.targets_Fiducials[0].getRobotPose_FieldSpace2D();
         m_watchdog.addEpoch("extract bot pose");
         Translation3d hoodPos = getHoodPos();
         m_drivetrain.addVisionMeasurement(currentRobotPose, Timer.getFPGATimestamp());
@@ -145,14 +146,13 @@ public class LimelightAimCommand extends Command {
     }
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
-        double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX())
-                + Math.PI;
-        if (drivetrainDesiredAngle > Math.PI) {
-            drivetrainDesiredAngle -= 2 * Math.PI;
-        }
+        double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
 
         SmartDashboard.putNumber("llv2_current", m_drivetrain.getRotation3d().getZ());
         SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
+        SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
+        SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
+        SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
 
         new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
     }
@@ -173,7 +173,7 @@ public class LimelightAimCommand extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
-        m_angle.setSetpoint(angleChangerDesiredAngle);
+        // m_angle.setSetpoint(angleChangerDesiredAngle);
 
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
         SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
