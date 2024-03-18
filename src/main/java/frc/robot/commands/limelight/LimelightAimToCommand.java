@@ -31,6 +31,7 @@ public class LimelightAimToCommand extends Command {
 
         m_pid.setTolerance(DrivetrainConstants.TOLERANCE);
         m_pid.setSetpoint(setpoint);
+        m_pid.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     // Called when the command is initially scheduled.
