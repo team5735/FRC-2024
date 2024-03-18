@@ -56,7 +56,7 @@ public class AutoCommands {
         return new ParallelCommandGroup(Commands.runOnce(() -> top.stop()), Commands.runOnce(() -> bottom.stop()));
     }
 
-    // public static Command spunUpDeadline(ShooterTopSubsystem top,
-    // ShooterBottomSubsystem bottom){
-    // }
+    public static Command spunUpDeadline(ShooterTopSubsystem top, ShooterBottomSubsystem bottom){
+        return Commands.waitUntil(() -> top.isSpunUp() && bottom.isSpunUp());
+    }
 }
