@@ -83,8 +83,4 @@ public class ShooterTopSubsystem extends SubsystemBase {
         return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_pid_top.getSetpoint(), a -> useOutput(a),
                 this);
     }
-
-    public Command getStop() {
-        return runOnce(() -> stop());
-    }
 }
