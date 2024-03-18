@@ -14,6 +14,7 @@ import frc.robot.constants.ShooterConstants;
 public class ShooterTopSubsystem extends SubsystemBase {
     private PIDController m_pid_top;
     private SimpleMotorFeedforward m_feedForward_top;
+    private double m_setpoint;
 
     private final TalonFX m_talon_top = new TalonFX(Constants.SHOOTER_MOTOR_TOP_ID);
 
@@ -25,6 +26,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
         m_feedForward_top = new SimpleMotorFeedforward(0, 0);
 
         updateProportions();
+        setSetpoint(0);
     }
 
     // changes PID & FeedForward values based on the NetworkTables
@@ -46,7 +48,8 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
-        SmartDashboard.putNumber("topSetpoint", m_pid_top.getSetpoint());
+        SmartDashboard.putNumber("shootTopSetpoint", m_setpoint);
+        SmartDashboard.putNumber("shootTopAmps", m_talon_top.getStatorCurrent().getValueAsDouble());
     }
 
     public void useOutput(double pidOutput) {
@@ -63,15 +66,20 @@ public class ShooterTopSubsystem extends SubsystemBase {
         return m_talon_top.getVelocity().getValueAsDouble() * 60;
     }
 
+    public void setSetpoint(double setpoint){
+        if(setpoint >= 0)
+            m_setpoint = setpoint;
+    }
+
     public void start() {
         // System.out.println("start top running");
         double topRPM = SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
 
-        m_pid_top.setSetpoint(topRPM);
+        setSetpoint(topRPM);
     }
 
     public void stop() {
-        m_pid_top.setSetpoint(0);
+        setSetpoint(0);
     }
 
     public boolean isSpunUp() {
@@ -79,7 +87,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
 
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_pid_top.getSetpoint(), a -> useOutput(a),
+        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> {return m_setpoint;}, a -> useOutput(a),
                 this);
     }
 }

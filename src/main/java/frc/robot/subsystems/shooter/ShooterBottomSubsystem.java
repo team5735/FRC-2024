@@ -14,6 +14,7 @@ import frc.robot.constants.ShooterConstants;
 public class ShooterBottomSubsystem extends SubsystemBase {
     private PIDController m_pid_bottom;
     private SimpleMotorFeedforward m_feedForward_bottom;
+    private double m_setpoint;
 
     private final TalonFX m_talon_bottom = new TalonFX(Constants.SHOOTER_MOTOR_BOTTOM_ID);
 
@@ -24,6 +25,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         m_feedForward_bottom = new SimpleMotorFeedforward(0, 0);
 
         updateProportions();
+        setSetpoint(0);
     }
 
     // changes PID & FeedForward values based on the NetworkTables
@@ -45,7 +47,9 @@ public class ShooterBottomSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("shootBottomOutput", Math.abs(getBottomMeasurement()));
         SmartDashboard.putNumber("shootBottomPIDError", Math.abs(m_pid_bottom.getPositionError()));
-        SmartDashboard.putNumber("botSetpoint", m_pid_bottom.getSetpoint());
+        SmartDashboard.putNumber("shootBottomSetpoint", m_setpoint);
+        SmartDashboard.putNumber("shootTopAmps", m_talon_bottom.getStatorCurrent().getValueAsDouble());
+
     }
 
     public void useOutput(double pidOutput) {
@@ -62,15 +66,21 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         return m_talon_bottom.getVelocity().getValueAsDouble() * 60;
     }
 
+    public void setSetpoint(double setpoint){
+        if(setpoint >= 0)
+            m_setpoint = setpoint;
+    }
+
+
     public void start() {
         // System.out.println("start bot running");
         double bottomRPM = SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_RPM);
 
-        m_pid_bottom.setSetpoint(bottomRPM);
+       setSetpoint(bottomRPM);
     }
 
     public void stop() {
-        m_pid_bottom.setSetpoint(0);
+        setSetpoint(0);
     }
 
     public boolean isSpunUp() {
@@ -78,7 +88,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
     }
 
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_bottom, () -> getBottomMeasurement(), () -> m_pid_bottom.getSetpoint(),
+        return new PIDCommand(m_pid_bottom, () -> getBottomMeasurement(), () -> {return m_setpoint;},
                 a -> useOutput(a), this);
     }
 }
