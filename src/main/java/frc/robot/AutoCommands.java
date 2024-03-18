@@ -26,7 +26,8 @@ public class AutoCommands {
 
         // Command startIntake = intake.getPullStop();
         // Command stopIntake = intake.getStop();
-        // Command startShooting = Compositions.feedAndShoot(feeder, shooterTop, shooterBottom);
+        // Command startShooting = Compositions.feedAndShoot(feeder, shooterTop,
+        // shooterBottom);
         // Command stopShooting = shooterTop.getStop();
 
         // commandsToRegister.put("startIntake", startIntake);
@@ -54,4 +55,8 @@ public class AutoCommands {
     public static Command stopShooter(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
         return new ParallelCommandGroup(Commands.runOnce(() -> top.stop()), Commands.runOnce(() -> bottom.stop()));
     }
+
+    // public static Command spunUpDeadline(ShooterTopSubsystem top,
+    // ShooterBottomSubsystem bottom){
+    // }
 }
