@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import frc.robot.Compositions;
 import frc.robot.commands.feeder.FeederPrimeNote;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -35,7 +36,7 @@ public class AutoCommands {
         // commandsToRegister.put("startShooting", startShooting);
         // commandsToRegister.put("stopShooting", stopShooting);
 
-        commandsToRegister.put("getNote", getNote(intake, feeder));
+        commandsToRegister.put("getNote", Compositions.feedNIn(feeder, intake));
         commandsToRegister.put("shooterStart", shooterStart(shooterTop, shooterBottom));
 
         commandsToRegister.put("stopShooter", stopShooter(shooterTop, shooterBottom));
@@ -57,7 +58,7 @@ public class AutoCommands {
         return new ParallelCommandGroup(Commands.runOnce(() -> top.stop()), Commands.runOnce(() -> bottom.stop()));
     }
 
-    public static Command spunUpDeadline(ShooterTopSubsystem top, ShooterBottomSubsystem bottom){
+    public static Command spunUpDeadline(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
         return Commands.waitUntil(() -> top.isSpunUp() && bottom.isSpunUp());
     }
 }

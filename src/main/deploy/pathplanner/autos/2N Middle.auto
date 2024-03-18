@@ -18,9 +18,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "waitShootSpinup"
           }
         },
         {
@@ -82,7 +82,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitShootSpinup"
           }
         },
         {
