@@ -5,12 +5,14 @@ import java.util.Map;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Compositions;
 import frc.robot.commands.feeder.FeederPrimeNote;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
@@ -51,7 +53,14 @@ public class AutoCommands {
     }
 
     public static Command shooterStart(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
-        return new ParallelCommandGroup(Commands.runOnce(() -> top.start()), Commands.runOnce(() -> bottom.start()));
+        return new ParallelCommandGroup(
+            Commands.runOnce(() -> top.setSetpoint(
+                SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_DEFAULT_RPM)
+            )), 
+            Commands.runOnce(() -> bottom.setSetpoint(
+                SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)
+            ))
+        );
     }
 
     public static Command stopShooter(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {

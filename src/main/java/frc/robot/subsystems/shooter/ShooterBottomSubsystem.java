@@ -71,14 +71,6 @@ public class ShooterBottomSubsystem extends SubsystemBase {
             m_setpoint = setpoint;
     }
 
-
-    public void start() {
-        // System.out.println("start bot running");
-        double bottomRPM = SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_RPM);
-
-       setSetpoint(bottomRPM);
-    }
-
     public void stop() {
         setSetpoint(0);
     }

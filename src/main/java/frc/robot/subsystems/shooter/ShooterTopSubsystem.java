@@ -71,13 +71,6 @@ public class ShooterTopSubsystem extends SubsystemBase {
             m_setpoint = setpoint;
     }
 
-    public void start() {
-        // System.out.println("start top running");
-        double topRPM = SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
-
-        setSetpoint(topRPM);
-    }
-
     public void stop() {
         setSetpoint(0);
     }
