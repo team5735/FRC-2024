@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +29,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
+    @SuppressWarnings("unused")
     private AngleSubsystem m_angle;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
@@ -96,9 +96,6 @@ public class LimelightAimCommand extends Command {
         Pose2d currentRobotPose = res.targetingResults.targets_Fiducials[0].getRobotPose_FieldSpace2D();
         m_watchdog.addEpoch("extract bot pose");
         Translation3d hoodPos = getHoodPos();
-        m_drivetrain.addVisionMeasurement(currentRobotPose, Timer.getFPGATimestamp());
-        m_watchdog.addEpoch("fieldRelative seeded");
-
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
         m_watchdog.addEpoch("checked bot can aim");
 
