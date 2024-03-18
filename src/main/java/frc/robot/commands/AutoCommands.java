@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.commands;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 // use addRequirements or anything that uses requirements (i.e. instead of subsystem.runOnce()
 // you should use Commands.runOnce()) because the default command won't run in auto otherwise!
 public class AutoCommands {
-    static void registerCommands(final IntakeSubsystem intake, final FeederSubsystem feeder,
+    public static void registerCommands(final IntakeSubsystem intake, final FeederSubsystem feeder,
             final ShooterTopSubsystem shooterTop, final ShooterBottomSubsystem shooterBottom) {
         Map<String, Command> commandsToRegister = new HashMap<>();
 
