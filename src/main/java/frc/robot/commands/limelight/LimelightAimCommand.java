@@ -169,7 +169,7 @@ public class LimelightAimCommand extends Command {
     }
 
     private double llRadiansToAngleChangerDeg(double llRad) {
-        return Math.toDegrees(llRad);
+        return -Math.toDegrees(llRad) + 180;
     }
 
     private void aimVertically(Translation3d angler, Translation3d target) {
@@ -182,8 +182,8 @@ public class LimelightAimCommand extends Command {
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
         m_angle.setSetpoint(llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
 
-        SmartDashboard.putNumber("llv2_anglerRad", llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
-        SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
+        SmartDashboard.putNumber("llv2_anglerSetpoint", llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
+        SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
     }
 
     // Called once the command ends or is interrupted.
