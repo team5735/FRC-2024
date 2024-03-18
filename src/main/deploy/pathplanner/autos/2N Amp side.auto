@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9,
-      "y": 6.55
+      "x": 0.95,
+      "y": 6.45
     },
     "rotation": 60.0
   },
@@ -43,9 +43,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "stopShooter"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -82,7 +95,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 1.0
           }
         },
         {
