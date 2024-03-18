@@ -169,6 +169,19 @@ public class RobotContainer {
                                                 SmartDashboard.getNumber("shootBottomRPM",
                                                                 ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
+                m_subsystemController.b().whileTrue(Compositions.shootNAngleFromStageFront(
+                        m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem
+                ));
+
+                m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
+                        m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem
+                ));
+
+                m_subsystemController.x().whileTrue(new ParallelCommandGroup(
+                        new IntakeCommandOut(m_intakeSubsystem),
+                        new FeederCommandOut(m_feederSubsystem)
+                ));
+
                 m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
                 m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
                 m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
