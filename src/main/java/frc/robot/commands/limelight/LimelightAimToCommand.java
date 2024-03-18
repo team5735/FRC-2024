@@ -31,6 +31,7 @@ public class LimelightAimToCommand extends Command {
 
         m_pid.setTolerance(DrivetrainConstants.TOLERANCE);
         m_pid.setSetpoint(setpoint);
+        m_pid.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     // Called when the command is initially scheduled.
@@ -60,7 +61,8 @@ public class LimelightAimToCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        // return m_pid.atSetpoint();
-        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < DrivetrainConstants.TOLERANCE;
+        // return Math.abs(getMeasurement() - m_pid.getSetpoint()) <
+        // DrivetrainConstants.TOLERANCE;
+        return true;
     }
 }
