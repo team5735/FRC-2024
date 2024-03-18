@@ -31,6 +31,7 @@ import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -142,7 +143,11 @@ public class RobotContainer {
 
         m_drivingController.a().whileTrue(
                 Compositions.feedAndShoot(
-                        m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+                        m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                        SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                        SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)
+                ));
+
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_limelightSubsystem, m_drivetrain,
                         m_angleSubsystem));
@@ -159,8 +164,11 @@ public class RobotContainer {
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(
-                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
-                        m_shooterBottomSubsystem));
+                Compositions.feedAndShoot(
+                        m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                        SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                        SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)
+                ));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));

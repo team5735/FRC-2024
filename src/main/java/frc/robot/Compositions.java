@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -12,6 +13,7 @@ import frc.robot.commands.feeder.FeederUnprimeNote;
 import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -34,10 +36,10 @@ public class Compositions {
      * shooter is at full speed.
      */
     static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
-            ShooterBottomSubsystem shooterBottom) {
+            ShooterBottomSubsystem shooterBottom, double topRPM, double bottomRPM) {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                        new ShooterSpinUpCommand(shooterTop, shooterBottom, topRPM, bottomRPM),
                         new WaitCommand(0.5)),
                 new ParallelCommandGroup(
                         new FeederCommandIn(feeder),
@@ -59,7 +61,10 @@ public class Compositions {
         ShooterBottomSubsystem bottom, FeederSubsystem feeder){
         return new SequentialCommandGroup(
                 angle.angleToFarthestSpeaker(),
-                feedAndShoot(feeder, top, bottom)
+                feedAndShoot(
+                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_FARTHEST_RPM, 
+                        ShooterConstants.SHOOTER_BOTTOM_FARTHEST_RPM
+                )
         );
     }
 
