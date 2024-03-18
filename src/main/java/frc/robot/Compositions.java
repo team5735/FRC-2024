@@ -5,7 +5,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.feeder.FeederCommandIn;
+import frc.robot.commands.feeder.FeederPrimeNote;
+import frc.robot.commands.feeder.FeederUnprimeNote;
+import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.subsystems.AngleSubsystem;
@@ -49,5 +53,24 @@ public class Compositions {
                                 new WaitCommand(2),
                                 intake.getPullStop()))
                 : angleSetCommand;
+    }
+
+    public static Command shootNAngleFromFarthest(AngleSubsystem angle, ShooterTopSubsystem top, 
+        ShooterBottomSubsystem bottom, FeederSubsystem feeder){
+        return new SequentialCommandGroup(
+                angle.angleToFarthestSpeaker(),
+                feedAndShoot(feeder, top, bottom)
+        );
+    }
+
+    public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake){
+        return new SequentialCommandGroup(
+                new ParallelDeadlineGroup(
+                        new FeederPrimeNote(feeder),
+                        new IntakeCommandIn(intake)
+                ),
+                new FeederUnprimeNote(feeder),
+                new FeederPrimeNote(feeder)
+        );
     }
 }

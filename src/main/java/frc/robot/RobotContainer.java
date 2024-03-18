@@ -120,8 +120,7 @@ public class RobotContainer {
                 .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
                         new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
-                .whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
-                        new IntakeCommandIn(m_intakeSubsystem)));
+                .whileTrue(Compositions.feedNIn(m_feederSubsystem, m_intakeSubsystem));
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
