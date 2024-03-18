@@ -7,6 +7,7 @@ package frc.robot.commands.limelight;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -107,7 +108,9 @@ public class LimelightAimCommand extends Command {
         m_watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
-        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_OFFSET);
+        double robotRotation = currentRobotPose.getRotation().getRadians();
+        Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_OFFSET
+                .rotateBy(new Rotation3d(0, 0, robotRotation)));
         aimVertically(angleChangerPosition, hoodPos);
         m_watchdog.addEpoch("aimed vertically");
 
@@ -165,6 +168,10 @@ public class LimelightAimCommand extends Command {
         return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
+    private double llRadiansToAngleChangerDeg(double llRad) {
+        return Math.toDegrees(llRad);
+    }
+
     private void aimVertically(Translation3d angler, Translation3d target) {
         // right triangle spam
         // theta 0 is parallel to the ground and facing the front of the robot
@@ -173,9 +180,9 @@ public class LimelightAimCommand extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
-        m_angle.setSetpoint(Math.toDegrees(angleChangerDesiredAngle));
+        m_angle.setSetpoint(llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
 
-        SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
+        SmartDashboard.putNumber("llv2_anglerRad", llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
         SmartDashboard.putNumber("llv2_anglerDeg", Math.toDegrees(angleChangerDesiredAngle));
     }
 
