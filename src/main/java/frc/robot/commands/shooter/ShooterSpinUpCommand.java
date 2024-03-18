@@ -1,8 +1,6 @@
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
 import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 
@@ -17,7 +15,6 @@ public class ShooterSpinUpCommand extends Command {
         m_setpoint_top = trpm;
         m_setpoint_bottom = brpm;
     }
-
 
     // Called when the command is initially scheduled.
     @Override
