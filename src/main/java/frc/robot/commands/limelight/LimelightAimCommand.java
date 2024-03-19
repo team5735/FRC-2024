@@ -35,6 +35,7 @@ public class LimelightAimCommand extends Command {
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
+    private double m_pigeonOffset;
 
     /**
      * Creates a new LimelightAimCommandV2. This is responsible for turning the
@@ -56,6 +57,7 @@ public class LimelightAimCommand extends Command {
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
         m_targetAcquired = false;
+        m_pigeonOffset = m_drivetrain.getRotation3d().getZ();
 
         SmartDashboard.putBoolean("llv2_aimed", false);
     }
@@ -154,7 +156,7 @@ public class LimelightAimCommand extends Command {
         SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
         SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
 
-        new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
+        new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle, m_pigeonOffset).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {
