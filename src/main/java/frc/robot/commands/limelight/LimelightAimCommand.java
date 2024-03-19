@@ -15,9 +15,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
@@ -81,9 +78,7 @@ public class LimelightAimCommand extends Command {
             return;
         }
 
-        SmartDashboard.putBoolean("llv2_aimed", true);
-        CommandScheduler.getInstance().schedule(Commands.sequence(new WaitCommand(LimelightConstants.AIMED_ON_TIMER),
-                Commands.runOnce(() -> SmartDashboard.putBoolean("llv2_aimed", false))));
+        SmartDashboard.putBoolean("llv2_aiming", true);
         m_targetAcquired = true;
         m_watchdog.addEpoch("a target has been acquired");
 
@@ -100,7 +95,7 @@ public class LimelightAimCommand extends Command {
         m_watchdog.addEpoch("checked bot can aim");
 
         Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
-        aimHorizontally(robotToHood);
+        aimHorizontally(robotToHood, currentRobotPose.getRotation().getRadians());
         SmartDashboard.putNumber("llv2_current", currentRobotPose.getRotation().getRadians());
         m_watchdog.addEpoch("aimed horizontally");
 
@@ -146,15 +141,18 @@ public class LimelightAimCommand extends Command {
         return hoodPos;
     }
 
-    private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
+    private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
+
+        double pigeonDir = m_drivetrain.getRotation3d().getZ();
+        double pigeonOffset = drivetrainDesiredAngle - curRobotRot;
 
         SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
         SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
         SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
 
-        new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
+        new LimelightAimToCommand(m_drivetrain, m_limelight, pigeonDir + pigeonOffset).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {

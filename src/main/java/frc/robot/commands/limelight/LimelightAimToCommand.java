@@ -22,7 +22,7 @@ public class LimelightAimToCommand extends Command {
 
     /** Creates a new LimelightAimToCommand. */
     public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
-            double setpoint) {
+            final double setpoint) {
         // Use addRequirements() here to declare subsystem dependencies.
         m_drivetrain = drivetrain;
         m_limelight = limelight;
@@ -52,6 +52,7 @@ public class LimelightAimToCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.drive(0);
+        SmartDashboard.putBoolean("llv2_aiming", false);
     }
 
     private double getMeasurement() {
@@ -61,8 +62,6 @@ public class LimelightAimToCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        // return Math.abs(getMeasurement() - m_pid.getSetpoint()) <
-        // DrivetrainConstants.TOLERANCE;
-        return true;
+        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < DrivetrainConstants.TOLERANCE;
     }
 }

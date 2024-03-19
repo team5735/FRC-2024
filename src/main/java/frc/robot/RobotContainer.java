@@ -236,4 +236,9 @@ public class RobotContainer {
         // we need to get the starting pose from the Limelight
         return auto;
     }
+
+    public void resetShooterShenanigans() {
+        m_shooterTopSubsystem.setSetpoint(0);
+        m_shooterBottomSubsystem.setSetpoint(0);
+    }
 }
