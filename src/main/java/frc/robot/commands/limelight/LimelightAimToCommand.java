@@ -19,15 +19,13 @@ public class LimelightAimToCommand extends Command {
             SmartDashboard.getNumber("llv2_turnP", LimelightConstants.TURN_P),
             SmartDashboard.getNumber("llv2_turnI", LimelightConstants.TURN_I),
             SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D));
-    private double m_pigeonOffset;
 
     /** Creates a new LimelightAimToCommand. */
     public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
-            final double setpoint, final double pigeonOffset) {
+            final double setpoint) {
         // Use addRequirements() here to declare subsystem dependencies.
         m_drivetrain = drivetrain;
         m_limelight = limelight;
-        m_pigeonOffset = pigeonOffset;
 
         addRequirements(m_drivetrain);
 
@@ -54,10 +52,11 @@ public class LimelightAimToCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.drive(0);
+        SmartDashboard.putBoolean("llv2_aiming", false);
     }
 
     private double getMeasurement() {
-        return m_drivetrain.getRotation3d().getZ() - m_pigeonOffset;
+        return m_drivetrain.getRotation3d().getZ();
     }
 
     // Returns true when the command should end.
