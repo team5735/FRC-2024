@@ -55,14 +55,28 @@ public class Compositions {
                 : angleSetCommand;
     }
 
-    public static Command shootNAngleFromFarthest(AngleSubsystem angle, ShooterTopSubsystem top,
+    public static Command shootNAngleFromStageBack(AngleSubsystem angle, ShooterTopSubsystem top,
             ShooterBottomSubsystem bottom, FeederSubsystem feeder) {
         return new SequentialCommandGroup(
-                angle.angleToFarthestSpeaker(),
+                angle.angleToStageBack(),
                 feedAndShoot(
-                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_FARTHEST_RPM,
-                        ShooterConstants.SHOOTER_BOTTOM_FARTHEST_RPM));
+                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_BACK_RPM,
+                        ShooterConstants.SHOOTER_BOTTOM_STAGE_BACK_RPM
+                )
+        );
     }
+
+        public static Command shootNAngleFromStageFront(AngleSubsystem angle, ShooterTopSubsystem top,
+            ShooterBottomSubsystem bottom, FeederSubsystem feeder) {
+        return new SequentialCommandGroup(
+                angle.angleToStageFront(),
+                feedAndShoot(
+                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_FRONT_RPM,
+                        ShooterConstants.SHOOTER_BOTTOM_STAGE_FRONT_RPM
+                )
+        );
+    }
+
 
     public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake) {
         return new SequentialCommandGroup(

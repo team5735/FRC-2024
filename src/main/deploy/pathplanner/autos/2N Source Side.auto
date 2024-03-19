@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2N amp pickup"
+                  "pathName": "2N source pickup"
                 }
               },
               {
@@ -89,7 +89,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2N amp shoot"
+            "pathName": "2N source shoot"
           }
         },
         {

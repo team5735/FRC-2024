@@ -156,9 +156,14 @@ public class AngleSubsystem extends SubsystemBase {
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_LOWEST_DEG + 10);
     }
 
-    public Command angleToFarthestSpeaker() {
-        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_FARTHEST_SHOOT_DEG);
+    public Command angleToStageBack() {
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
     }
+
+    public Command angleToStageFront() {
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
+    }
+
 
     public Command angleIncrease() {
         return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 10));
