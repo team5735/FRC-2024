@@ -25,7 +25,6 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         m_feedForward_bottom = new SimpleMotorFeedforward(0, 0);
 
         updateProportions();
-        setSetpoint(0);
     }
 
     // changes PID & FeedForward values based on the NetworkTables
@@ -66,8 +65,8 @@ public class ShooterBottomSubsystem extends SubsystemBase {
         return m_talon_bottom.getVelocity().getValueAsDouble() * 60;
     }
 
-    public void setSetpoint(double setpoint){
-        if(setpoint >= 0)
+    public void setSetpoint(double setpoint) {
+        if (setpoint >= 0)
             m_setpoint = setpoint;
     }
 
@@ -80,7 +79,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
     }
 
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_bottom, () -> getBottomMeasurement(), () -> {return m_setpoint;},
+        return new PIDCommand(m_pid_bottom, () -> getBottomMeasurement(), () -> m_setpoint,
                 a -> useOutput(a), this);
     }
 }
