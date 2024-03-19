@@ -60,6 +60,7 @@ public class LimelightAimCommand extends Command {
         m_pigeonOffset = m_drivetrain.getRotation3d().getZ();
 
         SmartDashboard.putBoolean("llv2_aimed", false);
+        SmartDashboard.putNumber("llv2_pigeonOffset", m_pigeonOffset);
     }
 
     // Called when the command is initially scheduled.
