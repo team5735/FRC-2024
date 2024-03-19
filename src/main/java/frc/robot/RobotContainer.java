@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoCommands;
@@ -23,9 +26,12 @@ import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightUp;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
+import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
+import frc.robot.commands.shooter.ShooterHoldNStopCommand;
+import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.ShooterConstants;
@@ -172,8 +178,23 @@ public class RobotContainer {
                         SmartDashboard.getNumber("shootBottomRPM",
                                 ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
-        m_subsystemController.b().whileTrue(Compositions.shootNAngleFromStageFront(
-                m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem));
+                // m_subsystemController.b().whileTrue(Compositions.shootNAngleFromStageFront(
+                // m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                // m_feederSubsystem
+                // ));
+
+                m_subsystemController.b().whileTrue(new SequentialCommandGroup(
+                                m_angleSubsystem.angleToSmartDashboardValue(),
+                                new ShooterSpinUpCommand(
+                                                m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
+                                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
+                                new ParallelDeadlineGroup(new WaitCommand(1),
+                                                new FeederCommandIn(m_feederSubsystem),
+                                                new ShooterHoldNStopCommand(m_shooterTopSubsystem,
+                                                                m_shooterBottomSubsystem)
+
+                                )));
 
         m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
                 m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem));
