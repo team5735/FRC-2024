@@ -65,6 +65,8 @@ public class LimelightAimToCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < DrivetrainConstants.TOLERANCE;
+        // return Math.abs(getMeasurement() - m_pid.getSetpoint()) <
+        // DrivetrainConstants.TOLERANCE;
+        return m_pid.atSetpoint();
     }
 }
