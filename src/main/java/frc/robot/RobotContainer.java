@@ -187,18 +187,20 @@ public class RobotContainer {
         // m_feederSubsystem
         // ));
 
-        m_subsystemController.b().whileTrue(new SequentialCommandGroup(
-                m_angleSubsystem.angleToSmartDashboardValue(),
-                new ShooterSpinUpCommand(
-                        m_shooterTopSubsystem, m_shooterBottomSubsystem,
-                        ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
-                        ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
-                new ParallelDeadlineGroup(new WaitCommand(1),
-                        new FeederCommandIn(m_feederSubsystem),
-                        new ShooterHoldNStopCommand(m_shooterTopSubsystem,
-                                m_shooterBottomSubsystem)
+        m_drivingController.povRight()
+                .whileTrue(new ParallelCommandGroup(
+                        m_angleSubsystem.angleToSmartDashboardValue(),
+                        new SequentialCommandGroup(
+                                new ShooterSpinUpCommand(
+                                        m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                                        ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
+                                        ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
+                                new ParallelDeadlineGroup( // new WaitCommand(1),
+                                        new FeederCommandIn(m_feederSubsystem),
+                                        new ShooterHoldNStopCommand(m_shooterTopSubsystem,
+                                                m_shooterBottomSubsystem)
 
-                )));
+                                ))));
 
         m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
                 m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem,

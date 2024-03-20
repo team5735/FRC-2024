@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.angle.AngleCommandSetAngle;
+import frc.robot.commands.angle.AngleCommandSetAngleSmartDashboard;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
@@ -164,18 +165,8 @@ public class AngleSubsystem extends SubsystemBase {
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
     }
 
-    // Don't rewrite this plzzzz :3
-    public double getSmartDashboardValue() {
-        double dashboardValue = SmartDashboard.getNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
-        double clampedValue = dashboardValue < AngleConstants.ANGLE_START_POS_DEG ? AngleConstants.ANGLE_START_POS_DEG : 
-                              dashboardValue > AngleConstants.ANGLE_HIGHEST_DEG   ? AngleConstants.ANGLE_HIGHEST_DEG :
-                              dashboardValue;
-
-        return clampedValue;
-    }
-
     public Command angleToSmartDashboardValue() {
-        return new AngleCommandSetAngle(this, getSmartDashboardValue());
+        return new AngleCommandSetAngleSmartDashboard(this);
     }
 
     public Command angleIncrease() {
