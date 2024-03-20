@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2N middle pickup"
+                  "pathName": "4N Mid N2 Combined"
                 }
               },
               {
@@ -69,20 +69,27 @@
                 "data": {
                   "name": "getNote"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shooterStart"
+                      }
+                    }
+                  ]
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2N middle shoot"
           }
         },
         {
@@ -129,7 +136,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4N Mid N3 Pickup"
+                  "pathName": "4N Mid N3 Combined"
                 }
               },
               {
@@ -137,20 +144,27 @@
                 "data": {
                   "name": "getNote"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shooterStart"
+                      }
+                    }
+                  ]
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4N Mid N3 Shoot"
           }
         },
         {
@@ -197,7 +211,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4N Mid N4 Pickup"
+                  "pathName": "4N Mid N4 Combined"
                 }
               },
               {
@@ -205,20 +219,27 @@
                 "data": {
                   "name": "getNote"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shooterStart"
+                      }
+                    }
+                  ]
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4N Mid N4 Shoot"
           }
         },
         {
