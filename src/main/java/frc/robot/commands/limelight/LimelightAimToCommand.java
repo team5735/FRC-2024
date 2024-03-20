@@ -19,6 +19,7 @@ public class LimelightAimToCommand extends Command {
             SmartDashboard.getNumber("llv2_turnP", LimelightConstants.TURN_P),
             SmartDashboard.getNumber("llv2_turnI", LimelightConstants.TURN_I),
             SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D));
+    double m_pigeonStartingNumber;
 
     /** Creates a new LimelightAimToCommand. */
     public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
@@ -32,6 +33,8 @@ public class LimelightAimToCommand extends Command {
         m_pid.setTolerance(DrivetrainConstants.TOLERANCE);
         m_pid.setSetpoint(setpoint);
         m_pid.enableContinuousInput(-Math.PI, Math.PI);
+
+        m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
     }
 
     // Called when the command is initially scheduled.
@@ -56,7 +59,7 @@ public class LimelightAimToCommand extends Command {
     }
 
     private double getMeasurement() {
-        return m_drivetrain.getRotation3d().getZ();
+        return m_drivetrain.getRotation3d().getZ() - m_pigeonStartingNumber;
     }
 
     // Returns true when the command should end.
