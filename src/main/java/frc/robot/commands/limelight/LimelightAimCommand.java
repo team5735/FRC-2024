@@ -141,8 +141,8 @@ public class LimelightAimCommand extends Command {
 
         SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
-        SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
         SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
+        SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
 
         new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
     }
