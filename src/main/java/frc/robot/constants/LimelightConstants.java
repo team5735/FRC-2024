@@ -13,7 +13,7 @@ public class LimelightConstants {
     public static final double DRIVETRAIN_MOVEMENT_SPEED = 1;
     public static final double CLUELESS_TURN_SPEED = 1;
     // TODO
-    public static final Translation3d ANGLE_CHANGER_OFFSET = new Translation3d();
+    public static final Translation3d ANGLE_CHANGER_OFFSET = new Translation3d(0, 0, 0.635);
     public static final double ANGLE_CHANGER_RADIUS = 0;
 
     public static final double AIMED_ON_TIMER = 1;

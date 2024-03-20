@@ -6,7 +6,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -15,6 +14,7 @@ import frc.robot.constants.ShooterConstants;
 public class ShooterTopSubsystem extends SubsystemBase {
     private PIDController m_pid_top;
     private SimpleMotorFeedforward m_feedForward_top;
+    private double m_setpoint;
 
     private final TalonFX m_talon_top = new TalonFX(Constants.SHOOTER_MOTOR_TOP_ID);
 
@@ -61,6 +61,8 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
+        SmartDashboard.putNumber("shootTopSetpoint", m_setpoint);
+        SmartDashboard.putNumber("shootTopAmps", m_talon_top.getStatorCurrent().getValueAsDouble());
     }
 
     public void useOutput(double pidOutput) {
@@ -77,14 +79,13 @@ public class ShooterTopSubsystem extends SubsystemBase {
         return m_talon_top.getVelocity().getValueAsDouble() * 60;
     }
 
-    public void start() {
-        double topRPM = SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
-
-        m_pid_top.setSetpoint(topRPM);
+    public void setSetpoint(double setpoint) {
+        if (setpoint >= 0)
+            m_setpoint = setpoint;
     }
 
     public void stop() {
-        m_pid_top.setSetpoint(0);
+        setSetpoint(0);
     }
 
     public boolean isSpunUp() {
@@ -92,11 +93,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
 
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_pid_top.getSetpoint(), a -> useOutput(a),
+        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_setpoint, a -> useOutput(a),
                 this);
-    }
-
-    public Command stopCommand() {
-        return runOnce(() -> stop());
     }
 }

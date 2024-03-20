@@ -14,19 +14,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AutoCommands;
+import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
 import frc.robot.commands.climber.ClimberCommandRightUp;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
+import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
-import frc.robot.commands.feeder.FeederPrimeNote;
+import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
+import frc.robot.commands.shooter.ShooterHoldNStopCommand;
+import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -112,10 +120,11 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        m_drivingController.leftBumper().whileTrue(
-                new ParallelCommandGroup(new FeederCommandOut(m_feederSubsystem), m_intakeSubsystem.pushCommand()));
-        m_drivingController.rightBumper().whileTrue(new ParallelDeadlineGroup(new FeederPrimeNote(m_feederSubsystem),
-                m_intakeSubsystem.pullCommand()));
+        m_drivingController.leftBumper()
+                .whileTrue(new ParallelCommandGroup(new IntakeCommandOut(m_intakeSubsystem),
+                        new FeederCommandOut(m_feederSubsystem)));
+        m_drivingController.rightBumper()
+                .whileTrue(Compositions.feedNIn(m_feederSubsystem, m_intakeSubsystem));
 
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
@@ -133,11 +142,19 @@ public class RobotContainer {
                 }));
 
         m_drivingController.a().whileTrue(
-                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem));
+                Compositions.feedAndShoot(
+                        m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                        SmartDashboard.getNumber("shootTopRPM",
+                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                        SmartDashboard.getNumber("shootBottomRPM",
+                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain,
-                        m_angleSubsystem));
-        m_drivingController.y().onTrue(Commands.runOnce(() -> m_drivetrain.seedFieldRelative(), m_drivetrain));
+                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain));
+        m_drivingController.y().onTrue(Commands.runOnce(() -> {
+            m_drivetrain.seedFieldRelative();
+            m_drivetrain.getPigeon2().setYaw(0);
+        }, m_drivetrain));
 
         m_drivingController.povUp().onTrue(
                 Compositions.angleUpdateWithIntake(m_angleSubsystem.angleToMax(), m_angleSubsystem,
@@ -145,11 +162,42 @@ public class RobotContainer {
         m_drivingController.povDown().onTrue(
                 m_angleSubsystem.angleToBase());
 
+        m_drivingController.povLeft().onTrue(new AngleCommandSetAngle(m_angleSubsystem, 180));
+
         // some lines were not copied from the drivetrain
 
         m_subsystemController.a().whileTrue(
-                Compositions.feedAndShoot(m_feederSubsystem, m_shooterTopSubsystem,
-                        m_shooterBottomSubsystem));
+                Compositions.feedAndShoot(
+                        m_feederSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                        SmartDashboard.getNumber("shootTopRPM",
+                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                        SmartDashboard.getNumber("shootBottomRPM",
+                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+
+        // m_subsystemController.b().whileTrue(Compositions.shootNAngleFromStageFront(
+        // m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+        // m_feederSubsystem
+        // ));
+
+        m_subsystemController.b().whileTrue(new SequentialCommandGroup(
+                m_angleSubsystem.angleToSmartDashboardValue(),
+                new ShooterSpinUpCommand(
+                        m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                        ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
+                        ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
+                new ParallelDeadlineGroup(new WaitCommand(1),
+                        new FeederCommandIn(m_feederSubsystem),
+                        new ShooterHoldNStopCommand(m_shooterTopSubsystem,
+                                m_shooterBottomSubsystem)
+
+                )));
+
+        m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
+                m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem));
+
+        m_subsystemController.x().whileTrue(new ParallelCommandGroup(
+                new IntakeCommandOut(m_intakeSubsystem),
+                new FeederCommandOut(m_feederSubsystem)));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
         m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
@@ -183,5 +231,10 @@ public class RobotContainer {
 
         // we need to get the starting pose from the Limelight
         return auto;
+    }
+
+    public void resetShooterShenanigans() {
+        m_shooterTopSubsystem.setSetpoint(0);
+        m_shooterBottomSubsystem.setSetpoint(0);
     }
 }

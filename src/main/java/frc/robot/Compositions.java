@@ -6,8 +6,12 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
+import frc.robot.commands.feeder.FeederPrimeNote;
+import frc.robot.commands.feeder.FeederUnprimeNote;
+import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,10 +34,10 @@ public class Compositions {
      * shooter is at full speed.
      */
     static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
-            ShooterBottomSubsystem shooterBottom) {
+            ShooterBottomSubsystem shooterBottom, double topRPM, double bottomRPM) {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        new ShooterSpinUpCommand(shooterTop, shooterBottom),
+                        new ShooterSpinUpCommand(shooterTop, shooterBottom, topRPM, bottomRPM),
                         new WaitCommand(0.5)),
                 new ParallelCommandGroup(
                         new FeederCommandIn(feeder),
@@ -49,5 +53,32 @@ public class Compositions {
                                 new WaitCommand(2),
                                 intake.getPullStop()))
                 : angleSetCommand;
+    }
+
+    public static Command shootNAngleFromStageBack(AngleSubsystem angle, ShooterTopSubsystem top,
+            ShooterBottomSubsystem bottom, FeederSubsystem feeder) {
+        return new SequentialCommandGroup(
+                angle.angleToStageBack(),
+                feedAndShoot(
+                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_BACK_RPM,
+                        ShooterConstants.SHOOTER_BOTTOM_STAGE_BACK_RPM));
+    }
+
+    public static Command shootNAngleFromStageFront(AngleSubsystem angle, ShooterTopSubsystem top,
+            ShooterBottomSubsystem bottom, FeederSubsystem feeder) {
+        return new SequentialCommandGroup(
+                angle.angleToStageFront(),
+                feedAndShoot(
+                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_FRONT_RPM,
+                        ShooterConstants.SHOOTER_BOTTOM_STAGE_FRONT_RPM));
+    }
+
+    public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake) {
+        return new SequentialCommandGroup(
+                new ParallelDeadlineGroup(
+                        new FeederPrimeNote(feeder),
+                        new IntakeCommandIn(intake)),
+                new FeederUnprimeNote(feeder),
+                new FeederPrimeNote(feeder));
     }
 }

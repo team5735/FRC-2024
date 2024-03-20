@@ -170,8 +170,26 @@ public class AngleSubsystem extends SubsystemBase {
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_LOWEST_DEG + 10);
     }
 
-    public Command angleToFarthestSpeaker() {
-        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_FARTHEST_SHOOT_DEG);
+    public Command angleToStageBack() {
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
+    }
+
+    public Command angleToStageFront() {
+        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
+    }
+
+    // Don't rewrite this plzzzz :3
+    public double getSmartDashboardValue() {
+        double dashboardValue = SmartDashboard.getNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
+        double clampedValue = dashboardValue < AngleConstants.ANGLE_START_POS_DEG ? AngleConstants.ANGLE_START_POS_DEG : 
+                              dashboardValue > AngleConstants.ANGLE_HIGHEST_DEG   ? AngleConstants.ANGLE_HIGHEST_DEG :
+                              dashboardValue;
+
+        return clampedValue;
+    }
+
+    public Command angleToSmartDashboardValue() {
+        return new AngleCommandSetAngle(this, getSmartDashboardValue());
     }
 
     public Command angleIncrease() {

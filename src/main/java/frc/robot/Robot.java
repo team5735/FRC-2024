@@ -91,8 +91,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("shootBottomKS", ShooterConstants.SHOOTER_BOTTOM_KS);
         SmartDashboard.putNumber("shootBottomKV", ShooterConstants.SHOOTER_BOTTOM_KV);
 
-        SmartDashboard.putNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_RPM);
-        SmartDashboard.putNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_RPM);
+        SmartDashboard.putNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_DEFAULT_RPM);
+        SmartDashboard.putNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM);
         SmartDashboard.putNumber("shootTopOutput", 0);
         SmartDashboard.putNumber("shootBottomOutput", 0);
 
