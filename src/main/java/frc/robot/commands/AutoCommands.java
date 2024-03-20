@@ -44,7 +44,7 @@ public class AutoCommands {
         commandsToRegister.put("shooterStart", shooterStart(shooterTop, shooterBottom));
 
         commandsToRegister.put("stopShooter", stopShooter(shooterTop, shooterBottom));
-        commandsToRegister.put("shootNote", feeder.getPull());
+        commandsToRegister.put("shootNote", new ParallelCommandGroup(feeder.getPullStop(), intake.getPullStop()));
         commandsToRegister.put("waitShootSpinup", spunUpDeadline(shooterTop, shooterBottom));
 
         NamedCommands.registerCommands(commandsToRegister);
