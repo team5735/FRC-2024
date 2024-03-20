@@ -155,10 +155,6 @@ public class LimelightAimCommand extends Command {
         return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
-    private double llRadiansToAngleChangerDeg(double llRad) {
-        return -Math.toDegrees(llRad) + 180;
-    }
-
     private void aimVertically(Translation3d angler, Translation3d target) {
         // right triangle spam
         // theta 0 is parallel to the ground and facing the front of the robot
@@ -167,8 +163,9 @@ public class LimelightAimCommand extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
+        double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
 
-        SmartDashboard.putNumber("llv2_anglerSetpoint", llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
+        SmartDashboard.putNumber("llv2_anglerSetpoint", anglerSetpoint);
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
 
         // This is no longer being used. This code is left here for historical reasons
