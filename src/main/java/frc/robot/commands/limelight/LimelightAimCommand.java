@@ -140,15 +140,30 @@ public class LimelightAimCommand extends Command {
         return hoodPos;
     }
 
+    public static double positiveToPosNeg(double in) {
+        if (in > Math.PI) {
+            return -(in - Math.PI);
+        }
+        return in;
+    }
+
+    public static double posNegToPositive(double in) {
+        if (in < 0) {
+            return Math.PI + (-in);
+        }
+        return in;
+    }
+
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
+        double offset = posNegToPositive(drivetrainDesiredAngle);
 
         SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
         SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
         SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
 
-        new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
+        new LimelightAimToCommand(m_drivetrain, m_limelight, offset).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {
