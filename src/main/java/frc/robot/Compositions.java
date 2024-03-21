@@ -33,7 +33,8 @@ public class Compositions {
      * This command does not run the intake until 0.5 seconds have passed AND the
      * shooter is at full speed.
      */
-    static Command feedAndShoot(FeederSubsystem feeder, ShooterTopSubsystem shooterTop,
+    static Command feedAndShootAlsoIntake(FeederSubsystem feeder, IntakeSubsystem intake,
+            ShooterTopSubsystem shooterTop,
             ShooterBottomSubsystem shooterBottom, double topRPM, double bottomRPM) {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
@@ -41,6 +42,7 @@ public class Compositions {
                         new WaitCommand(0.5)),
                 new ParallelCommandGroup(
                         new FeederCommandIn(feeder),
+                        new IntakeCommandIn(intake),
                         new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
     }
 
@@ -56,20 +58,20 @@ public class Compositions {
     }
 
     public static Command shootNAngleFromStageBack(AngleSubsystem angle, ShooterTopSubsystem top,
-            ShooterBottomSubsystem bottom, FeederSubsystem feeder) {
+            ShooterBottomSubsystem bottom, FeederSubsystem feeder, IntakeSubsystem intake) {
         return new SequentialCommandGroup(
                 angle.angleToStageBack(),
-                feedAndShoot(
-                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_BACK_RPM,
+                feedAndShootAlsoIntake(
+                        feeder, intake, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_BACK_RPM,
                         ShooterConstants.SHOOTER_BOTTOM_STAGE_BACK_RPM));
     }
 
     public static Command shootNAngleFromStageFront(AngleSubsystem angle, ShooterTopSubsystem top,
-            ShooterBottomSubsystem bottom, FeederSubsystem feeder) {
+            ShooterBottomSubsystem bottom, FeederSubsystem feeder, IntakeSubsystem intake) {
         return new SequentialCommandGroup(
                 angle.angleToStageFront(),
-                feedAndShoot(
-                        feeder, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_FRONT_RPM,
+                feedAndShootAlsoIntake(
+                        feeder, intake, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_FRONT_RPM,
                         ShooterConstants.SHOOTER_BOTTOM_STAGE_FRONT_RPM));
     }
 

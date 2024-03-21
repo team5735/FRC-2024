@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
@@ -25,13 +26,14 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
+    private AngleSubsystem m_angleChanger;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
     /**
-     * Creates a new LimelightAimCommandV2. This is responsible for turning the
+     * Creates a new LimelightAimCommand. This is responsible for turning the
      * robot to face the hood and for setting the angle changer to the correct angle
      * to shoot a NOTE into the hood.
      *
@@ -40,11 +42,13 @@ public class LimelightAimCommand extends Command {
      *                   horizontally
      * @param angle      The angle changer, used to aim vertically
      */
-    public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain) {
+    public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
+            final AngleSubsystem angleSubsystem) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
+        m_angleChanger = angleSubsystem;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
         m_targetAcquired = false;
@@ -136,15 +140,30 @@ public class LimelightAimCommand extends Command {
         return hoodPos;
     }
 
+    public static double positiveToPosNeg(double in) {
+        if (in > Math.PI) {
+            return -(in - Math.PI);
+        }
+        return in;
+    }
+
+    public static double posNegToPositive(double in) {
+        if (in < 0) {
+            return Math.PI + (-in);
+        }
+        return in;
+    }
+
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
+        double offset = posNegToPositive(drivetrainDesiredAngle);
 
         SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
         SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
-        SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
         SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
+        SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
 
-        new LimelightAimToCommand(m_drivetrain, m_limelight, drivetrainDesiredAngle).schedule();
+        new LimelightAimToCommand(m_drivetrain, m_limelight, offset).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {
@@ -155,10 +174,6 @@ public class LimelightAimCommand extends Command {
         return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
-    private double llRadiansToAngleChangerDeg(double llRad) {
-        return -Math.toDegrees(llRad) + 180;
-    }
-
     private void aimVertically(Translation3d angler, Translation3d target) {
         // right triangle spam
         // theta 0 is parallel to the ground and facing the front of the robot
@@ -167,12 +182,12 @@ public class LimelightAimCommand extends Command {
         // double check this
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
+        double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
 
-        SmartDashboard.putNumber("llv2_anglerSetpoint", llRadiansToAngleChangerDeg(angleChangerDesiredAngle));
+        SmartDashboard.putNumber("llv2_anglerSetpoint", anglerSetpoint);
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
 
-        // This is no longer being used. This code is left here for historical reasons
-        // and so I don't have to do this ever again
+        // m_angleChanger.setSetpoint(anglerSetpoint);
     }
 
     // Called once the command ends or is interrupted.

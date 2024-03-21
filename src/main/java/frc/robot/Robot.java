@@ -103,6 +103,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("llv2_turnP", LimelightConstants.TURN_P);
         SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
         SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
+
+        SmartDashboard.putNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
     }
 
     /**
@@ -166,6 +168,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        m_robotContainer.resetShenanigans();
     }
 
     /** This function is called periodically during operator control. */

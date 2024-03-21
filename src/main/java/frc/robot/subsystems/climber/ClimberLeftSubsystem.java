@@ -24,14 +24,18 @@ public class ClimberLeftSubsystem extends SubsystemBase {
     }
 
     public void leftUp() {
-        double leftVoltage = SmartDashboard.getNumber("climbLeftUpVoltage", ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
+        // double leftVoltage = SmartDashboard.getNumber("climbLeftUpVoltage",
+        // ClimberConstants.CLIMBER_LEFT_UP_VOLTS);
+        double leftVoltage = ClimberConstants.CLIMBER_LEFT_UP_VOLTS;
 
         m_sparkMax_left.setVoltage(-leftVoltage);
 
     }
 
     public void leftDown() {
-        double leftVoltage = SmartDashboard.getNumber("climbLeftDownVoltage", ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
+        // double leftVoltage = SmartDashboard.getNumber("climbLeftDownVoltage",
+        // ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS);
+        double leftVoltage = ClimberConstants.CLIMBER_LEFT_DOWN_VOLTS;
 
         m_sparkMax_left.setVoltage(leftVoltage);
     }

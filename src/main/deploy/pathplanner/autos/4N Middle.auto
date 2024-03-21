@@ -26,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.75
+            "waitTime": 0.25
           }
         },
         {
@@ -36,7 +36,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -86,27 +86,34 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "waitShootSpinup"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "shootNote"
+            "waitTime": 0.25
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -155,7 +162,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.25
           }
         },
         {
@@ -165,7 +172,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {
@@ -223,7 +230,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.25
           }
         },
         {
@@ -233,7 +240,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               },
               {

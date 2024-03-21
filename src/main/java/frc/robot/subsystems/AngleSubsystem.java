@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.angle.AngleCommandSetAngle;
+import frc.robot.commands.angle.AngleCommandSetAngleSmartDashboard;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
@@ -52,12 +53,14 @@ public class AngleSubsystem extends SubsystemBase {
     // as well as updating the NetworkTables for certain readings
     @Override
     public void periodic() {
-        updateProportions();
+        // updateProportions();
 
         SmartDashboard.putNumber("anglePos", getMeasurement());
         SmartDashboard.putNumber("angleCurrentSetpoint", m_setpoint);
-        SmartDashboard.putNumber("angleLeftAmps", m_sparkMax_left.getOutputCurrent());
-        SmartDashboard.putNumber("angleRightAmps", m_sparkMax_right.getOutputCurrent());
+        // SmartDashboard.putNumber("angleLeftAmps",
+        // m_sparkMax_left.getOutputCurrent());
+        // SmartDashboard.putNumber("angleRightAmps",
+        // m_sparkMax_right.getOutputCurrent());
         SmartDashboard.putNumber("anglePIDError", Math.abs(m_pid.getPositionError()));
         SmartDashboard.putNumber("anglePIDOutput", m_activeOutput);
     }
@@ -107,13 +110,21 @@ public class AngleSubsystem extends SubsystemBase {
      * </ul>
      */
     public void updateProportions() {
-        double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
-        double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
-        double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
+        // double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
+        // double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
+        // double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
 
-        double ks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
-        double kg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
-        double kv = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
+        // double ks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
+        // double kg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
+        // double kv = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
+
+        double kp = AngleConstants.ANGLE_KP;
+        double ki = AngleConstants.ANGLE_KI;
+        double kd = AngleConstants.ANGLE_KD;
+
+        double ks = AngleConstants.ANGLE_KS;
+        double kg = AngleConstants.ANGLE_KG;
+        double kv = AngleConstants.ANGLE_KV;
 
         m_feedForward = new ArmFeedforward(ks, kg, kv);
         m_pid.setPID(kp, ki, kd);
@@ -178,18 +189,8 @@ public class AngleSubsystem extends SubsystemBase {
         return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
     }
 
-    // Don't rewrite this plzzzz :3
-    public double getSmartDashboardValue() {
-        double dashboardValue = SmartDashboard.getNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
-        double clampedValue = dashboardValue < AngleConstants.ANGLE_START_POS_DEG ? AngleConstants.ANGLE_START_POS_DEG : 
-                              dashboardValue > AngleConstants.ANGLE_HIGHEST_DEG   ? AngleConstants.ANGLE_HIGHEST_DEG :
-                              dashboardValue;
-
-        return clampedValue;
-    }
-
     public Command angleToSmartDashboardValue() {
-        return new AngleCommandSetAngle(this, getSmartDashboardValue());
+        return new AngleCommandSetAngleSmartDashboard(this);
     }
 
     public Command angleIncrease() {

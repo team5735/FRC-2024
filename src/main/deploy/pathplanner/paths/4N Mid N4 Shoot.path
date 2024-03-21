@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.65,
-        "y": 4.35
+        "x": 2.7,
+        "y": 4.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9428932188134524,
-        "y": 5.0571067811865476
+        "x": 1.9928932188134527,
+        "y": 4.8071067811865476
       },
       "isLocked": false,
       "linkedName": null
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "4N Mid",
   "previewStartingState": {
-    "rotation": -45.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

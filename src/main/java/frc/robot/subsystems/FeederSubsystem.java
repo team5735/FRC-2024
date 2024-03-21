@@ -20,13 +20,17 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public void pull() {
-        double pullSpeed = SmartDashboard.getNumber("feederPullVoltage", FeederConstants.FEEDER_PULL_VOLTS);
+        // double pullSpeed = SmartDashboard.getNumber("feederPullVoltage",
+        // FeederConstants.FEEDER_PULL_VOLTS);
+        double pullSpeed = FeederConstants.FEEDER_PULL_VOLTS;
 
         m_sparkMax_pull.setVoltage(pullSpeed);
     }
 
     public void push() {
-        double pushSpeed = SmartDashboard.getNumber("feederPushVoltage", FeederConstants.FEEDER_PUSH_VOLTS);
+        // double pushSpeed = SmartDashboard.getNumber("feederPushVoltage",
+        // FeederConstants.FEEDER_PUSH_VOLTS);
+        double pushSpeed = FeederConstants.FEEDER_PUSH_VOLTS;
 
         m_sparkMax_pull.setVoltage(-pushSpeed);
     }
@@ -45,11 +49,11 @@ public class FeederSubsystem extends SubsystemBase {
         return m_switch.get();
     }
 
-    public Command getPull() {
+    public Command getPullStop() {
         return startEnd(() -> pull(), () -> stop());
     }
 
-    public Command getPush() {
+    public Command getPushStop() {
         return startEnd(() -> push(), () -> stop());
     }
 

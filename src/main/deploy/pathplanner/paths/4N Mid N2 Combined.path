@@ -8,27 +8,49 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5089561574011987,
-        "y": 4.770165004024366
+        "x": 2.3,
+        "y": 5.55
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7,
-        "y": 4.1
+        "x": 3.1,
+        "y": 5.7
       },
       "prevControl": {
-        "x": 1.7,
-        "y": 4.1
+        "x": 3.1230644996586445,
+        "y": 5.300665517572679
+      },
+      "nextControl": {
+        "x": 3.0769355003413557,
+        "y": 6.099334482427321
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.3,
+        "y": 5.55
+      },
+      "prevControl": {
+        "x": 2.3000000000000003,
+        "y": 5.55
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": 10.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,8 +61,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": true
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "4N Mid",

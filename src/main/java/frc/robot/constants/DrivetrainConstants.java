@@ -14,5 +14,5 @@ public class DrivetrainConstants {
     public static final double TOLERANCE = 0.01;
     public static final double SLOW_SPEED = 2;
     public static final double NORMAL_SPEED = 6;
-    public static final double TURBO_SPEED = 8;
+    public static final double TURBO_SPEED = 10;
 }
