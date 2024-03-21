@@ -243,8 +243,9 @@ public class RobotContainer {
         return auto;
     }
 
-    public void resetShooterShenanigans() {
+    public void resetShenanigans() {
         m_shooterTopSubsystem.setSetpoint(0);
         m_shooterBottomSubsystem.setSetpoint(0);
+        m_angleSubsystem.setSetpoint(0);
     }
 }

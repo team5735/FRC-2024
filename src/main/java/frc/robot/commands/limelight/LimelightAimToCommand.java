@@ -36,6 +36,8 @@ public class LimelightAimToCommand extends Command {
         m_pid.enableContinuousInput(-Math.PI, Math.PI);
 
         m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
+
+        SmartDashboard.putNumber("llTurnTo_setpoint", m_pid.getSetpoint());
     }
 
     // Called when the command is initially scheduled.

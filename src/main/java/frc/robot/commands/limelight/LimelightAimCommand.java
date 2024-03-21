@@ -187,7 +187,7 @@ public class LimelightAimCommand extends Command {
         SmartDashboard.putNumber("llv2_anglerSetpoint", anglerSetpoint);
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
 
-        m_angleChanger.setSetpoint(anglerSetpoint);
+        // m_angleChanger.setSetpoint(anglerSetpoint);
     }
 
     // Called once the command ends or is interrupted.
