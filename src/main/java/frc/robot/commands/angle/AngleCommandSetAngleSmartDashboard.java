@@ -18,7 +18,6 @@ public class AngleCommandSetAngleSmartDashboard extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        System.out.println("lmfao");
         m_setpoint = SmartDashboard.getNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
         m_subsystem.setSetpoint(m_setpoint);
     }

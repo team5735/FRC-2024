@@ -29,12 +29,24 @@ public class ShooterBottomSubsystem extends SubsystemBase {
 
     // changes PID & FeedForward values based on the NetworkTables
     public void updateProportions() {
-        double bkp = SmartDashboard.getNumber("shootBottomKP", ShooterConstants.SHOOTER_BOTTOM_KP);
-        double bki = SmartDashboard.getNumber("shootBottomKI", ShooterConstants.SHOOTER_BOTTOM_KI);
-        double bkd = SmartDashboard.getNumber("shootBottomKD", ShooterConstants.SHOOTER_BOTTOM_KD);
+        // double bkp = SmartDashboard.getNumber("shootBottomKP",
+        // ShooterConstants.SHOOTER_BOTTOM_KP);
+        // double bki = SmartDashboard.getNumber("shootBottomKI",
+        // ShooterConstants.SHOOTER_BOTTOM_KI);
+        // double bkd = SmartDashboard.getNumber("shootBottomKD",
+        // ShooterConstants.SHOOTER_BOTTOM_KD);
 
-        double bks = SmartDashboard.getNumber("shootBottomKS", ShooterConstants.SHOOTER_BOTTOM_KS);
-        double bkv = SmartDashboard.getNumber("shootBottomKV", ShooterConstants.SHOOTER_BOTTOM_KV);
+        // double bks = SmartDashboard.getNumber("shootBottomKS",
+        // ShooterConstants.SHOOTER_BOTTOM_KS);
+        // double bkv = SmartDashboard.getNumber("shootBottomKV",
+        // ShooterConstants.SHOOTER_BOTTOM_KV);
+
+        double bkp = ShooterConstants.SHOOTER_BOTTOM_KP;
+        double bki = ShooterConstants.SHOOTER_BOTTOM_KI;
+        double bkd = ShooterConstants.SHOOTER_BOTTOM_KD;
+
+        double bks = ShooterConstants.SHOOTER_BOTTOM_KS;
+        double bkv = ShooterConstants.SHOOTER_BOTTOM_KV;
 
         m_pid_bottom.setPID(bkp, bki, bkd);
         m_feedForward_bottom = new SimpleMotorFeedforward(bks, bkv);

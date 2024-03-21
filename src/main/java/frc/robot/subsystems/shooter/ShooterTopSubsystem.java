@@ -30,12 +30,24 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
     // changes PID & FeedForward values based on the NetworkTables
     public void updateProportions() {
-        double tkp = SmartDashboard.getNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
-        double tki = SmartDashboard.getNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
-        double tkd = SmartDashboard.getNumber("shootTopKD", ShooterConstants.SHOOTER_TOP_KD);
+        // double tkp = SmartDashboard.getNumber("shootTopKP",
+        // ShooterConstants.SHOOTER_TOP_KP);
+        // double tki = SmartDashboard.getNumber("shootTopKI",
+        // ShooterConstants.SHOOTER_TOP_KI);
+        // double tkd = SmartDashboard.getNumber("shootTopKD",
+        // ShooterConstants.SHOOTER_TOP_KD);
 
-        double tks = SmartDashboard.getNumber("shootTopKS", ShooterConstants.SHOOTER_TOP_KS);
-        double tkv = SmartDashboard.getNumber("shootTopKV", ShooterConstants.SHOOTER_TOP_KV);
+        // double tks = SmartDashboard.getNumber("shootTopKS",
+        // ShooterConstants.SHOOTER_TOP_KS);
+        // double tkv = SmartDashboard.getNumber("shootTopKV",
+        // ShooterConstants.SHOOTER_TOP_KV);
+
+        double tkp = ShooterConstants.SHOOTER_TOP_KP;
+        double tki = ShooterConstants.SHOOTER_TOP_KI;
+        double tkd = ShooterConstants.SHOOTER_TOP_KD;
+
+        double tks = ShooterConstants.SHOOTER_TOP_KS;
+        double tkv = ShooterConstants.SHOOTER_TOP_KV;
 
         m_pid_top.setPID(tkp, tki, tkd);
         m_feedForward_top = new SimpleMotorFeedforward(tks, tkv);
@@ -43,7 +55,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        updateProportions();
+        // updateProportions();
 
         SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
