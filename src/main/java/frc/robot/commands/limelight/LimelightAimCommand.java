@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
@@ -25,13 +26,14 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
+    private AngleSubsystem m_angleChanger;
     private boolean m_targetAcquired = false;
     private Alliance m_alliance;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
     /**
-     * Creates a new LimelightAimCommandV2. This is responsible for turning the
+     * Creates a new LimelightAimCommand. This is responsible for turning the
      * robot to face the hood and for setting the angle changer to the correct angle
      * to shoot a NOTE into the hood.
      *
@@ -40,11 +42,13 @@ public class LimelightAimCommand extends Command {
      *                   horizontally
      * @param angle      The angle changer, used to aim vertically
      */
-    public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain) {
+    public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
+            final AngleSubsystem angleSubsystem) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
+        m_angleChanger = angleSubsystem;
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
         m_targetAcquired = false;
@@ -168,8 +172,7 @@ public class LimelightAimCommand extends Command {
         SmartDashboard.putNumber("llv2_anglerSetpoint", anglerSetpoint);
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
 
-        // This is no longer being used. This code is left here for historical reasons
-        // and so I don't have to do this ever again
+        m_angleChanger.setSetpoint(anglerSetpoint);
     }
 
     // Called once the command ends or is interrupted.

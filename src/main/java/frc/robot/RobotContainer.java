@@ -156,7 +156,7 @@ public class RobotContainer {
                                 ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain));
+                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
         m_drivingController.y().onTrue(Commands.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
