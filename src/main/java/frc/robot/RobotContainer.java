@@ -27,7 +27,6 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
-import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
@@ -120,7 +119,7 @@ public class RobotContainer {
      */
     private void configureBindings() {
         m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(
-                new IntakeCommandOut(m_intakeSubsystem),
+                m_intakeSubsystem.getPushStop(),
                 new FeederCommandOut(m_feederSubsystem)));
         m_drivingController.rightBumper()
                 .whileTrue(Compositions.feedNIn(m_feederSubsystem, m_intakeSubsystem));
@@ -206,7 +205,7 @@ public class RobotContainer {
                 m_intakeSubsystem));
 
         m_subsystemController.x().whileTrue(new ParallelCommandGroup(
-                new IntakeCommandOut(m_intakeSubsystem),
+                m_intakeSubsystem.getPushStop(),
                 new FeederCommandOut(m_feederSubsystem)));
 
         m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
