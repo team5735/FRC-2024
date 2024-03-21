@@ -6,12 +6,15 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FactoryCommands;
 import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.angle.AngleCommandSetAngleSmartDashboard;
 import frc.robot.constants.AngleConstants;
@@ -199,5 +202,13 @@ public class AngleSubsystem extends SubsystemBase {
 
     public Command angleDecrease() {
         return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 10));
+    }
+
+    public Command getPIDReset() {
+        return Commands.runOnce(() -> pidReset());
+    }
+
+    public Command getSetAngle(double angle) {
+        return FactoryCommands.runOnceUntil(() -> setSetpoint(angle), () -> isAtPosition(angle));
     }
 }
