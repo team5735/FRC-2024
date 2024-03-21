@@ -1,7 +1,5 @@
 package frc.robot.commands.angle;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AngleConstants;
