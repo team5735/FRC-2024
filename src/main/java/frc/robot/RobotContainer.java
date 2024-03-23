@@ -154,10 +154,15 @@ public class RobotContainer {
                         SmartDashboard.getNumber("shootTopRPM",
                                 ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
                         SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)))
 
-        m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain));
+                .onFalse(Commands.runOnce(() -> {
+                    m_shooterBottomSubsystem.stop();
+                    m_shooterTopSubsystem.stop();
+                })); // Sometimes, redunancy is needed.
+
+        // m_drivingController.x().whileTrue(
+        // new LimelightAimCommand(m_limelightSubsystem, m_drivetrain));
         m_drivingController.y().onTrue(Commands.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);

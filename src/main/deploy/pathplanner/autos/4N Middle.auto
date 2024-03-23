@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4N Mid N2 Combined"
+                  "pathName": "2N middle pickup"
                 }
               },
               {
@@ -69,27 +69,20 @@
                 "data": {
                   "name": "getNote"
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shooterStart"
-                      }
-                    }
-                  ]
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterStart"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2N middle shoot"
           }
         },
         {

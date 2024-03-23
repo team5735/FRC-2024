@@ -62,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2N source pickup"
+                  "pathName": "Far Source"
                 }
               },
               {
@@ -83,7 +83,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2N source shoot"
+            "pathName": "Far Source Back"
           }
         },
         {
@@ -119,6 +119,6 @@
       ]
     }
   },
-  "folder": "2N",
+  "folder": "3N",
   "choreoAuto": false
 }
