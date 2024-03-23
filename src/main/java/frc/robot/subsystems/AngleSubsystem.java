@@ -210,6 +210,10 @@ public class AngleSubsystem extends SubsystemBase {
         }, () -> isAtPosition(m_setpoint));
     }
 
+    /**
+     * This factory commands releases the brakes on initialize and then engages the
+     * brakes once more when interrupted.
+     */
     public Command getReleaseMotors() {
         return startEnd(() -> releaseBrakes(), () -> engageBrakes());
     }
