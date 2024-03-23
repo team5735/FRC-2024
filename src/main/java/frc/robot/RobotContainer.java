@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoCommands;
-import frc.robot.commands.angle.AngleCommandSetAngle;
 import frc.robot.commands.climber.ClimberCommandLeftDown;
 import frc.robot.commands.climber.ClimberCommandLeftUp;
 import frc.robot.commands.climber.ClimberCommandRightDown;
@@ -167,7 +166,7 @@ public class RobotContainer {
         m_drivingController.povDown().onTrue(
                 m_angleSubsystem.angleToBase());
 
-        m_drivingController.povLeft().onTrue(new AngleCommandSetAngle(m_angleSubsystem, 180));
+        m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(180));
 
         // some lines were not copied from the drivetrain
 
@@ -187,7 +186,7 @@ public class RobotContainer {
 
         m_drivingController.povRight()
                 .whileTrue(new ParallelCommandGroup(
-                        m_angleSubsystem.angleToSmartDashboardValue(),
+                        m_angleSubsystem.getSetSmartDashboard(),
                         new SequentialCommandGroup(
                                 new ShooterSpinUpCommand(
                                         m_shooterTopSubsystem, m_shooterBottomSubsystem,
