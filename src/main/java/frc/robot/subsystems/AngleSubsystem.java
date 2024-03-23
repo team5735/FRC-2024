@@ -12,11 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FactoryCommands;
-import frc.robot.commands.angle.AngleCommandSetAngle;
-import frc.robot.commands.angle.AngleCommandSetAngleSmartDashboard;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
@@ -189,10 +186,6 @@ public class AngleSubsystem extends SubsystemBase {
         return getSetAngle(AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
     }
 
-    public Command angleToSmartDashboardValue() {
-        return new AngleCommandSetAngleSmartDashboard(this);
-    }
-
     public Command angleIncrease() {
         return getSetAngle(m_setpoint - 10).repeatedly();
     }
@@ -207,5 +200,13 @@ public class AngleSubsystem extends SubsystemBase {
 
     public Command getSetAngle(double angle) {
         return FactoryCommands.runOnceUntil(() -> setSetpoint(angle), () -> isAtPosition(angle));
+    }
+
+    public Command getSetSmartDashboard() {
+        return FactoryCommands.runOnceUntil(() -> {
+            double setpoint = SmartDashboard.getNumber("testShootAngle",
+                    AngleConstants.ANGLE_START_POS_DEG);
+            setSetpoint(setpoint);
+        }, () -> isAtPosition(m_setpoint));
     }
 }
