@@ -174,22 +174,19 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public Command angleToBase() {
-        // return new SequentialCommandGroup(
-        // new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG - 15),
-        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_START_POS_DEG);
-        // );
+        return getSetAngle(AngleConstants.ANGLE_START_POS_DEG);
     }
 
     public Command angleToMax() {
-        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_LOWEST_DEG + 10);
+        return getSetAngle(AngleConstants.ANGLE_LOWEST_DEG + 10);
     }
 
     public Command angleToStageBack() {
-        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
+        return getSetAngle(AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
     }
 
     public Command angleToStageFront() {
-        return new AngleCommandSetAngle(this, AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
+        return getSetAngle(AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
     }
 
     public Command angleToSmartDashboardValue() {
@@ -197,11 +194,11 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public Command angleIncrease() {
-        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint - 10));
+        return getSetAngle(m_setpoint - 10).repeatedly();
     }
 
     public Command angleDecrease() {
-        return new RepeatCommand(new AngleCommandSetAngle(this, m_setpoint + 10));
+        return getSetAngle(m_setpoint + 10).repeatedly();
     }
 
     public Command getPIDReset() {
