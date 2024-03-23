@@ -209,4 +209,8 @@ public class AngleSubsystem extends SubsystemBase {
             setSetpoint(setpoint);
         }, () -> isAtPosition(m_setpoint));
     }
+
+    public Command getReleaseMotors() {
+        return startEnd(() -> releaseBrakes(), () -> engageBrakes());
+    }
 }
