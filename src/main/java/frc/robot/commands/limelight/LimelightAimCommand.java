@@ -10,6 +10,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
@@ -32,6 +35,10 @@ public class LimelightAimCommand extends Command {
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
+    private final NetworkTableInstance m_instance = NetworkTableInstance.getDefault();
+    private final NetworkTable m_node = m_instance.getTable("limelight");
+    private final BooleanPublisher m_aimingPublisher = m_node.getBooleanTopic("aiming").publish();
+
     /**
      * Creates a new LimelightAimCommand. This is responsible for turning the
      * robot to face the hood and for setting the angle changer to the correct angle
@@ -53,7 +60,7 @@ public class LimelightAimCommand extends Command {
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
         m_targetAcquired = false;
 
-        SmartDashboard.putBoolean("llv2_aimed", false);
+        m_aimingPublisher.set(false);
     }
 
     // Called when the command is initially scheduled.
@@ -77,7 +84,7 @@ public class LimelightAimCommand extends Command {
             return;
         }
 
-        SmartDashboard.putBoolean("llv2_aiming", true);
+        m_aimingPublisher.set(true);
         m_targetAcquired = true;
         m_watchdog.addEpoch("a target has been acquired");
 
@@ -187,7 +194,7 @@ public class LimelightAimCommand extends Command {
         SmartDashboard.putNumber("llv2_anglerSetpoint", anglerSetpoint);
         SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
 
-        // m_angleChanger.setSetpoint(anglerSetpoint);
+        m_angleChanger.setSetpoint(anglerSetpoint);
     }
 
     // Called once the command ends or is interrupted.
