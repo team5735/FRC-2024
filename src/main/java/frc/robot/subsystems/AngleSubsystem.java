@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -199,7 +202,12 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public Command getSetAngle(double angle) {
-        return FactoryCommands.runOnceUntil(() -> setSetpoint(angle), () -> isAtPosition(angle));
+        return Commands.runOnce(() -> setSetpoint(angle)).until(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return isAtPosition(angle);
+            }
+        });
     }
 
     public Command getSetSmartDashboard() {
