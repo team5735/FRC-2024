@@ -18,9 +18,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "waitShootSpinup"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
@@ -46,25 +52,6 @@
           "type": "named",
           "data": {
             "name": "stopShooter"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "amp side leave"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "getNote"
-                }
-              }
-            ]
           }
         }
       ]
