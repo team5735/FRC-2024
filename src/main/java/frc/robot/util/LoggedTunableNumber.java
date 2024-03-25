@@ -2,9 +2,6 @@
 
 package frc.robot.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
@@ -13,28 +10,23 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class LoggedTunableNumber {
     private static final NetworkTable table = NetworkTableInstance.getDefault().getTable("tunables");
 
-    private final DoubleSubscriber m_subscriber;
-
-    private final Map<Integer, Boolean> hasChangedForID = new HashMap<>();
+    private DoubleSubscriber m_subscriber;
 
     public LoggedTunableNumber(String name) {
+        init(name, 0);
+    }
+
+    public LoggedTunableNumber(String name, double initVal) {
+        init(name, initVal);
+    }
+
+    private void init(String name, double value) {
         DoubleTopic topic = table.getDoubleTopic(name);
-        m_subscriber = topic.subscribe(0);
+        topic.publish().set(value);
+        m_subscriber = topic.subscribe(value);
     }
 
     public double get() {
         return m_subscriber.get();
-    }
-
-    /**
-     * hasChanged returns whether the value has changed since the last call with the
-     * same id. The recommended approach is to call hashCode() and pass that as the
-     * id.
-     */
-    public boolean hasChanged(int id) {
-        if (!hasChangedForID.containsKey(id)) {
-            hasChangedForID.put(id, true);
-        }
-        return hasChangedForID.get(id);
     }
 }
