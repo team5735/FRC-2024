@@ -32,6 +32,11 @@ public class LoggedTunableNumber {
      * id.
      */
     public boolean hasChanged(int id) {
-        return lastHasChangedValues.get(id) == m_subscriber.get();
+        double value = m_subscriber.get();
+        if (lastHasChangedValues.containsKey(id)) {
+            boolean isSame = lastHasChangedValues.get(id) == value;
+            lastHasChangedValues.put(id, value);
+            return isSame;
+        }
     }
 }
