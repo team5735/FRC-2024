@@ -8,19 +8,29 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class TunableNumber {
-    private static final NetworkTable table = NetworkTableInstance.getDefault().getTable("tunables");
-
     private DoubleSubscriber m_subscriber;
 
     public TunableNumber(String name) {
-        init(name, 0);
+        init("", name, 0);
     }
 
     public TunableNumber(String name, double initVal) {
-        init(name, initVal);
+        init("", name, initVal);
     }
 
-    private void init(String name, double value) {
+    public TunableNumber(String subtable, String name) {
+        init(subtable, name, 0);
+    }
+
+    public TunableNumber(String subtable, String name, double initVal) {
+        init(subtable, name, initVal);
+    }
+
+    private void init(String subtable, String name, double value) {
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("tunables");
+        if (subtable != "") {
+            table = table.getSubTable(subtable);
+        }
         DoubleTopic topic = table.getDoubleTopic(name);
         topic.publish().set(value);
         m_subscriber = topic.subscribe(value);
