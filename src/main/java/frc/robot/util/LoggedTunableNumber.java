@@ -15,7 +15,7 @@ public class LoggedTunableNumber {
 
     private final DoubleSubscriber m_subscriber;
 
-    private final Map<Integer, Double> lastHasChangedValues = new HashMap<>();
+    private final Map<Integer, Boolean> hasChangedForID = new HashMap<>();
 
     public LoggedTunableNumber(String name) {
         DoubleTopic topic = table.getDoubleTopic(name);
@@ -32,11 +32,9 @@ public class LoggedTunableNumber {
      * id.
      */
     public boolean hasChanged(int id) {
-        double value = m_subscriber.get();
-        if (lastHasChangedValues.containsKey(id)) {
-            boolean isSame = lastHasChangedValues.get(id) == value;
-            lastHasChangedValues.put(id, value);
-            return isSame;
+        if (!hasChangedForID.containsKey(id)) {
+            hasChangedForID.put(id, true);
         }
+        return hasChangedForID.get(id);
     }
 }
