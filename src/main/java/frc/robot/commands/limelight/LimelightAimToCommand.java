@@ -7,7 +7,6 @@ package frc.robot.commands.limelight;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +14,7 @@ import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.util.TunableNumber;
 
 public class LimelightAimToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
@@ -28,9 +28,9 @@ public class LimelightAimToCommand extends Command {
     private final DoublePublisher m_measurementPublisher = m_node.getDoubleTopic("measurement").publish();
     private final DoublePublisher m_setpointPublisher = m_node.getDoubleTopic("setpoint").publish();
 
-    private final DoubleSubscriber m_kP = m_node.getDoubleTopic("kP").subscribe(LimelightConstants.TURN_P);
-    private final DoubleSubscriber m_kI = m_node.getDoubleTopic("kI").subscribe(LimelightConstants.TURN_I);
-    private final DoubleSubscriber m_kD = m_node.getDoubleTopic("kD").subscribe(LimelightConstants.TURN_D);
+    private final TunableNumber m_kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
+    private final TunableNumber m_kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
+    private final TunableNumber m_kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
 
     /** Creates a new LimelightAimToCommand. */
     public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
