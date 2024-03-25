@@ -17,7 +17,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers;
@@ -38,12 +37,21 @@ public class LimelightAimCommand extends Command {
 
     private final NetworkTableInstance m_instance = NetworkTableInstance.getDefault();
     private final NetworkTable m_node = m_instance.getTable("limelight");
+
     private final BooleanPublisher m_aimingPublisher = m_node.getBooleanTopic("aiming").publish();
     private final DoublePublisher m_currentRotationPublisher = m_node.getDoubleTopic("currentRotation").publish();
     private final DoublePublisher m_hoodDistancePublisher = m_node.getDoubleTopic("hoodDistance").publish();
+
     private final DoublePublisher m_cannotAimDistancePublisher = m_node.getDoubleTopic("cannotAimDistance").publish();
     private final DoublePublisher m_drivetrainSpeedXPublisher = m_node.getDoubleTopic("drivetrainSpeedX").publish();
     private final DoublePublisher m_drivetrainSpeedYPublisher = m_node.getDoubleTopic("drivetrainSpeedY").publish();
+
+    private final DoublePublisher m_desiredDrivetrainAnglePublisher = m_node.getDoubleTopic("desiredDrivetrainAngle")
+            .publish();
+    private final DoublePublisher m_hoodVectorXPublisher = m_node.getDoubleTopic("hoodVectorX").publish();
+    private final DoublePublisher m_hoodVectorYPublisher = m_node.getDoubleTopic("hoodVectorY").publish();
+
+    private final DoublePublisher m_angleChangerRadsPublisher = m_node.getDoubleTopic("angleChangerRads").publish();
 
     /**
      * Creates a new LimelightAimCommand. This is responsible for turning the
@@ -169,10 +177,9 @@ public class LimelightAimCommand extends Command {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
         double offset = posNegToPositive(drivetrainDesiredAngle);
 
-        SmartDashboard.putNumber("llv2_des", drivetrainDesiredAngle);
-        SmartDashboard.putNumber("llv2_distanceToHood", currentRobotPoseToTarget.getNorm());
-        SmartDashboard.putNumber("llv2_distanceToHoodY", currentRobotPoseToTarget.getY());
-        SmartDashboard.putNumber("llv2_distanceToHoodX", currentRobotPoseToTarget.getX());
+        m_desiredDrivetrainAnglePublisher.set(drivetrainDesiredAngle);
+        m_hoodVectorXPublisher.set(currentRobotPoseToTarget.getX());
+        m_hoodVectorYPublisher.set(currentRobotPoseToTarget.getY());
 
         new LimelightAimToCommand(m_drivetrain, m_limelight, offset).schedule();
     }
@@ -195,8 +202,7 @@ public class LimelightAimCommand extends Command {
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
         double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
 
-        SmartDashboard.putNumber("llv2_anglerSetpoint", anglerSetpoint);
-        SmartDashboard.putNumber("llv2_anglerRad", angleChangerDesiredAngle);
+        m_angleChangerRadsPublisher.set(angleChangerDesiredAngle);
 
         m_angleChanger.setSetpoint(anglerSetpoint);
     }
