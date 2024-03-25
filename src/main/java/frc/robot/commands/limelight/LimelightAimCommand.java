@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,6 +39,11 @@ public class LimelightAimCommand extends Command {
     private final NetworkTableInstance m_instance = NetworkTableInstance.getDefault();
     private final NetworkTable m_node = m_instance.getTable("limelight");
     private final BooleanPublisher m_aimingPublisher = m_node.getBooleanTopic("aiming").publish();
+    private final DoublePublisher m_currentRotationPublisher = m_node.getDoubleTopic("currentRotation").publish();
+    private final DoublePublisher m_hoodDistancePublisher = m_node.getDoubleTopic("hoodDistance").publish();
+    private final DoublePublisher m_cannotAimDistancePublisher = m_node.getDoubleTopic("cannotAimDistance").publish();
+    private final DoublePublisher m_drivetrainSpeedXPublisher = m_node.getDoubleTopic("drivetrainSpeedX").publish();
+    private final DoublePublisher m_drivetrainSpeedYPublisher = m_node.getDoubleTopic("drivetrainSpeedY").publish();
 
     /**
      * Creates a new LimelightAimCommand. This is responsible for turning the
@@ -102,7 +108,7 @@ public class LimelightAimCommand extends Command {
 
         Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
         aimHorizontally(robotToHood, currentRobotPose.getRotation().getRadians());
-        SmartDashboard.putNumber("llv2_current", currentRobotPose.getRotation().getRadians());
+        m_currentRotationPublisher.set(currentRobotPose.getRotation().getRadians());
         m_watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
@@ -112,7 +118,7 @@ public class LimelightAimCommand extends Command {
         aimVertically(angleChangerPosition, hoodPos);
         m_watchdog.addEpoch("aimed vertically");
 
-        SmartDashboard.putNumber("llv2_hoodDst", robotToHood.getNorm());
+        m_hoodDistancePublisher.set(robotToHood.getNorm());
         m_watchdog.disable();
         m_watchdog.printEpochs();
     }
@@ -122,16 +128,14 @@ public class LimelightAimCommand extends Command {
         boolean botIsCloseEnough = robotPosition
                 .getDistance(targetPosition.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
         if (!botIsCloseEnough) {
-            SmartDashboard.putNumber("llv2_can'tAim",
-                    robotPosition.getDistance(getHoodPos().toTranslation2d()));
-            System.out.println("moving towards the hood");
+            m_cannotAimDistancePublisher.set(robotPosition.getDistance(getHoodPos().toTranslation2d()));
             Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
             Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
                     .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
                                                                           // movement speed
             // m_drivetrain.drive(desiredVelocity);
-            SmartDashboard.putNumber("llv2_deltaX", desiredVelocity.getX());
-            SmartDashboard.putNumber("llv2_deltaY", desiredVelocity.getY());
+            m_drivetrainSpeedXPublisher.set(desiredVelocity.getX());
+            m_drivetrainSpeedYPublisher.set(desiredVelocity.getY());
             return;
         }
     }
