@@ -1,8 +1,8 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 
 public class VisionResults {
-    public VisionResults(Pose2d robotPose) {
-    }
+    public Pose3d robotPose = new Pose3d();
+    public double timeStamp = 0.0;
 }

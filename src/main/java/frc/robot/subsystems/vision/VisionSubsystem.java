@@ -10,10 +10,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
+    private final DoubleArraySubscriber m_poseSubscriber;
+
     private final String m_name;
     private final NetworkTable m_table;
 
-    private final DoubleArraySubscriber m_poseSubscriber;
+    private VisionResults m_results = new VisionResults();
 
     public VisionSubsystem(String name) {
         m_name = name;
@@ -23,6 +25,5 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_results;
     }
 }
