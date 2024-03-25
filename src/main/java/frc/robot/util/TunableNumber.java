@@ -7,16 +7,16 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class LoggedTunableNumber {
+public class TunableNumber {
     private static final NetworkTable table = NetworkTableInstance.getDefault().getTable("tunables");
 
     private DoubleSubscriber m_subscriber;
 
-    public LoggedTunableNumber(String name) {
+    public TunableNumber(String name) {
         init(name, 0);
     }
 
-    public LoggedTunableNumber(String name, double initVal) {
+    public TunableNumber(String name, double initVal) {
         init(name, initVal);
     }
 
