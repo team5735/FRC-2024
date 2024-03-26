@@ -4,8 +4,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.PathConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.constants.DrivetrainConstants;
 
 public class Turn90Command extends Command {
     private DrivetrainSubsystem m_drivetrain;
@@ -18,7 +18,7 @@ public class Turn90Command extends Command {
         m_drivetrain = drivetrain;
 
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
-        m_controller.setTolerance(PathConstants.TURN_90_TOLERANCE);
+        m_controller.setTolerance(DrivetrainConstants.TOLERANCE);
 
         addRequirements(m_drivetrain);
     }
