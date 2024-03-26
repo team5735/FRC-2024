@@ -29,17 +29,17 @@ import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.climber.ClimberLeftSubsystem;
-import frc.robot.subsystems.climber.ClimberRightSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
 import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 
@@ -65,8 +65,10 @@ public class RobotContainer {
     private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
     private final ShooterTopSubsystem m_shooterTopSubsystem = new ShooterTopSubsystem();
     private final ShooterBottomSubsystem m_shooterBottomSubsystem = new ShooterBottomSubsystem();
-    private final ClimberLeftSubsystem m_climberLeftSubsystem = new ClimberLeftSubsystem();
-    private final ClimberRightSubsystem m_climberRightSubsystem = new ClimberRightSubsystem();
+    private final ClimberSubsystem m_climberLeftSubsystem = new ClimberSubsystem("left climber",
+            Constants.CLIMBER_MOTOR_LEFT_ID);
+    private final ClimberSubsystem m_climberRightSubsystem = new ClimberSubsystem("right climber",
+            Constants.CLIMBER_MOTOR_RIGHT_ID);
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
     // Programming war crime :3
@@ -207,10 +209,10 @@ public class RobotContainer {
                 m_intakeSubsystem.getPushStop(),
                 new FeederCommandOut(m_feederSubsystem)));
 
-        m_subsystemController.leftBumper().whileTrue(new ClimberCommandLeftUp(m_climberLeftSubsystem));
-        m_subsystemController.rightBumper().whileTrue(new ClimberCommandRightUp(m_climberRightSubsystem));
-        m_subsystemController.leftTrigger(0.1).whileTrue(new ClimberCommandLeftDown(m_climberLeftSubsystem));
-        m_subsystemController.rightTrigger(0.1).whileTrue(new ClimberCommandRightDown(m_climberRightSubsystem));
+        m_subsystemController.leftBumper().whileTrue(m_climberLeftSubsystem.getUpStop());
+        m_subsystemController.rightBumper().whileTrue(m_climberRightSubsystem.getUpStop());
+        m_subsystemController.leftTrigger(0.1).whileTrue(m_climberLeftSubsystem.getDownStop());
+        m_subsystemController.rightTrigger(0.1).whileTrue(m_climberRightSubsystem.getDownStop());
 
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem));
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand());
