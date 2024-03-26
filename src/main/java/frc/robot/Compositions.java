@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -40,7 +39,7 @@ public class Compositions {
                 new ParallelCommandGroup(
                         feeder.getPullStop(),
                         intake.getPullStop(),
-                        new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
+                        shootersHoldNStop(shooterTop, shooterBottom)));
     }
 
     public static Command angleUpdateWithIntake(Command angleSetCommand, AngleSubsystem angler,
