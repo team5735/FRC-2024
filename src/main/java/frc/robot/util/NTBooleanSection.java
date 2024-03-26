@@ -60,29 +60,4 @@ public class NTBooleanSection {
     public void set(String entry, boolean value) {
         entries.get(entry).publish().set(value);
     }
-
-    /**
-     * Gets the entry and makes a BooleanSubscriber out of it, and get its
-     * result. The subscriber is created with a default value of 0.
-     *
-     * @param entry What entry to get
-     *
-     * @return The value in that entry, according to NetworkTables
-     */
-    public boolean get(String entry) {
-        return get(entry, false);
-    }
-
-    /**
-     * Gets the entry and makes a BooleanSubscriber out of it, and get its
-     * result. The subscriber is created with a default value of defaultVal.
-     *
-     * @param entry      What entry to get
-     * @param defaultVal The default value for the subscriber
-     *
-     * @return The value in that entry, according to NetworkTables
-     */
-    public boolean get(String entry, boolean defaultVal) {
-        return entries.get(entry).subscribe(defaultVal).get();
-    }
 }

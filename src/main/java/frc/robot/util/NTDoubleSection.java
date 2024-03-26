@@ -60,29 +60,4 @@ public class NTDoubleSection {
     public void set(String entry, double value) {
         entries.get(entry).publish().set(value);
     }
-
-    /**
-     * Gets the entry and makes a DoubleSubscriber out of it, and get its
-     * result. The subscriber is created with a default value of 0.
-     *
-     * @param entry What entry to get
-     *
-     * @return The value in that entry, according to NetworkTables
-     */
-    public double get(String entry) {
-        return get(entry, 0);
-    }
-
-    /**
-     * Gets the entry and makes a DoubleSubscriber out of it, and get its
-     * result. The subscriber is created with a default value of defaultVal.
-     *
-     * @param entry      What entry to get
-     * @param defaultVal The default value for the subscriber
-     *
-     * @return The value in that entry, according to NetworkTables
-     */
-    public double get(String entry, double defaultVal) {
-        return entries.get(entry).subscribe(defaultVal).get();
-    }
 }
