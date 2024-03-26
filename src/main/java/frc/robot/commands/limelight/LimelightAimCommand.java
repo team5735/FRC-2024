@@ -7,6 +7,7 @@ package frc.robot.commands.limelight;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -19,8 +20,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
-import frc.robot.libraries.LimelightHelpers;
-import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -53,6 +52,8 @@ public class LimelightAimCommand extends Command {
 
     private final DoublePublisher m_angleChangerRadsPublisher = m_node.getDoubleTopic("angleChangerRads").publish();
 
+    private final BooleanPublisher m_spinningPublisher = m_node.getBooleanTopic("spinning").publish();
+
     /**
      * Creates a new LimelightAimCommand. This is responsible for turning the
      * robot to face the hood and for setting the angle changer to the correct angle
@@ -73,13 +74,13 @@ public class LimelightAimCommand extends Command {
         Optional<Alliance> ally = DriverStation.getAlliance();
         m_alliance = ally.isPresent() ? ally.get() : Alliance.Red;
         m_targetAcquired = false;
-
-        m_aimingPublisher.set(false);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        m_aimingPublisher.set(false);
+        m_spinningPublisher.set(false);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -87,16 +88,14 @@ public class LimelightAimCommand extends Command {
     public void execute() {
         m_watchdog.reset();
 
-        LimelightHelpers.LimelightResults res = LimelightHelpers.getLatestResults("");
-        LimelightHelpers.Results results = res.targetingResults;
-        m_watchdog.addEpoch("fetch limelight dump");
-        LimelightTarget_Fiducial[] targets = results.targets_Fiducials;
-        m_watchdog.addEpoch("extract fiducials");
-        if (targets.length < 2) {
-            System.out.println("spinning");
+        Pose3d botPose = m_limelight.getBotPose();
+        m_watchdog.addEpoch("get bot pose");
+        if (m_limelight.getNumTargets() < 2) {
+            m_spinningPublisher.set(true);
             m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
         }
+        m_watchdog.addEpoch("check num targets");
 
         m_aimingPublisher.set(true);
         m_targetAcquired = true;
@@ -108,8 +107,7 @@ public class LimelightAimCommand extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
-        Pose2d currentRobotPose = res.targetingResults.targets_Fiducials[0].getRobotPose_FieldSpace2D();
-        m_watchdog.addEpoch("extract bot pose");
+        Pose2d currentRobotPose = botPose.toPose2d();
         Translation3d hoodPos = getHoodPos();
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
         m_watchdog.addEpoch("checked bot can aim");
