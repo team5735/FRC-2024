@@ -44,18 +44,6 @@ public class ShooterTopSubsystem extends SubsystemBase {
      * </ul>
      */
     public void updateProportions() {
-        // double tkp = SmartDashboard.getNumber("shootTopKP",
-        // ShooterConstants.SHOOTER_TOP_KP);
-        // double tki = SmartDashboard.getNumber("shootTopKI",
-        // ShooterConstants.SHOOTER_TOP_KI);
-        // double tkd = SmartDashboard.getNumber("shootTopKD",
-        // ShooterConstants.SHOOTER_TOP_KD);
-
-        // double tks = SmartDashboard.getNumber("shootTopKS",
-        // ShooterConstants.SHOOTER_TOP_KS);
-        // double tkv = SmartDashboard.getNumber("shootTopKV",
-        // ShooterConstants.SHOOTER_TOP_KV);
-
         double tkp = ShooterConstants.SHOOTER_TOP_KP;
         double tki = ShooterConstants.SHOOTER_TOP_KI;
         double tkd = ShooterConstants.SHOOTER_TOP_KD;
