@@ -38,4 +38,6 @@ public final class Constants {
     public static final int SHOOTER_MOTOR_BOTTOM_ID = 58; // TALON
 
     public static final int PDH_ID = 59;
+
+    public static final double TOLERANCE = 0.01; // For PIDs.
 }
