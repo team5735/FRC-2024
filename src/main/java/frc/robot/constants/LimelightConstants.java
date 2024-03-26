@@ -25,6 +25,5 @@ public class LimelightConstants {
     public static final double TURN_D = 0;
     public static final double TURN_SRL = 8;
 
-    // seconds per frame
-    public static final double SPF = 0.1;
+    public static final double BLINK_TIME = 0.067;
 }

@@ -5,31 +5,38 @@
 package frc.robot.commands.limelight;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.util.NTBooleanSection;
+import frc.robot.util.NTDoubleSection;
+import frc.robot.util.TunableNumber;
 
-public class LimelightAimToCommand extends Command {
+public class LimelightTurnToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
     LimelightSubsystem m_limelight;
-    PIDController m_pid = new PIDController(
-            SmartDashboard.getNumber("llv2_turnP", LimelightConstants.TURN_P),
-            SmartDashboard.getNumber("llv2_turnI", LimelightConstants.TURN_I),
-            SmartDashboard.getNumber("llv2_turnD", LimelightConstants.TURN_D));
-    @SuppressWarnings("unused")
+    PIDController m_pid;
     double m_pigeonStartingNumber;
 
-    /** Creates a new LimelightAimToCommand. */
-    public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
+    private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "drivetrain omega", "measurement",
+            "setpoint");
+    private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming");
+
+    private final TunableNumber m_kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
+    private final TunableNumber m_kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
+    private final TunableNumber m_kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
+
+    /** Creates a new LimelightTurnToCommand. */
+    public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
             final double offset) {
-        // Use addRequirements() here to declare subsystem dependencies.
         m_drivetrain = drivetrain;
         m_limelight = limelight;
 
         addRequirements(m_drivetrain);
+
+        m_pid = new PIDController(m_kP.get(), m_kI.get(), m_kD.get());
 
         m_pid.setTolerance(DrivetrainConstants.TOLERANCE);
         m_pid.setSetpoint(LimelightAimCommand.positiveToPosNeg(m_drivetrain.getRotation3d().getZ() + offset));
@@ -37,7 +44,7 @@ public class LimelightAimToCommand extends Command {
 
         m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
 
-        SmartDashboard.putNumber("llTurnTo_setpoint", m_pid.getSetpoint());
+        m_doubles.set("setpiont", m_pid.getSetpoint());
     }
 
     // Called when the command is initially scheduled.
@@ -48,17 +55,18 @@ public class LimelightAimToCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putNumber("llTurnTo_measurement", getMeasurement());
-        double omega = m_pid.calculate(getMeasurement());
+        double measurement = getMeasurement();
+        m_doubles.set("measurement", measurement);
+        double omega = m_pid.calculate(measurement);
+        m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);
-        SmartDashboard.putNumber("llTurnTo_omega", omega);
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.drive(0);
-        SmartDashboard.putBoolean("llv2_aiming", false);
+        m_booleans.set("aiming", false);
     }
 
     private double getMeasurement() {
@@ -69,6 +77,5 @@ public class LimelightAimToCommand extends Command {
     @Override
     public boolean isFinished() {
         return Math.abs(getMeasurement() - m_pid.getSetpoint()) < DrivetrainConstants.TOLERANCE;
-        // return m_pid.atSetpoint();
     }
 }
