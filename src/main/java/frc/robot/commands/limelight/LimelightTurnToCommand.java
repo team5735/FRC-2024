@@ -5,10 +5,6 @@
 package frc.robot.commands.limelight;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
