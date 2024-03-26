@@ -174,11 +174,6 @@ public class RobotContainer {
                         SmartDashboard.getNumber("shootBottomRPM",
                                 ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
-        // m_subsystemController.b().whileTrue(Compositions.shootNAngleFromStageFront(
-        // m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
-        // m_feederSubsystem
-        // ));
-
         m_drivingController.povRight()
                 .whileTrue(new ParallelCommandGroup(
                         m_angleSubsystem.getSetSmartDashboard(),
@@ -187,7 +182,7 @@ public class RobotContainer {
                                         m_shooterTopSubsystem, m_shooterBottomSubsystem,
                                         ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
                                         ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
-                                new ParallelDeadlineGroup( // new WaitCommand(1),
+                                new ParallelDeadlineGroup(
                                         m_feederSubsystem.getPullStop(),
                                         Compositions.shootersHoldNStop(m_shooterTopSubsystem,
                                                 m_shooterBottomSubsystem)))));
