@@ -139,20 +139,6 @@ public class LimelightAimCommand extends Command {
         return hoodPos;
     }
 
-    public static double positiveToPosNeg(double in) {
-        if (in > Math.PI) {
-            return -(in - Math.PI);
-        }
-        return in;
-    }
-
-    public static double posNegToPositive(double in) {
-        if (in < 0) {
-            return Math.PI + (-in);
-        }
-        return in;
-    }
-
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
         double offset = posNegToPositive(drivetrainDesiredAngle);
@@ -185,6 +171,20 @@ public class LimelightAimCommand extends Command {
         m_doubles.set("angle changer radians", angleChangerDesiredAngle);
 
         m_angleChanger.setSetpoint(anglerSetpoint);
+    }
+
+    public static double positiveToPosNeg(double in) {
+        if (in > Math.PI) {
+            return -(in - Math.PI);
+        }
+        return in;
+    }
+
+    public static double posNegToPositive(double in) {
+        if (in < 0) {
+            return Math.PI + (-in);
+        }
+        return in;
     }
 
     // Called once the command ends or is interrupted.
