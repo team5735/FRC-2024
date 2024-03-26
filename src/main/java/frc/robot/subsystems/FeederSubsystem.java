@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.FeederConstants;
@@ -20,16 +19,12 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public void pull() {
-        // double pullSpeed = SmartDashboard.getNumber("feederPullVoltage",
-        // FeederConstants.FEEDER_PULL_VOLTS);
         double pullSpeed = FeederConstants.FEEDER_PULL_VOLTS;
 
         m_sparkMax_pull.setVoltage(pullSpeed);
     }
 
     public void push() {
-        // double pushSpeed = SmartDashboard.getNumber("feederPushVoltage",
-        // FeederConstants.FEEDER_PUSH_VOLTS);
         double pushSpeed = FeederConstants.FEEDER_PUSH_VOLTS;
 
         m_sparkMax_pull.setVoltage(-pushSpeed);
