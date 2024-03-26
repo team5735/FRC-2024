@@ -14,26 +14,26 @@ import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.util.NTBooleanSection;
+import frc.robot.util.NTDoubleSection;
 import frc.robot.util.TunableNumber;
 
-public class LimelightAimToCommand extends Command {
+public class LimelightTurnToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
     LimelightSubsystem m_limelight;
     PIDController m_pid;
     double m_pigeonStartingNumber;
 
-    private final NetworkTable m_node = NetworkTableInstance.getDefault().getTable("limelight");
-    private final BooleanPublisher m_aimingPublisher = m_node.getBooleanTopic("aiming").publish();
-    private final DoublePublisher m_drivetrainOmegaPublisher = m_node.getDoubleTopic("drivetrainOmega").publish();
-    private final DoublePublisher m_measurementPublisher = m_node.getDoubleTopic("measurement").publish();
-    private final DoublePublisher m_setpointPublisher = m_node.getDoubleTopic("setpoint").publish();
+    private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "drivetrain omega", "measurement",
+            "setpoint");
+    private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming");
 
     private final TunableNumber m_kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
     private final TunableNumber m_kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
     private final TunableNumber m_kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
 
-    /** Creates a new LimelightAimToCommand. */
-    public LimelightAimToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
+    /** Creates a new LimelightTurnToCommand. */
+    public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
             final double offset) {
         m_drivetrain = drivetrain;
         m_limelight = limelight;
@@ -48,7 +48,7 @@ public class LimelightAimToCommand extends Command {
 
         m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
 
-        m_setpointPublisher.set(m_pid.getSetpoint());
+        m_doubles.set("setpiont", m_pid.getSetpoint());
     }
 
     // Called when the command is initially scheduled.
@@ -60,9 +60,9 @@ public class LimelightAimToCommand extends Command {
     @Override
     public void execute() {
         double measurement = getMeasurement();
-        m_measurementPublisher.set(measurement);
+        m_doubles.set("measurement", measurement);
         double omega = m_pid.calculate(measurement);
-        m_drivetrainOmegaPublisher.set(omega);
+        m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);
     }
 
@@ -70,7 +70,7 @@ public class LimelightAimToCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.drive(0);
-        m_aimingPublisher.set(false);
+        m_booleans.set("aiming", false);
     }
 
     private double getMeasurement() {

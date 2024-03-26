@@ -32,7 +32,7 @@ public class LimelightSubsystem extends SubsystemBase {
         return targetVisibleSubscriber.get() == 1;
     }
 
-    public int numTags() {
+    public int getNumTargets() {
         return ((int) botposeSubscriber.get()[7]);
     }
 
