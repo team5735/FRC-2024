@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -78,5 +79,22 @@ public class Compositions {
                         intake.getPullStop()),
                 feeder.getUnprimeNote(),
                 feeder.getPrimeNote());
+    }
+
+    /**
+     * Returns a command that stops the shooters when interrupted. This does not
+     * require either subsystem passed into it.
+     *
+     * @param shooterTop    The top shooter subsystem, .stop()ed when interruped
+     * @param shooterBottom The bottom shooter subsystem, .stop()ed when interruped
+     *
+     * @return The Command that stops both when interrupted
+     */
+    public static Command shootersHoldNStop(ShooterTopSubsystem shooterTop, ShooterBottomSubsystem shooterBottom) {
+        return Commands.startEnd(() -> {
+        }, () -> {
+            shooterTop.stop();
+            shooterBottom.stop();
+        });
     }
 }
