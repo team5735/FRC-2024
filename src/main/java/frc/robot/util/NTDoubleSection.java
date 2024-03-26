@@ -9,7 +9,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class NTDoubleSection {
-    private static final String sectionName = "outputs";
+    private static final String sectionName = "sections";
 
     private final NetworkTable table;
     private Map<String, DoubleTopic> entries = new HashMap<>();
