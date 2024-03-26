@@ -21,7 +21,6 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
-import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -190,10 +189,8 @@ public class RobotContainer {
                                         ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
                                 new ParallelDeadlineGroup( // new WaitCommand(1),
                                         m_feederSubsystem.getPullStop(),
-                                        new ShooterHoldNStopCommand(m_shooterTopSubsystem,
-                                                m_shooterBottomSubsystem)
-
-                                ))));
+                                        Compositions.shootersHoldNStop(m_shooterTopSubsystem,
+                                                m_shooterBottomSubsystem)))));
 
         m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
                 m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem,
