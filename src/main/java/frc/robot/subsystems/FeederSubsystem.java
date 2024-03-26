@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FactoryCommands;
 import frc.robot.constants.Constants;
 import frc.robot.constants.FeederConstants;
 
@@ -56,21 +57,11 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public Command getPrimeNote() {
-        return startEnd(() -> pull(), () -> stop()).until(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return getSwitchStatus();
-            }
-        });
+        return FactoryCommands.startEndUntil(() -> pull(), () -> stop(), () -> getSwitchStatus(), this);
     }
 
     public Command getUnprimeNote() {
-        return startEnd(() -> push(), () -> stop()).until(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return !getSwitchStatus();
-            }
-        });
+        return FactoryCommands.startEndUntil(() -> push(), () -> stop(), () -> !getSwitchStatus(), this);
     }
 
     public Command getStop() {

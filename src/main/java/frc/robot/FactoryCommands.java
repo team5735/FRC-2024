@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class FactoryCommands {
     /**
-     * Returns a new Command that runs action. Stops when isFinished returns true.
-     * This makes a new composition such that the command running the action is
-     * interrupted when isFinished returns true.
-     *
+     * Returns a new Command that runs action, stopping when isFinished returns
+     * true. This makes a new composition such that the command running the action
+     * is interrupted when isFinished returns true.
+     * 
      * @param action       The {@link Runnable} to run
      * @param isFinished   The {@link Supplier} that returns true when this Command
      *                     is to finish
@@ -52,5 +52,30 @@ public class FactoryCommands {
                         return isFinished.get();
                     }
                 }));
+    }
+
+    /**
+     * Returns a new command that runs an action once and finishes when isFinished
+     * returns true, running another action. This makes a new composition that on
+     * schedule, runs start, then querys isFinished constantly and runs action and
+     * ends when it returns true.
+     *
+     * @param start        The {@link Runnable} to run on schedule
+     * @param end          The {@link Runnable} to run while ending.
+     * @param isFinished   The {@link Supplier} that returns true when this Command
+     *                     is to finish
+     * @param requirements The {@link Subsystem}s that this Command requires
+     *
+     * @return A Command that runs action once and finishes when isFinished returns
+     *         true
+     */
+    public static Command startEndUntil(Runnable start, Runnable end, Supplier<Boolean> isFinished,
+            Subsystem... requirements) {
+        return Commands.startEnd(start, end, requirements).until(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return isFinished.get();
+            }
+        });
     }
 }
