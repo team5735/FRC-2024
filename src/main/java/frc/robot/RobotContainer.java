@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
-import frc.robot.commands.feeder.FeederCommandIn;
-import frc.robot.commands.feeder.FeederCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
@@ -117,7 +115,7 @@ public class RobotContainer {
     private void configureBindings() {
         m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(
                 m_intakeSubsystem.getPushStop(),
-                new FeederCommandOut(m_feederSubsystem)));
+                m_feederSubsystem.getPushStop()));
         m_drivingController.rightBumper()
                 .whileTrue(Compositions.feedNIn(m_feederSubsystem, m_intakeSubsystem));
 
@@ -191,7 +189,7 @@ public class RobotContainer {
                                         ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
                                         ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
                                 new ParallelDeadlineGroup( // new WaitCommand(1),
-                                        new FeederCommandIn(m_feederSubsystem),
+                                        m_feederSubsystem.getPullStop(),
                                         new ShooterHoldNStopCommand(m_shooterTopSubsystem,
                                                 m_shooterBottomSubsystem)
 
@@ -203,7 +201,7 @@ public class RobotContainer {
 
         m_subsystemController.x().whileTrue(new ParallelCommandGroup(
                 m_intakeSubsystem.getPushStop(),
-                new FeederCommandOut(m_feederSubsystem)));
+                m_feederSubsystem.getPushStop()));
 
         m_subsystemController.leftBumper().whileTrue(m_climberLeftSubsystem.getUpStop());
         m_subsystemController.rightBumper().whileTrue(m_climberRightSubsystem.getUpStop());

@@ -5,10 +5,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.feeder.FeederCommandIn;
-import frc.robot.commands.feeder.FeederPrimeNote;
-import frc.robot.commands.feeder.FeederUnprimeNote;
-import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.ShooterConstants;
@@ -41,8 +37,8 @@ public class Compositions {
                         new ShooterSpinUpCommand(shooterTop, shooterBottom, topRPM, bottomRPM),
                         new WaitCommand(0.5)),
                 new ParallelCommandGroup(
-                        new FeederCommandIn(feeder),
-                        new IntakeCommandIn(intake),
+                        feeder.getPullStop(),
+                        intake.getPullStop(),
                         new ShooterHoldNStopCommand(shooterTop, shooterBottom)));
     }
 
@@ -78,9 +74,9 @@ public class Compositions {
     public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake) {
         return new SequentialCommandGroup(
                 new ParallelDeadlineGroup(
-                        new FeederPrimeNote(feeder),
-                        new IntakeCommandIn(intake)),
-                new FeederUnprimeNote(feeder),
-                new FeederPrimeNote(feeder));
+                        feeder.getPrimeNote(),
+                        intake.getPullStop()),
+                feeder.getUnprimeNote(),
+                feeder.getPrimeNote());
     }
 }

@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -50,6 +53,24 @@ public class FeederSubsystem extends SubsystemBase {
 
     public Command getPushStop() {
         return startEnd(() -> push(), () -> stop());
+    }
+
+    public Command getPrimeNote() {
+        return startEnd(() -> pull(), () -> stop()).until(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return getSwitchStatus();
+            }
+        });
+    }
+
+    public Command getUnprimeNote() {
+        return startEnd(() -> push(), () -> stop()).until(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return !getSwitchStatus();
+            }
+        });
     }
 
     public Command getStop() {
