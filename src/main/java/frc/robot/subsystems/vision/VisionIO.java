@@ -9,4 +9,8 @@ public interface VisionIO {
 
     public default void ledsOff() {
     }
+
+    public default boolean hasTarget() {
+        return false;
+    }
 }

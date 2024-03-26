@@ -4,26 +4,30 @@
 
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.LimelightConstants;
 
 public class VisionSubsystem extends SubsystemBase {
-    private final DoubleArraySubscriber m_poseSubscriber;
+    private VisionResults results = new VisionResults();
+    private VisionIO io;
 
-    private final String m_name;
-    private final NetworkTable m_table;
-
-    private VisionResults m_results = new VisionResults();
-
-    public VisionSubsystem(String name) {
-        m_name = name;
-        m_table = NetworkTableInstance.getDefault().getTable(m_name);
-        m_poseSubscriber = m_table.getDoubleArrayTopic("pose").subscribe(new double[6]);
+    public VisionSubsystem(VisionIO io) {
+        this.io = io;
     }
 
     @Override
     public void periodic() {
+        io.updateResults(results);
+    }
+
+    public Command blinkLEDs() {
+        return Commands.repeatingSequence(
+                Commands.runOnce(() -> io.ledsOn()),
+                Commands.waitSeconds(LimelightConstants.BLINK_TIME),
+                Commands.runOnce(() -> io.ledsOff()),
+                Commands.waitSeconds(LimelightConstants.BLINK_TIME));
     }
 }

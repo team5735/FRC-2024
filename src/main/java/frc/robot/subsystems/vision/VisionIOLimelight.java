@@ -3,6 +3,8 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
@@ -12,6 +14,8 @@ public class VisionIOLimelight implements VisionIO {
     // The format for this is [X, Y, Z, roll, pitch, yaw, total latency, tag count,
     // tag span, avg tag distance, average tag area]
     private final DoubleArraySubscriber botpose = table.getDoubleArrayTopic("botpose").subscribe(new double[7]);
+    private final DoublePublisher ledMode = table.getDoubleTopic("ledMode").publish();
+    private final DoubleSubscriber tv = table.getDoubleTopic("tv").subscribe(0);
 
     @Override
     public void updateResults(VisionResults results) {
@@ -28,5 +32,23 @@ public class VisionIOLimelight implements VisionIO {
                 new Rotation3d(limelightPose[3],
                         limelightPose[4],
                         limelightPose[5]));
+    }
+
+    @Override
+    public void ledsOn() {
+        ledMode.set(3);
+    }
+
+    @Override
+    public void ledsOff() {
+        ledMode.set(1);
+    }
+
+    @Override
+    public boolean hasTarget() {
+        if (tv.get() == 1) {
+            return true;
+        }
+        return false;
     }
 }
