@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Compositions;
-import frc.robot.commands.feeder.FeederPrimeNote;
-import frc.robot.commands.feeder.FeederUnprimeNote;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -29,17 +27,6 @@ public class AutoCommands {
             final ShooterTopSubsystem shooterTop, final ShooterBottomSubsystem shooterBottom) {
         Map<String, Command> commandsToRegister = new HashMap<>();
 
-        // Command startIntake = intake.getPullStop();
-        // Command stopIntake = intake.getStop();
-        // Command startShooting = Compositions.feedAndShoot(feeder, shooterTop,
-        // shooterBottom);
-        // Command stopShooting = shooterTop.getStop();
-
-        // commandsToRegister.put("startIntake", startIntake);
-        // commandsToRegister.put("stopIntake", stopIntake);
-        // commandsToRegister.put("startShooting", startShooting);
-        // commandsToRegister.put("stopShooting", stopShooting);
-
         commandsToRegister.put("getNote", Compositions.feedNIn(feeder, intake));
         commandsToRegister.put("shooterStart", shooterStart(shooterTop, shooterBottom));
 
@@ -51,8 +38,8 @@ public class AutoCommands {
     }
 
     public static Command getNote(IntakeSubsystem intake, FeederSubsystem feeder) {
-        return new SequentialCommandGroup(new ParallelDeadlineGroup(new FeederPrimeNote(feeder), intake.getPullStop()),
-                new FeederUnprimeNote(feeder));
+        return new SequentialCommandGroup(new ParallelDeadlineGroup(feeder.getPrimeNote(), intake.getPullStop()),
+                feeder.getUnprimeNote());
     }
 
     public static Command shooterStart(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
