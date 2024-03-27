@@ -33,6 +33,7 @@ public final class Constants {
     public static final int FEEDER_BEAM_PIN = 0; // LIGHT-BASED SENSOR (DIO)
 
     public static final int INTAKE_MOTOR_ID = 60; // SPARKMAX
+    public static final int INTAKE_BEAM_PIN = 2;
 
     public static final int SHOOTER_MOTOR_TOP_ID = 57; // TALON
     public static final int SHOOTER_MOTOR_BOTTOM_ID = 58; // TALON

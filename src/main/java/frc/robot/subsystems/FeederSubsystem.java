@@ -9,10 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FactoryCommands;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.FeederConstants;
-import frc.robot.util.NTDoubleSection;
 
 /**
  * This class represents a FeederSubsystem. It utilizes a motor fed with static
