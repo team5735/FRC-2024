@@ -82,7 +82,8 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Determines where the angle changer is in its coordinate system by looking at
      * the encoder's output. The output is calculated with
-     * {@link AngleConstants}'s {@code convertRotationsToDegrees()}, and rounded to the tenths place.
+     * {@link AngleConstants}'s {@code convertRotationsToDegrees()}, and rounded to
+     * the tenths place.
      *
      * <p>
      * The first time this function is called, the encoder's reported distance is
@@ -175,9 +176,10 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Returns the custom angle value stored in {@link SmartDashboard}
      * <p>
+     * 
      * @return the angle tied to {@code "testShootAngle"} in SmartDashboard
      */
-    public double getSmartDashboardVal(){
+    public double getSmartDashboardVal() {
         return SmartDashboard.getNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
     }
 
@@ -202,8 +204,9 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns a {@link PIDCommand} that is intended to be set as the default command of
-     * this subsystem. Being a PIDCommand, it never finishes unless interrupted.
+     * Returns a {@link PIDCommand} that is intended to be set as the default
+     * command of this subsystem. Being a PIDCommand, it never finishes unless
+     * interrupted.
      *
      * @param s The {@link AngleSubsystem} that this requires.
      *
@@ -226,7 +229,7 @@ public class AngleSubsystem extends SubsystemBase {
      * Returns whether the absolute difference between the measurement and the start
      * position is less than 2. The start position is defined in
      * {@link AngleConstants} as {@code ANGLE_START_POS_DEG}.
-     *
+     * 
      * @return Whether the measurment is less than 5 units from the start pos
      */
     public boolean isAtBase() {
@@ -247,8 +250,8 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns a {@link Command} which will set the setpoint to the start position upon
-     * being scheduled.
+     * Returns a {@link Command} which will set the setpoint to the start position
+     * upon being scheduled.
      */
     public Command angleToBase() {
         return getSetAngle(() -> AngleConstants.ANGLE_START_POS_DEG);
@@ -263,16 +266,16 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns a {@link Command} which will set the setpoint to the back stage shooting
-     * angle upon being scheduled.
+     * Returns a {@link Command} which will set the setpoint to the back stage
+     * shooting angle upon being scheduled.
      */
     public Command angleToStageBack() {
         return getSetAngle(() -> AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
     }
 
     /**
-     * Returns a {@link Command}which will set the setpoint to the front stage shooting
-     * angle upon being scheduled.
+     * Returns a {@link Command} which will set the setpoint to the front stage
+     * shooting angle upon being scheduled.
      */
     public Command angleToStageFront() {
         return getSetAngle(() -> AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
@@ -294,7 +297,7 @@ public class AngleSubsystem extends SubsystemBase {
         return getSetAngle(() -> m_setpoint + 10).repeatedly();
     }
 
-     /**
+    /**
      * Returns a Command that sets the angle to the angle specified in
      * {@code "testShootAngle"} in {@link SmartDashboard}.
      */
@@ -313,14 +316,15 @@ public class AngleSubsystem extends SubsystemBase {
      * Returns a Command that sets the setpoint to the angle provided and finishes
      * when the angle changer is at the setpoint.
      *
-     * @param angleSource The angle to set as the setpoint (as a {@link DoubleSupplier} in case of non-constant setpoints)
+     * @param angleSource The angle to set as the setpoint (as a
+     *                    {@link DoubleSupplier} in case of non-constant setpoints)
      */
     public Command getSetAngle(DoubleSupplier angleSource) {
         return FactoryCommands.runOnceUntil(() -> {
             setSetpoint(angleSource.getAsDouble());
         }, () -> isAtSetpoint());
     }
-   
+
     /**
      * This factory command releases the brakes on initialize and then engages the
      * brakes once more when interrupted.
