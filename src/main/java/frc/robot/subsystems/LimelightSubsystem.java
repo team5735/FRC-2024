@@ -36,8 +36,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public int getNumTargets() {
-        // TODO
-        return 1;
+        return (int) botposeSubscriber.get()[7];
     }
 
     public void ledsOn() {
