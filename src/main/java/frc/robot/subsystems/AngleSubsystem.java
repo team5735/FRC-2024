@@ -228,7 +228,7 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Returns whether the absolute difference between the measurement and the start
      * position is less than 2. The start position is defined in
-     * {@link AngleConstants} as {@code ANGLE_START_POS_DEG}.
+     * {@link AngleConstants} as {@code START_POS_DEG}.
      * 
      * @return Whether the measurment is less than 5 units from the start pos
      */

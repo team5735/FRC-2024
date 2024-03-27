@@ -14,8 +14,7 @@ import frc.robot.util.NTDoubleSection;
  * This class represents a ClimberSubsystem. It utilizes the in-built break mode
  * of a motor to hold positions and static voltages to move up or down. These
  * voltages can be set with {@code up()}, {@code down()}, and {@code stop()},
- * each
- * of which having relevant {@link Command} methods.
+ * each of which having relevant {@link Command} methods.
  * 
  * @author Jacoby (with additional help on Commands and the
  *         {@link NetworkTable})
@@ -41,7 +40,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     /**
      * Sets the motor's voltage to the oppsite of {@link ClimberConstants}'s
-     * {@code CLIMBER_UP_VOLTS}.
+     * {@code UP_VOLTS}.
      * <p>
      * (The opposite is used here simply for the ease of editing values in the
      * Constants file. It is old code and not worth changing without better reason)
@@ -52,7 +51,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     /**
      * Sets the motor's voltage to {@link ClimberConstants}'s
-     * {@code CLIMBER_DOWN_VOLTS}.
+     * {@code DOWN_VOLTS}.
      */
     private void down() {
         m_sparkMax.setVoltage(ClimberConstants.DOWN_VOLTS);
@@ -90,10 +89,9 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     /**
-     * @return a {@link Command} to run the motor in an downward direction until
-     *         interrupted,
-     *         prompting a stop. This is performed using the {@code down()} and
-     *         {@code stop()} methods of this subsystem.
+     * @return a {@link Command} to run the motor in a downward direction until
+     *         interrupted, prompting a stop. This is performed using the
+     *         {@code down()} and {@code stop()} methods of this subsystem.
      */
     public Command getDownStop() {
         return startEnd(() -> down(), () -> stop());
