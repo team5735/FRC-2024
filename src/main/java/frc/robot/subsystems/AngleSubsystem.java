@@ -62,7 +62,7 @@ public class AngleSubsystem extends SubsystemBase {
 
         m_encoder.setDistancePerRotation(1);
 
-        setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
+        setSetpoint(AngleConstants.START_POS_DEG);
     }
 
     /**
@@ -97,7 +97,7 @@ public class AngleSubsystem extends SubsystemBase {
             startPosition = m_encoder.getDistance();
         }
         double currentAngleDegrees = AngleConstants.convertRotationsToDegrees(
-                m_encoder.getDistance() - startPosition + AngleConstants.ANGLE_START_POS_ROT);
+                m_encoder.getDistance() - startPosition + AngleConstants.START_POS_ROT);
 
         return 0.1 * Math.round(currentAngleDegrees * 10);
     }
@@ -136,13 +136,13 @@ public class AngleSubsystem extends SubsystemBase {
      * {@link AngleConstants}.
      */
     public void updateProportions() {
-        double kp = AngleConstants.ANGLE_KP;
-        double ki = AngleConstants.ANGLE_KI;
-        double kd = AngleConstants.ANGLE_KD;
+        double kp = AngleConstants.KP;
+        double ki = AngleConstants.KI;
+        double kd = AngleConstants.KD;
 
-        double ks = AngleConstants.ANGLE_KS;
-        double kg = AngleConstants.ANGLE_KG;
-        double kv = AngleConstants.ANGLE_KV;
+        double ks = AngleConstants.KS;
+        double kg = AngleConstants.KG;
+        double kv = AngleConstants.KV;
 
         m_feedForward = new ArmFeedforward(ks, kg, kv);
         m_pid.setPID(kp, ki, kd);
@@ -169,7 +169,7 @@ public class AngleSubsystem extends SubsystemBase {
      * @param angle The angle that the subsystem will attemt to reach
      */
     public void setSetpoint(double angle) {
-        if (angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
+        if (angle > AngleConstants.LOWEST_DEG && angle < AngleConstants.HIGHEST_DEG)
             m_setpoint = angle;
     }
 
@@ -180,7 +180,7 @@ public class AngleSubsystem extends SubsystemBase {
      * @return the angle tied to {@code "testShootAngle"} in SmartDashboard
      */
     public double getSmartDashboardVal() {
-        return SmartDashboard.getNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
+        return SmartDashboard.getNumber("testShootAngle", AngleConstants.START_POS_DEG);
     }
 
     /**
@@ -233,7 +233,7 @@ public class AngleSubsystem extends SubsystemBase {
      * @return Whether the measurment is less than 5 units from the start pos
      */
     public boolean isAtBase() {
-        return Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) < 2;
+        return Math.abs(getMeasurement() - AngleConstants.START_POS_DEG) < 2;
     }
 
     /**
@@ -254,7 +254,7 @@ public class AngleSubsystem extends SubsystemBase {
      * upon being scheduled.
      */
     public Command angleToBase() {
-        return getSetAngle(() -> AngleConstants.ANGLE_START_POS_DEG);
+        return getSetAngle(() -> AngleConstants.START_POS_DEG);
     }
 
     /**
@@ -262,7 +262,7 @@ public class AngleSubsystem extends SubsystemBase {
      * position possible (lowest degrees + 10) upon being scheduled.
      */
     public Command angleToMax() {
-        return getSetAngle(() -> AngleConstants.ANGLE_LOWEST_DEG + 10);
+        return getSetAngle(() -> AngleConstants.LOWEST_DEG + 10);
     }
 
     /**
@@ -270,7 +270,7 @@ public class AngleSubsystem extends SubsystemBase {
      * shooting angle upon being scheduled.
      */
     public Command angleToStageBack() {
-        return getSetAngle(() -> AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
+        return getSetAngle(() -> AngleConstants.STAGE_BACK_DEG);
     }
 
     /**
@@ -278,7 +278,7 @@ public class AngleSubsystem extends SubsystemBase {
      * shooting angle upon being scheduled.
      */
     public Command angleToStageFront() {
-        return getSetAngle(() -> AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
+        return getSetAngle(() -> AngleConstants.STAGE_FRONT_DEG);
     }
 
     /**

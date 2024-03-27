@@ -21,13 +21,13 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public void pull() {
-        double pullSpeed = FeederConstants.FEEDER_PULL_VOLTS;
+        double pullSpeed = FeederConstants.PULL_VOLTS;
 
         m_sparkMax_pull.setVoltage(pullSpeed);
     }
 
     public void push() {
-        double pushSpeed = FeederConstants.FEEDER_PUSH_VOLTS;
+        double pushSpeed = FeederConstants.PUSH_VOLTS;
 
         m_sparkMax_pull.setVoltage(-pushSpeed);
     }
