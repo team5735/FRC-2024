@@ -200,6 +200,10 @@ public class AngleSubsystem extends SubsystemBase {
      * Returns a PIDCommand that is intended to be set as the default command of
      * this subsystem. Being a PIDCommand, it never finishes unless interrupted.
      *
+     * <p>
+     * This uses {@link edu.wpi.first.math.trajectory.Trajectory.State.State} to
+     * create a trapezoidal motion profile.
+     *
      * @param s The AngleSubsystem that this requires.
      *
      * @return A PIDCommand that runs *this* subsystem, requiring *s*.
