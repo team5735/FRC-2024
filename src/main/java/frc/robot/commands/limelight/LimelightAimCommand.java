@@ -97,7 +97,7 @@ public class LimelightAimCommand extends Command {
         watchdog.addEpoch("checked bot can aim");
 
         Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
-        aimHorizontally(robotToHood);
+        aimHorizontally(robotToHood, currentRobotPose.getRotation().getRadians());
         m_doubles.set("current rotation", currentRobotPose.getRotation().getRadians());
         watchdog.addEpoch("aimed horizontally");
 
@@ -113,7 +113,6 @@ public class LimelightAimCommand extends Command {
         watchdog.printEpochs();
     }
 
-    // checks to see if the robot is within reasonable shooting range of the target
     /**
      * Determines whether the robot is close enough to the speaker to be able to
      * reasonably shoot. The threshold is set high enough that this function
@@ -144,15 +143,18 @@ public class LimelightAimCommand extends Command {
     /**
      * Aims horizontally. This function uses atan2(double, double) to compute the
      * angle at which the drivetrain should face in order to see the speaker. It
-     * then passes that angle to a new {@link LimelightTurnToCommand} which does the
-     * PID work of turning the drivetrain.
+     * then passes the difference between that angle and the current angle to a new
+     * {@link LimelightTurnToCommand} which does the PID work of turning the
+     * drivetrain.
      *
      * @param currentRobotPoseToTarget The vector between the current robot pose and
      *                                 the target.
+     * @param currentRobotAngle        The current angle of the robot, as calculated
+     *                                 by the limelight, for determining the offset
      */
-    private void aimHorizontally(Translation2d currentRobotPoseToTarget) {
+    private void aimHorizontally(Translation2d currentRobotPoseToTarget, double currentRobotAngle) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double offset = posNegToPositive(drivetrainDesiredAngle);
+        double offset = drivetrainDesiredAngle - currentRobotAngle;
 
         m_doubles.set("desired drivetrain angle", drivetrainDesiredAngle);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
