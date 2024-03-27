@@ -282,16 +282,24 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Erroneously continuously sets the setpoint to 10 less than what it was when
+     * Continuously sets the setpoint to 10 less than what it was when
      * the function was called.
+     * 
+     * @deprecated
+     *             This method has been deprecated due to the trapezoidal motion
+     *             profile now utilized
      */
     public Command angleIncrease() {
         return getSetAngle(() -> m_setpoint - 10).repeatedly();
     }
 
     /**
-     * Erroneously continuously sets the setpoint to 10 greater than what it was
+     * Continuously sets the setpoint to 10 greater than what it was
      * when the function was called.
+     * 
+     * @deprecated
+     *             This method has been deprecated due to the trapezoidal motion
+     *             profile now utilized
      */
     public Command angleDecrease() {
         return getSetAngle(() -> m_setpoint + 10).repeatedly();
