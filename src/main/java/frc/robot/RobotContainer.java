@@ -161,7 +161,7 @@ public class RobotContainer {
         m_drivingController.povDown().onTrue(
                 m_angleSubsystem.angleToBase());
 
-        m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(180));
+        m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(() -> 180));
 
         // some lines were not copied from the drivetrain
 
