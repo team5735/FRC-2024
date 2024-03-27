@@ -21,11 +21,11 @@ import frc.robot.util.NTDoubleSection;
 
 /** An example command that uses an example subsystem. */
 public class LimelightAimCommand extends Command {
-    private LimelightSubsystem m_limelight;
-    private DrivetrainSubsystem m_drivetrain;
-    private AngleSubsystem m_angleChanger;
-    private boolean m_targetAcquired = false;
-    private Watchdog m_watchdog = new Watchdog(0.02, () -> {
+    private LimelightSubsystem limelight;
+    private DrivetrainSubsystem drivetrain;
+    private AngleSubsystem angleChanger;
+    private boolean targetAcquired = false;
+    private Watchdog watchdog = new Watchdog(0.02, () -> {
     });
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
@@ -50,10 +50,10 @@ public class LimelightAimCommand extends Command {
             final AngleSubsystem angleSubsystem) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
-        m_limelight = limelight;
-        m_drivetrain = drivetrain;
-        m_angleChanger = angleSubsystem;
-        m_targetAcquired = false;
+        this.limelight = limelight;
+        this.drivetrain = drivetrain;
+        angleChanger = angleSubsystem;
+        targetAcquired = false;
     }
 
     // Called when the command is initially scheduled.
@@ -64,20 +64,20 @@ public class LimelightAimCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_watchdog.reset();
+        watchdog.reset();
 
-        Pose3d botPose = m_limelight.getBotPose();
-        m_watchdog.addEpoch("get bot pose");
-        if (m_limelight.getNumTargets() < 2) {
+        Pose3d botPose = limelight.getBotPose();
+        watchdog.addEpoch("get bot pose");
+        if (limelight.getNumTargets() < 2) {
             m_booleans.set("spinning", true);
-            m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
+            drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
         }
-        m_watchdog.addEpoch("check num targets");
+        watchdog.addEpoch("check num targets");
 
         m_booleans.set("aiming", true);
-        m_targetAcquired = true;
-        m_watchdog.addEpoch("a target has been acquired");
+        targetAcquired = true;
+        watchdog.addEpoch("a target has been acquired");
 
         // coordinate system for field-oriented limelight targeting: x along long side
         // with positive towards red alliance, y along short side such that positive is
@@ -88,23 +88,23 @@ public class LimelightAimCommand extends Command {
         Pose2d currentRobotPose = botPose.toPose2d();
         Translation3d hoodPos = m_hoodPos;
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
-        m_watchdog.addEpoch("checked bot can aim");
+        watchdog.addEpoch("checked bot can aim");
 
         Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
         aimHorizontally(robotToHood, currentRobotPose.getRotation().getRadians());
         m_doubles.set("current rotation", currentRobotPose.getRotation().getRadians());
-        m_watchdog.addEpoch("aimed horizontally");
+        watchdog.addEpoch("aimed horizontally");
 
         Translation3d robotPosTranslation3d = new Translation3d(currentRobotPose.getX(), currentRobotPose.getY(), 0);
         double robotRotation = currentRobotPose.getRotation().getRadians();
         Translation3d angleChangerPosition = robotPosTranslation3d.plus(LimelightConstants.ANGLE_CHANGER_OFFSET
                 .rotateBy(new Rotation3d(0, 0, robotRotation)));
         aimVertically(angleChangerPosition, hoodPos);
-        m_watchdog.addEpoch("aimed vertically");
+        watchdog.addEpoch("aimed vertically");
 
         m_doubles.set("hood distance", robotToHood.getNorm());
-        m_watchdog.disable();
-        m_watchdog.printEpochs();
+        watchdog.disable();
+        watchdog.printEpochs();
     }
 
     // checks to see if the robot is within reasonable shooting range of the target
@@ -133,7 +133,7 @@ public class LimelightAimCommand extends Command {
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
 
-        new LimelightTurnToCommand(m_drivetrain, m_limelight, offset).schedule();
+        new LimelightTurnToCommand(drivetrain, limelight, offset).schedule();
     }
 
     private double radiansEnsureInBounds(double angle) {
@@ -156,7 +156,7 @@ public class LimelightAimCommand extends Command {
 
         m_doubles.set("angle changer radians", angleChangerDesiredAngle);
 
-        m_angleChanger.setSetpoint(anglerSetpoint);
+        angleChanger.setSetpoint(anglerSetpoint);
     }
 
     public static double positiveToPosNeg(double in) {
@@ -184,7 +184,7 @@ public class LimelightAimCommand extends Command {
         if (LimelightConstants.INFINITE_AIM) {
             return false;
         } else {
-            return m_targetAcquired;
+            return targetAcquired;
         }
     }
 }
