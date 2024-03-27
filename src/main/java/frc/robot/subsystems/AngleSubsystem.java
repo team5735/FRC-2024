@@ -16,6 +16,14 @@ import frc.robot.FactoryCommands;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
+/**
+ * This class represents the angle changer subsystem. It uses a PID to try and
+ * maintain a specific angle while using a feed forward to overcome gravity,
+ * except for when the angle changer is at rest. The setpoint can be set with
+ * setSetpoint.
+ *
+ * @author Jacoby
+ */
 public class AngleSubsystem extends SubsystemBase {
     private PIDController m_pid;
     private ArmFeedforward m_feedForward;
@@ -30,6 +38,12 @@ public class AngleSubsystem extends SubsystemBase {
 
     private final DutyCycleEncoder m_encoder = new DutyCycleEncoder(Constants.ANGLE_ENCODER_PIN);
 
+    /**
+     * Creates a new AngleSubsystem. Inverts both motors, and sets the left motor to
+     * follow the right. Also initializes the PID and feed forward using the
+     * constants in AngleConstants and gives the PID an IZone of 1. Finally, the
+     * setpoint is set to the resting position and the encoder is initialized.
+     */
     public AngleSubsystem() {
         m_sparkMax_left.setInverted(true);
         m_sparkMax_right.setInverted(true);
@@ -48,8 +62,12 @@ public class AngleSubsystem extends SubsystemBase {
         setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
     }
 
-    // overriden method called every 20ms, calls updateProportions
-    // as well as updating the NetworkTables for certain readings
+    /**
+     * This implementation of periodic() simply puts a few numbers into
+     * SmartDashboard for debugging purposes. The only reason we don't use an
+     * {@link frc.robot.util.NTDoubleSection} here is because the code hasn't been
+     * touched since that was implemented.
+     */
     @Override
     public void periodic() {
         SmartDashboard.putNumber("anglePos", getMeasurement());
@@ -58,8 +76,18 @@ public class AngleSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("anglePIDOutput", m_activeOutput);
     }
 
-    // reads the motor's position and multiplies it by the constant ratio to
-    // determine the arm's position
+    /**
+     * Determines where the angle changer is in its coordinate system by looking at
+     * the encoder's output. The output is calculated with
+     * AngleConstants.convertRotationsToDegrees and rounded to the tenths place.
+     *
+     * <p>
+     * The first time this function is called, the encoder's reported distance is
+     * stored as its start position. The position stored there is subtracted from
+     * the encoder's distance as an offset on subsequent calls.
+     *
+     * @return The position of the angle changer as reported by its encoder
+     */
     public double getMeasurement() {
         if (startPosition == 0) {
             startPosition = m_encoder.getDistance();
@@ -78,11 +106,9 @@ public class AngleSubsystem extends SubsystemBase {
      * told to stop.
      *
      * <p>
-     * If the angle changer is not at base, queried using isAtBase, then the feed
-     * forward output is not used. This is presumably because the feed forward is
-     * only needed to get the angle changer started, but its output isn't needed
-     * when the angle changer has left the base. In other words, we only need the
-     * boost from the feed forward if the angle changer is at the base.
+     * If the angle changer is at rest, queried using isAtBase, then the feed
+     * forward output is not used. This is done so that the angle changer isn't fed
+     * voltage by the feed forward while at rest.
      *
      * @param pidOutput The output from the PIDController, passed by the
      *                  {@link PIDCommand}.
