@@ -12,7 +12,7 @@ public class NTDoubleSection {
     private static final String sectionName = "sections";
 
     private final NetworkTable table;
-    private Map<String, DoubleTopic> entries = new HashMap<>();
+    private Map<String, DoublePublisher> entries = new HashMap<>();
 
     /**
      * Creates a new NTDoubleSection. This makes the section as a subtable in the
@@ -43,11 +43,16 @@ public class NTDoubleSection {
      * Creates a new entry and adds it to the list of entries. The entry will be
      * created as a {@link DoubleTopic} with the name name in the table this
      * instance is for.
+     * 
+     * <p>
+     * A value of 0 is published to the DoubleTopic initially.
      *
      * @param name The name of the entry.
      */
     public void addEntry(String name) {
-        entries.put(name, table.getDoubleTopic(name));
+        DoublePublisher publisher = table.getDoubleTopic(name).publish();
+        publisher.set(0);
+        entries.put(name, publisher);
     }
 
     /**
@@ -58,6 +63,6 @@ public class NTDoubleSection {
      * @param value The value to set the entry to
      */
     public void set(String entry, double value) {
-        entries.get(entry).publish().set(value);
+        entries.get(entry).set(value);
     }
 }
