@@ -144,9 +144,9 @@ public class RobotContainer {
                         m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
                         m_shooterBottomSubsystem,
                         SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                                ShooterConstants.TOP_DEFAULT_RPM),
                         SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+                                ShooterConstants.BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
@@ -170,9 +170,9 @@ public class RobotContainer {
                         m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
                         m_shooterBottomSubsystem,
                         SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                                ShooterConstants.TOP_DEFAULT_RPM),
                         SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+                                ShooterConstants.BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.povRight()
                 .whileTrue(new ParallelCommandGroup(
@@ -180,8 +180,8 @@ public class RobotContainer {
                         new SequentialCommandGroup(
                                 new ShooterSpinUpCommand(
                                         m_shooterTopSubsystem, m_shooterBottomSubsystem,
-                                        ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
-                                        ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
+                                        ShooterConstants.TOP_DEFAULT_RPM,
+                                        ShooterConstants.BOTTOM_DEFAULT_RPM),
                                 new ParallelDeadlineGroup(
                                         m_feederSubsystem.getPullStop(),
                                         Compositions.shootersHoldNStop(m_shooterTopSubsystem,

@@ -47,7 +47,7 @@ public class ClimberSubsystem extends SubsystemBase {
      * Constants file. It is old code and not worth changing without better reason)
      */
     private void up() {
-        m_sparkMax.setVoltage(-ClimberConstants.CLIMBER_UP_VOLTS);
+        m_sparkMax.setVoltage(-ClimberConstants.UP_VOLTS);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ClimberSubsystem extends SubsystemBase {
      * {@code CLIMBER_DOWN_VOLTS}.
      */
     private void down() {
-        m_sparkMax.setVoltage(ClimberConstants.CLIMBER_DOWN_VOLTS);
+        m_sparkMax.setVoltage(ClimberConstants.DOWN_VOLTS);
     }
 
     /**

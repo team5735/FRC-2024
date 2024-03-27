@@ -16,13 +16,13 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void pull() {
-        double pullSpeed = IntakeConstants.INTAKE_PULL_VOLTS;
+        double pullSpeed = IntakeConstants.PULL_VOLTS;
 
         m_sparkMax_pull.setVoltage(pullSpeed);
     }
 
     public void push() {
-        double pushSpeed = IntakeConstants.INTAKE_PUSH_VOLTS;
+        double pushSpeed = IntakeConstants.PUSH_VOLTS;
 
         m_sparkMax_pull.setVoltage(-pushSpeed);
     }
