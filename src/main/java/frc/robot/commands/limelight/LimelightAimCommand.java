@@ -97,7 +97,7 @@ public class LimelightAimCommand extends Command {
         watchdog.addEpoch("checked bot can aim");
 
         Translation2d robotToHood = hoodPos.toTranslation2d().minus(currentRobotPose.getTranslation());
-        aimHorizontally(robotToHood, currentRobotPose.getRotation().getRadians());
+        aimHorizontally(robotToHood);
         m_doubles.set("current rotation", currentRobotPose.getRotation().getRadians());
         watchdog.addEpoch("aimed horizontally");
 
