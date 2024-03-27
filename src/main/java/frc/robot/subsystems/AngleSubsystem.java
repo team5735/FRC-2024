@@ -22,7 +22,7 @@ import frc.robot.constants.Constants;
  * except for when the angle changer is at rest. The setpoint can be set with
  * setSetpoint.
  *
- * @author Jacoby
+ * @author Jacoby (with formatting and Commad help from others)
  */
 public class AngleSubsystem extends SubsystemBase {
     private PIDController m_pid;
