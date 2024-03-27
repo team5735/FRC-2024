@@ -7,7 +7,10 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.LimelightConstants;
 
 public class LimelightSubsystem extends SubsystemBase {
     private static NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -33,7 +36,8 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public int getNumTargets() {
-        return ((int) botposeSubscriber.get()[7]);
+        // TODO
+        return 1;
     }
 
     public void ledsOn() {
@@ -42,5 +46,14 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public void ledsOff() {
         ledModePublisher.set(1);
+    }
+
+    public Command blinkLeds() {
+        return Commands.sequence(
+                runOnce(() -> ledsOn()),
+                runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)),
+                runOnce(() -> ledsOff()),
+                runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME))).repeatedly()
+                .andThen(runOnce(() -> ledsOff()));
     }
 }

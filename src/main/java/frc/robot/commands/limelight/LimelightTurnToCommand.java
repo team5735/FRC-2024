@@ -6,7 +6,7 @@ package frc.robot.commands.limelight;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.Constants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -38,7 +38,7 @@ public class LimelightTurnToCommand extends Command {
 
         m_pid = new PIDController(m_kP.get(), m_kI.get(), m_kD.get());
 
-        m_pid.setTolerance(DrivetrainConstants.TOLERANCE);
+        m_pid.setTolerance(Constants.TOLERANCE);
         m_pid.setSetpoint(LimelightAimCommand.positiveToPosNeg(m_drivetrain.getRotation3d().getZ() + offset));
         m_pid.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -76,6 +76,6 @@ public class LimelightTurnToCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < DrivetrainConstants.TOLERANCE;
+        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < Constants.TOLERANCE;
     }
 }

@@ -2,15 +2,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import java.util.function.BooleanSupplier;
-
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -24,6 +19,14 @@ import frc.robot.FactoryCommands;
 import frc.robot.constants.AngleConstants;
 import frc.robot.constants.Constants;
 
+/**
+ * This class represents the angle changer subsystem. It uses a PID to try and
+ * maintain a specific angle while using a feed forward to overcome gravity,
+ * except for when the angle changer is at rest. The setpoint can be set with
+ * setSetpoint.
+ *
+ * @author Jacoby
+ */
 public class AngleSubsystem extends SubsystemBase {
     private ProfiledPIDController m_pid;
     private ArmFeedforward m_feedForward;
@@ -38,6 +41,12 @@ public class AngleSubsystem extends SubsystemBase {
 
     private final DutyCycleEncoder m_encoder = new DutyCycleEncoder(Constants.ANGLE_ENCODER_PIN);
 
+    /**
+     * Creates a new AngleSubsystem. Inverts both motors, and sets the left motor to
+     * follow the right. Also initializes the PID and feed forward using the
+     * constants in AngleConstants and gives the PID an IZone of 1. Finally, the
+     * setpoint is set to the resting position and the encoder is initialized.
+     */
     public AngleSubsystem() {
         m_sparkMax_left.setInverted(true);
         m_sparkMax_right.setInverted(true);
@@ -45,9 +54,9 @@ public class AngleSubsystem extends SubsystemBase {
         m_sparkMax_left.follow(m_sparkMax_right, true);
 
         m_pid = new ProfiledPIDController(
-            0, 0, 0, 
-            new TrapezoidProfile.Constraints(2, 1)
-            // TODO choose real numbers
+                0, 0, 0,
+                new TrapezoidProfile.Constraints(2, 1)
+        // TODO choose real numbers
         );
         m_feedForward = new ArmFeedforward(0, 0, 0);
 
@@ -60,26 +69,33 @@ public class AngleSubsystem extends SubsystemBase {
         setSetpoint(AngleConstants.ANGLE_START_POS_DEG);
     }
 
-    // overriden method called every 20ms, calls updateProportions
-    // as well as updating the NetworkTables for certain readings
+    /**
+     * This implementation of periodic() simply puts a few numbers into
+     * SmartDashboard for debugging purposes. The only reason we don't use an
+     * {@link frc.robot.util.NTDoubleSection} here is because the code hasn't been
+     * touched since that was implemented.
+     */
     @Override
     public void periodic() {
-        // updateProportions();
-
         SmartDashboard.putNumber("anglePos", getMeasurement());
         SmartDashboard.putNumber("angleCurrentSetpoint", m_setpoint);
-        // SmartDashboard.putNumber("angleLeftAmps",
-        // m_sparkMax_left.getOutputCurrent());
-        // SmartDashboard.putNumber("angleRightAmps",
-        // m_sparkMax_right.getOutputCurrent());
         SmartDashboard.putNumber("anglePIDError", Math.abs(m_pid.getPositionError()));
         SmartDashboard.putNumber("anglePIDOutput", m_activeOutput);
     }
 
-    // reads the motor's position and multiplies it by the constant ratio to
-    // determine the arm's position
+    /**
+     * Determines where the angle changer is in its coordinate system by looking at
+     * the encoder's output. The output is calculated with
+     * AngleConstants.convertRotationsToDegrees and rounded to the tenths place.
+     *
+     * <p>
+     * The first time this function is called, the encoder's reported distance is
+     * stored as its start position. The position stored there is subtracted from
+     * the encoder's distance as an offset on subsequent calls.
+     *
+     * @return The position of the angle changer as reported by its encoder
+     */
     public double getMeasurement() {
-        // return AngleConstants.convertRotationsToDegrees(m_encoder.getDistance());
         if (startPosition == 0) {
             startPosition = m_encoder.getDistance();
         }
@@ -89,7 +105,21 @@ public class AngleSubsystem extends SubsystemBase {
         return 0.1 * Math.round(currentAngleDegrees * 10);
     }
 
-    // sets the motor voltage to the PID & FeedForward calculations
+    /**
+     * Sets the motor voltage to the result of the PID and FeedForward calculations.
+     * This function takes the pidOutput so it can be used as the output function of
+     * the {@link PIDCommand} that is this subsystems' default. If enabled is false,
+     * then the pid output and the feed forward output are ignored and the motor is
+     * told to stop.
+     *
+     * <p>
+     * If the angle changer is at rest, queried using isAtBase, then the feed
+     * forward output is not used. This is done so that the angle changer isn't fed
+     * voltage by the feed forward while at rest.
+     *
+     * @param pidOutput The output from the PIDController, passed by the
+     *                  {@link PIDCommand}.
+     */
     public void useOutput(double pidOutput) {
         if (enabled) {
             double feedOutput = (!isAtBase())
@@ -105,30 +135,10 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Gets values from {@link SmartDashboard} for the {@link PIDController} and the
-     * {@link SimpleMotorFeedforward}. Then, m_pid_bottom and m_feedForward_bottom
-     * are reconstructed based on the values acquired from {@link SmartDashboard.}
-     *
-     * <p>
-     * Uses the following values:
-     * <ul>
-     * <li>angleKP
-     * <li>angleKI
-     * <li>angleKD
-     * <li>angleKS
-     * <li>angleKG
-     * <li>angleKV
-     * </ul>
+     * Recreates m_pid and m_feedForward based on the PID and SGV constants in
+     * {@link AngleConstants}.
      */
     public void updateProportions() {
-        // double kp = SmartDashboard.getNumber("angleKP", AngleConstants.ANGLE_KP);
-        // double ki = SmartDashboard.getNumber("angleKI", AngleConstants.ANGLE_KI);
-        // double kd = SmartDashboard.getNumber("angleKD", AngleConstants.ANGLE_KD);
-
-        // double ks = SmartDashboard.getNumber("angleKS", AngleConstants.ANGLE_KS);
-        // double kg = SmartDashboard.getNumber("angleKG", AngleConstants.ANGLE_KG);
-        // double kv = SmartDashboard.getNumber("angleKV", AngleConstants.ANGLE_KV);
-
         double kp = AngleConstants.ANGLE_KP;
         double ki = AngleConstants.ANGLE_KI;
         double kd = AngleConstants.ANGLE_KD;
@@ -141,87 +151,172 @@ public class AngleSubsystem extends SubsystemBase {
         m_pid.setPID(kp, ki, kd);
     }
 
+    /**
+     * Resets the PIDController that this subsystem uses.
+     */
     public void pidReset() {
         m_pid.reset(getMeasurement());
     }
 
+    /**
+     * Sets the setpoint in angles that the angle changer tries to reach. The
+     * coordinate system for this is as follows: angle 0 is facing opposite the
+     * robot, in the direction that notes are shot, with positive angles causing the
+     * angle changer to lower more towards the base.
+     *
+     * <p>
+     * Another way to describe the coordinate system is to give examples: 130 is the
+     * angle at which we can shoot into the amp, and 235 is the angle at which we
+     * shoot into the speaker, which is the same as the resting position.
+     *
+     * @param angle The angle that the subsystem will attemt to reach
+     */
     public void setSetpoint(double angle) {
         if (angle > AngleConstants.ANGLE_LOWEST_DEG && angle < AngleConstants.ANGLE_HIGHEST_DEG)
             m_setpoint = angle;
     }
 
-    // disables the PID & FeedForward, sets the motors to loose, and holds the
-    // voltage at 0
+    /**
+     * Sets the right motor's idle mode to coast, releasing the brakes. Also sets
+     * the subsystem to be disabled, sending 0 instead of the results of the PID and
+     * feed forward to the motors as voltage.
+     */
     public void releaseBrakes() {
         m_sparkMax_right.setIdleMode(IdleMode.kCoast);
         enabled = false;
     }
 
-    // undoes the previous method (re-enables controllers & voltage)
+    /**
+     * Sets the right motor's idle mode to brake, enabling the brakes. Also sets the
+     * subsystem to be enabled, sending the results of the PID and feed forward to
+     * the motors as voltage.
+     */
     public void engageBrakes() {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         enabled = true;
     }
 
+    /**
+     * Returns a PIDCommand that is intended to be set as the default command of
+     * this subsystem. Being a PIDCommand, it never finishes unless interrupted.
+     *
+     * @param s The AngleSubsystem that this requires.
+     *
+     * @return A PIDCommand that runs *this* subsystem, requiring *s*.
+     */
     public ProfiledPIDCommand anglePIDCommand(AngleSubsystem s) {
         return new ProfiledPIDCommand(
-            m_pid, 
-            () -> getMeasurement(), 
-            () -> {return new State(m_setpoint, 0);}, 
-            (a, b) -> useOutput(a), 
-            s
-        );
+                m_pid,
+                () -> getMeasurement(),
+                () -> {
+                    return new State(m_setpoint, 0);
+                },
+                (a, b) -> useOutput(a),
+                s);
     }
 
+    /**
+     * Returns whether the absolute position error is less than 5.
+     *
+     * @return Whether the absolute position error is less than 5
+     */
     public boolean isAtSetpoint() {
         return Math.abs(m_pid.getPositionError()) < 5;
     }
 
+    /**
+     * Returns whether the absolute difference between the measurement and the start
+     * position is less than 2. The start position is defined as
+     * AngleConstants.ANGLE_START_POS_DEG.
+     *
+     * @return Whether the measurment is less than 5 units from the start pos
+     */
     public boolean isAtBase() {
         return Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) < 2;
     }
 
+    /**
+     * Returns whether the absolute difference between the setPos and the
+     * measurement is less than 5.
+     *
+     * @param setPos The setpoint to compare against
+     *
+     * @return Whether or not the difference between the measurement and the
+     *         setpoint is less than 5
+     */
     public boolean isAtPosition(double setPos) {
         return Math.abs(getMeasurement() - setPos) < 5;
     }
 
+    /**
+     * Returns a Command which will set the setpoint to the start position upon
+     * being scheduled.
+     */
     public Command angleToBase() {
         return getSetAngle(AngleConstants.ANGLE_START_POS_DEG);
     }
 
+    /**
+     * Returns a Command which will set the setpoint to the highest physical
+     * position possible (lowest degrees + 10) upon being scheduled.
+     */
     public Command angleToMax() {
         return getSetAngle(AngleConstants.ANGLE_LOWEST_DEG + 10);
     }
 
+    /**
+     * Returns a Command which will set the setpoint to the back stage shooting
+     * angle upon being scheduled.
+     */
     public Command angleToStageBack() {
         return getSetAngle(AngleConstants.ANGLE_STAGE_BACK_SHOOT_DEG);
     }
 
+    /**
+     * Returns a Command which will set the setpoint to the front stage shooting
+     * angle upon being scheduled.
+     */
     public Command angleToStageFront() {
         return getSetAngle(AngleConstants.ANGLE_STAGE_FRONT_SHOOT_DEG);
     }
 
+    /**
+     * Erroneously continuously sets the setpoint to 10 less than what it was when
+     * the function was called.
+     */
     public Command angleIncrease() {
         return getSetAngle(m_setpoint - 10).repeatedly();
     }
 
+    /**
+     * Erroneously continuously sets the setpoint to 10 greater than what it was
+     * when the function was called.
+     */
     public Command angleDecrease() {
         return getSetAngle(m_setpoint + 10).repeatedly();
     }
 
+    /**
+     * Returns a Command that resets the PID.
+     */
     public Command getPIDReset() {
         return Commands.runOnce(() -> pidReset());
     }
 
+    /**
+     * Returns a Command that sets the setpoint to the angle provided and finishes
+     * when the angle changer is at the setpoint.
+     *
+     * @param angle The angle to set as the setpoint
+     */
     public Command getSetAngle(double angle) {
-        return Commands.runOnce(() -> setSetpoint(angle)).until(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return isAtPosition(angle);
-            }
-        });
+        return FactoryCommands.runOnceUntil(() -> setSetpoint(angle), () -> isAtPosition(angle));
     }
 
+    /**
+     * Returns a Command that sets the angle to the angle specified in
+     * testShootAngle in SmartDashboard.
+     */
     public Command getSetSmartDashboard() {
         return FactoryCommands.runOnceUntil(() -> {
             double setpoint = SmartDashboard.getNumber("testShootAngle",
@@ -231,7 +326,7 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * This factory commands releases the brakes on initialize and then engages the
+     * This factory command releases the brakes on initialize and then engages the
      * brakes once more when interrupted.
      */
     public Command getReleaseMotors() {

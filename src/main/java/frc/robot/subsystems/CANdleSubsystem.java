@@ -17,7 +17,7 @@ import frc.robot.constants.Constants;
 public class CANdleSubsystem extends SubsystemBase {
     private CANdle candle;
 
-    /** Creates a new CANdle Subsystem. */
+    /** Creates a new CANdleSubsystem. */
     public CANdleSubsystem() {
         candle = new CANdle(Constants.CANDLE_ID);
     }
