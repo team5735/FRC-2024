@@ -195,7 +195,7 @@ public class RobotContainer {
         m_subsystemController.x().whileTrue(new ParallelCommandGroup(
                 m_intakeSubsystem.getPushStop(),
                 m_feederSubsystem.getPushStop()));
-        m_subsystemController.a().whileTrue(m_limelightSubsystem.blinkLeds());
+        m_subsystemController.a().whileTrue(m_limelightSubsystem.blinkLedsOnce().repeatedly());
 
         m_subsystemController.leftBumper().whileTrue(m_climberLeftSubsystem.getUpStop());
         m_subsystemController.rightBumper().whileTrue(m_climberRightSubsystem.getUpStop());
@@ -207,10 +207,9 @@ public class RobotContainer {
         m_shooterBottomSubsystem
                 .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
 
-        m_intakeSubsystem.beamBreakEngaged().onTrue(new ParallelDeadlineGroup(
-            new WaitCommand(2 * LimelightConstants.BLINK_TIME * LimelightConstants.BLINK_COUNT),
-            m_limelightSubsystem.blinkLeds()
-        ));
+        m_intakeSubsystem.beamBreakEngaged().onTrue(
+            m_limelightSubsystem.blinkLeds(5)
+        );
     }
 
     private void updateMultipliers() {
