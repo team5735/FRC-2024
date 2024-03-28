@@ -55,8 +55,8 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("anglePos", 0);
 
-        SmartDashboard.putNumber("angleCurrentSetpoint", AngleConstants.START_POS_DEG);
-        SmartDashboard.putNumber("angleNewSetpoint", AngleConstants.START_POS_DEG);
+        SmartDashboard.putNumber("angleCurrentSetpoint", AngleConstants.BASE_POS_DEG);
+        SmartDashboard.putNumber("angleNewSetpoint", AngleConstants.BASE_POS_DEG);
 
         SmartDashboard.putNumber("climbUpVoltage", ClimberConstants.UP_VOLTS);
         SmartDashboard.putNumber("climbDownVoltage", ClimberConstants.DOWN_VOLTS);
@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
         SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
 
-        SmartDashboard.putNumber("testShootAngle", AngleConstants.START_POS_DEG);
+        SmartDashboard.putNumber("testShootAngle", AngleConstants.BASE_POS_DEG);
     }
 
     /**

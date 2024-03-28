@@ -62,7 +62,7 @@ public class AngleSubsystem extends SubsystemBase {
 
         m_encoder.setDistancePerRotation(1);
 
-        setSetpoint(AngleConstants.START_POS_DEG);
+        setSetpoint(AngleConstants.BASE_POS_DEG);
     }
 
     /**
@@ -97,7 +97,7 @@ public class AngleSubsystem extends SubsystemBase {
             startPosition = m_encoder.getDistance();
         }
         double currentAngleDegrees = AngleConstants.convertRotationsToDegrees(
-                m_encoder.getDistance() - startPosition + AngleConstants.START_POS_ROT);
+                m_encoder.getDistance() - startPosition + AngleConstants.BASE_POS_ROT);
 
         return 0.1 * Math.round(currentAngleDegrees * 10);
     }
@@ -119,10 +119,8 @@ public class AngleSubsystem extends SubsystemBase {
      */
     public void useOutput(double pidOutput) {
         if (enabled) {
-            double feedOutput = (!isAtBase())
-                    ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput)
-                    : 0;
-            double volts = pidOutput + feedOutput;
+            double feedOutput = m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput);
+            double volts = (m_setpoint == AngleConstants.BASE_POS_DEG) ? 0 : pidOutput + feedOutput;
             m_sparkMax_right.setVoltage(volts);
             SmartDashboard.putNumber("angleHypotheticalOutput", volts);
         } else {
@@ -180,7 +178,7 @@ public class AngleSubsystem extends SubsystemBase {
      * @return the angle tied to {@code "testShootAngle"} in SmartDashboard
      */
     public double getSmartDashboardVal() {
-        return SmartDashboard.getNumber("testShootAngle", AngleConstants.START_POS_DEG);
+        return SmartDashboard.getNumber("testShootAngle", AngleConstants.BASE_POS_DEG);
     }
 
     /**
@@ -233,7 +231,7 @@ public class AngleSubsystem extends SubsystemBase {
      * @return Whether the measurment is less than 5 units from the start pos
      */
     public boolean isAtBase() {
-        return Math.abs(getMeasurement() - AngleConstants.START_POS_DEG) < 2;
+        return Math.abs(getMeasurement() - AngleConstants.BASE_POS_DEG) < 2;
     }
 
     /**
@@ -254,7 +252,7 @@ public class AngleSubsystem extends SubsystemBase {
      * upon being scheduled.
      */
     public Command angleToBase() {
-        return getSetAngle(() -> AngleConstants.START_POS_DEG);
+        return getSetAngle(() -> AngleConstants.BASE_POS_DEG);
     }
 
     /**

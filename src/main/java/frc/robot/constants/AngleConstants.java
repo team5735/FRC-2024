@@ -9,8 +9,8 @@ public class AngleConstants {
     public static final double KG = 0.78;
     public static final double KV = 0;
 
-    public static final double START_POS_ROT = 235. / 360; 
-    public static final double START_POS_DEG = convertRotationsToDegrees(START_POS_ROT);
+    public static final double BASE_POS_ROT = 235. / 360;
+    public static final double BASE_POS_DEG = convertRotationsToDegrees(BASE_POS_ROT);
 
     public static final double HIGHEST_DEG = 237;
     public static final double LOWEST_DEG = 120;
