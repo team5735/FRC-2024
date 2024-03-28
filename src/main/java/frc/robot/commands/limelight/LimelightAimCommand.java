@@ -61,10 +61,6 @@ public class LimelightAimCommand extends Command {
         targetAcquired = false;
     }
 
-    @Override
-    public void initialize() {
-    }
-
     /**
      * Attempts to aim. This is in execute() so that if we don't have enough
      * targets, we can just turn.
@@ -261,10 +257,6 @@ public class LimelightAimCommand extends Command {
             return 2 * Math.PI + in;
         }
         return in;
-    }
-
-    @Override
-    public void end(final boolean interrupted) {
     }
 
     /**
