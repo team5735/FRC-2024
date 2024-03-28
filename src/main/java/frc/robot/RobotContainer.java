@@ -207,7 +207,7 @@ public class RobotContainer {
         m_shooterBottomSubsystem
                 .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
 
-        m_intakeSubsystem.beamBreakEngaged().onTrue(
+        m_intakeSubsystem.beamBreakEngaged().debounce(.1).onTrue(
                 m_limelightSubsystem.blinkLeds(5));
     }
 
