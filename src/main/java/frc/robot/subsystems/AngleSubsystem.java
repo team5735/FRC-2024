@@ -56,8 +56,6 @@ public class AngleSubsystem extends SubsystemBase {
         m_pid = new PIDController(0, 0, 0);
         m_feedForward = new ArmFeedforward(0, 0, 0);
 
-        m_pid.setIZone(1);
-
         updateProportions();
 
         m_encoder.setDistancePerRotation(1);
@@ -118,14 +116,11 @@ public class AngleSubsystem extends SubsystemBase {
      *                  {@link PIDCommand}.
      */
     public void useOutput(double pidOutput) {
-        if (enabled) {
-            double feedOutput = m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput);
-            double volts = (m_setpoint == AngleConstants.BASE_POS_DEG) ? 0 : pidOutput + feedOutput;
-            m_sparkMax_right.setVoltage(volts);
-            SmartDashboard.putNumber("angleHypotheticalOutput", volts);
-        } else {
-            m_sparkMax_right.setVoltage(0);
-        }
+        double feedOutput = m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput);
+        double volts = ((m_setpoint == AngleConstants.BASE_POS_DEG && isAtBase()) || !enabled) ? 0 : pidOutput + feedOutput;
+        m_sparkMax_right.setVoltage(volts);
+        SmartDashboard.putNumber("angleHypotheticalOutput", volts);
+        m_sparkMax_right.setVoltage(0);
         m_activeOutput = pidOutput;
     }
 
