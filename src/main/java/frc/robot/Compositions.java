@@ -19,81 +19,95 @@ import frc.robot.subsystems.shooter.ShooterTopSubsystem;
  * belong to
  */
 public class Compositions {
-    /*
-     * Creates and returns a new SequentialCommandGroup that first spins up the
-     * shooter, that is to say it gets the shooter to full speed, and then has a
-     * ParallelCommandGroup that feeds the NOTE in, and simultaneously keeps the
-     * shooter at full speed.
-     * 
-     * <p>
-     * This command does not run the intake until 0.5 seconds have passed AND the
-     * shooter is at full speed.
-     */
-    static Command feedAndShootAlsoIntake(FeederSubsystem feeder, IntakeSubsystem intake,
-            ShooterTopSubsystem shooterTop,
-            ShooterBottomSubsystem shooterBottom, double topRPM, double bottomRPM) {
-        return new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        new ShooterSpinUpCommand(shooterTop, shooterBottom, topRPM, bottomRPM),
-                        new WaitCommand(0.5)),
-                new ParallelCommandGroup(
-                        feeder.getPullStop(),
-                        intake.getPullStop(),
-                        shootersHoldNStop(shooterTop, shooterBottom)));
-    }
+	/**
+	 * Creates and returns a new SequentialCommandGroup that first spins up the
+	 * shooter, that is to say it gets the shooter to full speed, and then has a
+	 * ParallelCommandGroup that feeds the NOTE in, and simultaneously keeps the
+	 * shooter at full speed.
+	 * 
+	 * <p>
+	 * This command does not run the intake until 0.5 seconds have passed AND the
+	 * shooter is at full speed.
+	 */
+	static Command feedAndShootAlsoIntake(FeederSubsystem feeder, IntakeSubsystem intake,
+			ShooterTopSubsystem shooterTop,
+			ShooterBottomSubsystem shooterBottom, double topRPM, double bottomRPM) {
+		return new SequentialCommandGroup(
+				new ParallelCommandGroup(
+						new ShooterSpinUpCommand(shooterTop, shooterBottom, topRPM, bottomRPM),
+						new WaitCommand(0.5)),
+				new ParallelCommandGroup(
+						feeder.getPullStop(),
+						intake.getPullStop(),
+						shootersHoldNStop(shooterTop, shooterBottom)));
+	}
 
-    public static Command angleUpdateWithIntake(Command angleSetCommand, AngleSubsystem angler,
-            IntakeSubsystem intake) {
-        return (angler.isAtBase())
-                ? new ParallelCommandGroup(
-                        angleSetCommand,
-                        new ParallelDeadlineGroup(
-                                new WaitCommand(2),
-                                intake.getPullStop()))
-                : angleSetCommand;
-    }
+	/**
+	 * Creates and returns a Command either composed of the Command fed in and an
+	 * intake command, or simply of the Command passed in. The condition for the
+	 * intake running is the angle subsystem being at base position.
+	 * 
+	 * @param angleSetCommand the Command to run on the angle changer
+	 * @param angle           the angle changer to run the Command on
+	 * @param intake          the intake subsystem to aid in note movement
+	 * 
+	 *                        Please use this command when fiddling around the angle
+	 *                        changer as opposed to any other methods
+	 */
+	public static Command angleUpdateWithIntake(Command angleSetCommand, AngleSubsystem angle,
+			IntakeSubsystem intake) {
+		return (angle.isAtBase())
+				? new ParallelCommandGroup(
+						angleSetCommand,
+						new ParallelDeadlineGroup(
+								new WaitCommand(2),
+								intake.getPullStop()))
+				: angleSetCommand;
+	}
 
-    public static Command shootNAngleFromStageBack(AngleSubsystem angle, ShooterTopSubsystem top,
-            ShooterBottomSubsystem bottom, FeederSubsystem feeder, IntakeSubsystem intake) {
-        return new SequentialCommandGroup(
-                angle.angleToStageBack(),
-                feedAndShootAlsoIntake(
-                        feeder, intake, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_BACK_RPM,
-                        ShooterConstants.SHOOTER_BOTTOM_STAGE_BACK_RPM));
-    }
+	public static Command shootNAngleFromStageBack(AngleSubsystem angle, ShooterTopSubsystem top,
+			ShooterBottomSubsystem bottom, FeederSubsystem feeder, IntakeSubsystem intake) {
+		return new SequentialCommandGroup(
+				angle.angleToStageBack(),
+				feedAndShootAlsoIntake(
+						feeder, intake, top, bottom,
+						ShooterConstants.TOP_STAGE_BACK_RPM,
+						ShooterConstants.BOTTOM_STAGE_BACK_RPM));
+	}
 
-    public static Command shootNAngleFromStageFront(AngleSubsystem angle, ShooterTopSubsystem top,
-            ShooterBottomSubsystem bottom, FeederSubsystem feeder, IntakeSubsystem intake) {
-        return new SequentialCommandGroup(
-                angle.angleToStageFront(),
-                feedAndShootAlsoIntake(
-                        feeder, intake, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_FRONT_RPM,
-                        ShooterConstants.SHOOTER_BOTTOM_STAGE_FRONT_RPM));
-    }
+	public static Command shootNAngleFromStageFront(AngleSubsystem angle, ShooterTopSubsystem top,
+			ShooterBottomSubsystem bottom, FeederSubsystem feeder, IntakeSubsystem intake) {
+		return new SequentialCommandGroup(
+				angle.angleToStageFront(),
+				feedAndShootAlsoIntake(
+						feeder, intake, top, bottom,
+						ShooterConstants.TOP_STAGE_FRONT_RPM,
+						ShooterConstants.BOTTOM_STAGE_FRONT_RPM));
+	}
 
-    public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake) {
-        return new SequentialCommandGroup(
-                new ParallelDeadlineGroup(
-                        feeder.getPrimeNote(),
-                        intake.getPullStop()),
-                feeder.getUnprimeNote(),
-                feeder.getPrimeNote());
-    }
+	public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake) {
+		return new SequentialCommandGroup(
+				new ParallelDeadlineGroup(
+						feeder.getPrimeNote(),
+						intake.getPullStop()),
+				feeder.getUnprimeNote(),
+				feeder.getPrimeNote());
+	}
 
-    /**
-     * Returns a command that stops the shooters when interrupted. This does not
-     * require either subsystem passed into it.
-     *
-     * @param shooterTop    The top shooter subsystem, .stop()ed when interruped
-     * @param shooterBottom The bottom shooter subsystem, .stop()ed when interruped
-     *
-     * @return The Command that stops both when interrupted
-     */
-    public static Command shootersHoldNStop(ShooterTopSubsystem shooterTop, ShooterBottomSubsystem shooterBottom) {
-        return Commands.startEnd(() -> {
-        }, () -> {
-            shooterTop.stop();
-            shooterBottom.stop();
-        });
-    }
+	/**
+	 * Returns a command that stops the shooters when interrupted. This does not
+	 * require either subsystem passed into it.
+	 *
+	 * @param shooterTop    The top shooter subsystem, .stop()ed when interruped
+	 * @param shooterBottom The bottom shooter subsystem, .stop()ed when interruped
+	 *
+	 * @return The Command that stops both when interrupted
+	 */
+	public static Command shootersHoldNStop(ShooterTopSubsystem shooterTop, ShooterBottomSubsystem shooterBottom) {
+		return Commands.startEnd(() -> {
+		}, () -> {
+			shooterTop.stop();
+			shooterBottom.stop();
+		});
+	}
 }

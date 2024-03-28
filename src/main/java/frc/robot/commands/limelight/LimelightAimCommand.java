@@ -19,10 +19,15 @@ import frc.robot.util.AllianceSwitcher;
 import frc.robot.util.NTBooleanSection;
 import frc.robot.util.NTDoubleSection;
 
-/** An example command that uses an example subsystem. */
+/**
+ * A command that uses data from the {@link LimelightSubsystem} to aim the
+ * drivetrain and the angle changer at the speaker. Uses LimelightTurnToCommand
+ * to turn the drivetrain and sets the angle changer subsystem's setpoint.
+ */
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem limelight;
     private DrivetrainSubsystem drivetrain;
+    @SuppressWarnings("unused")
     private AngleSubsystem angleChanger;
     private boolean targetAcquired = false;
     private Watchdog watchdog = new Watchdog(0.02, () -> {
@@ -30,7 +35,7 @@ public class LimelightAimCommand extends Command {
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain angle",
-            "hood vector x", "hood vector y", "angle changer radians");
+            "hood vector x", "hood vector y", "angle changer radians", "angle changer degrees");
 
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming", "spinning");
 
@@ -56,12 +61,14 @@ public class LimelightAimCommand extends Command {
         targetAcquired = false;
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /**
+     * Attempts to aim. This is in execute() so that if we don't have enough
+     * targets, we can just turn.
+     */
     @Override
     public void execute() {
         watchdog.reset();
@@ -107,27 +114,48 @@ public class LimelightAimCommand extends Command {
         watchdog.printEpochs();
     }
 
-    // checks to see if the robot is within reasonable shooting range of the target
+    /**
+     * Determines whether the robot is close enough to the speaker to be able to
+     * reasonably shoot. The threshold is set high enough that this function
+     * practically never does anything, but it's there. It also would try to drive
+     * towards the speaker, but if the robot is far enough that it needs to drive,
+     * it can't see the AprilTags well enough anyway.
+     *
+     * @param robotPosition  The current robot's position in field space
+     * @param targetPosition The target's position in field space
+     */
     private void checkBotCanAim(Translation2d robotPosition, Translation3d targetPosition) {
         boolean botIsCloseEnough = robotPosition
                 .getDistance(targetPosition.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
-        if (!botIsCloseEnough) {
-            m_doubles.set("cannot aim distance",
-                    robotPosition.getDistance(m_hoodPos.toTranslation2d()));
-            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
-            Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
-                    .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
-                                                                          // movement speed
-            // m_drivetrain.drive(desiredVelocity);
-            m_doubles.set("drivetrain speed x", desiredVelocity.getX());
-            m_doubles.set("drivetrain speed y", desiredVelocity.getY());
+        if (botIsCloseEnough) {
             return;
         }
+        m_doubles.set("cannot aim distance",
+                robotPosition.getDistance(m_hoodPos.toTranslation2d()));
+        Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
+        Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
+                .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
+                                                                      // movement speed
+        // m_drivetrain.drive(desiredVelocity);
+        m_doubles.set("drivetrain speed x", desiredVelocity.getX());
+        m_doubles.set("drivetrain speed y", desiredVelocity.getY());
     }
 
-    private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
+    /**
+     * Aims horizontally. This function uses atan2(double, double) to compute the
+     * angle at which the drivetrain should face in order to see the speaker. It
+     * then passes the difference between that angle and the current angle to a new
+     * {@link LimelightTurnToCommand} which does the PID work of turning the
+     * drivetrain.
+     *
+     * @param currentRobotPoseToTarget The vector between the current robot pose and
+     *                                 the target.
+     * @param currentRobotAngle        The current angle of the robot, as calculated
+     *                                 by the limelight, for determining the offset
+     */
+    private void aimHorizontally(Translation2d currentRobotPoseToTarget, double currentRobotAngle) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double offset = posNegToPositive(drivetrainDesiredAngle);
+        double offset = drivetrainDesiredAngle - currentRobotAngle;
 
         m_doubles.set("desired drivetrain angle", drivetrainDesiredAngle);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
@@ -136,6 +164,66 @@ public class LimelightAimCommand extends Command {
         new LimelightTurnToCommand(drivetrain, limelight, offset).schedule();
     }
 
+    /**
+     * Determines the angle that the angle changer would have to point at in order
+     * to shoot into the target from angler. Angler is the vector of the angle
+     * changer's pivot, and target is the vector of the hood of the speaker -- where
+     * we're trying to shoot.
+     *
+     * <p>
+     * Because of the mechanical design of the angle changer, we have to perform
+     * some more advanced trig than just another atan2. The problem is interpreted
+     * and solved as such:
+     *
+     * <p>
+     * Given: the coordinates and radius of circle O and the coordinates of point P,
+     * solve for the angle between the radius OA where A is the point where tangent
+     * PA meets the circumference of circle O and the horizon, which is a plane
+     * parallel to the physical ground at the same height as the angler.
+     *
+     * <p>
+     * To solve for this tangent, we have to employ not one but two right triangles.
+     * The first is triangle OAP, with a right angle at A. This is fully defined
+     * because we know the vector OP, we know that one angle is a right angle, and
+     * we know how long OA is. Using that information, we can solve for angle O. But
+     * that's not all we need, because we also need the angle between OP and the
+     * aforementioned horizon, which can be calculated with another right triangle
+     * that is hopefully intuitive. Adding these two angles together we get our
+     * answer.
+     *
+     * @param angler The vector of the angle changer from the field origin
+     * @param target The vector of the target from the field origin
+     */
+    private void aimVertically(Translation3d angler, Translation3d target) {
+        // right triangle spam
+        // theta 0 is parallel to the ground and facing the front of the robot for my
+        // coordinate system, in the angle changer's it's facing the back and increases
+        // the other direction
+        Translation3d anglerToTarget = target.minus(angler);
+        double anglerToTargetAngle1 = Math.atan2(anglerToTarget.getZ(), anglerToTarget.toTranslation2d().getNorm());
+        double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
+        double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
+        double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
+
+        m_doubles.set("angle changer radians", angleChangerDesiredAngle);
+        m_doubles.set("angle changer degrees", anglerSetpoint);
+
+        // angleChanger.setSetpoint(anglerSetpoint);
+    }
+
+    /**
+     * Ensures angle is between +pi and -pi. If it isn't, it wraps around.
+     *
+     * <p>
+     * As an example, if 4 is inputted, then the function returns -pi + (4 - pi) =
+     * -2pi + 4. This is used to convert a value that perhaps goes from 0 to 2pi or
+     * perhaps from -2pi to 0 into a value that goes from -pi to pi, which its users
+     * prefer.
+     *
+     * @param angle The angle to transform, if necessary
+     *
+     * @return The transformed angle, between -pi and pi
+     */
     private double radiansEnsureInBounds(double angle) {
         if (angle > -Math.PI && angle < Math.PI) {
             return angle;
@@ -144,41 +232,52 @@ public class LimelightAimCommand extends Command {
         return Math.PI * -Math.signum(angle) + diff * Math.signum(angle);
     }
 
-    private void aimVertically(Translation3d angler, Translation3d target) {
-        // right triangle spam
-        // theta 0 is parallel to the ground and facing the front of the robot
-        Translation3d anglerToTarget = target.minus(angler);
-        double anglerToTargetAngle1 = Math.atan2(anglerToTarget.getZ(), anglerToTarget.getX());
-        // double check this
-        double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
-        double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
-        double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
-
-        m_doubles.set("angle changer radians", angleChangerDesiredAngle);
-
-        angleChanger.setSetpoint(anglerSetpoint);
-    }
-
+    /**
+     * This function is a version of the above with reduced functionality. It simply
+     * takes in a value that is possibly greater than pi, and if it is, it adds it
+     * to negative pi.
+     *
+     * @param in The angle to process, potentially greater than pi
+     *
+     * @return The processed angle, between -pi and pi assuming in is less than 2pi
+     */
     public static double positiveToPosNeg(double in) {
         if (in > Math.PI) {
-            return -(in - Math.PI);
+            return Math.PI - in;
         }
         return in;
     }
 
+    /**
+     * This reverts the above. If the input is between -pi and pi, it returns a
+     * value representing the same rotation but bound between 0 and 2pi instead.
+     *
+     * @param in The angle, bound between -pi and pi
+     *
+     * @return The angle but bound between 0 and 2pi
+     */
     public static double posNegToPositive(double in) {
         if (in < 0) {
-            return Math.PI + (-in);
+            return 2 * Math.PI + in;
         }
         return in;
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(final boolean interrupted) {
     }
 
-    // Returns true when the command should end.
+    /**
+     * Determines whether the command should end. If infinite aim is true, that is,
+     * it continues to try to aim even after it's already scheduled one
+     * {@link LimelightTurnToCommand} and schedules more. This shouldn't happen and
+     * this functionality is only for testing;
+     * {@code LimelightConstants.INFINITE_AIM} should always be false for this
+     * reason. If it is, it checks whether the Limelight has reported two AprilTags
+     * seen since the command started.
+     *
+     * @return Whether the command is done processing
+     */
     @Override
     public boolean isFinished() {
         if (LimelightConstants.INFINITE_AIM) {

@@ -36,8 +36,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public int getNumTargets() {
-        // TODO
-        return 1;
+        return (int) botposeSubscriber.get()[7];
     }
 
     public void ledsOn() {
@@ -48,12 +47,19 @@ public class LimelightSubsystem extends SubsystemBase {
         ledModePublisher.set(1);
     }
 
-    public Command blinkLeds() {
+    public Command blinkLedsOnce() {
         return Commands.sequence(
-                runOnce(() -> ledsOn()),
-                runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)),
-                runOnce(() -> ledsOff()),
-                runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME))).repeatedly()
-                .andThen(runOnce(() -> ledsOff()));
+                Commands.runOnce(() -> ledsOn()),
+                Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)),
+                Commands.runOnce(() -> ledsOff()),
+                Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)));
+    }
+
+    public Command blinkLeds(int numberOfTimes) {
+        Command currentlyBuiltCommand = Commands.none();
+        for (int i = 0; i < numberOfTimes; i++) {
+            currentlyBuiltCommand = currentlyBuiltCommand.andThen(blinkLedsOnce());
+        }
+        return currentlyBuiltCommand.andThen(Commands.runOnce(() -> ledsOff()));
     }
 }

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoCommands;
@@ -25,6 +26,7 @@ import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.LimelightConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -144,9 +146,9 @@ public class RobotContainer {
                         m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
                         m_shooterBottomSubsystem,
                         SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                                ShooterConstants.TOP_DEFAULT_RPM),
                         SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+                                ShooterConstants.BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
@@ -161,7 +163,7 @@ public class RobotContainer {
         m_drivingController.povDown().onTrue(
                 m_angleSubsystem.angleToBase());
 
-        m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(180));
+        m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(() -> 180));
 
         // some lines were not copied from the drivetrain
 
@@ -170,9 +172,9 @@ public class RobotContainer {
                         m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
                         m_shooterBottomSubsystem,
                         SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                                ShooterConstants.TOP_DEFAULT_RPM),
                         SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+                                ShooterConstants.BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.povRight()
                 .whileTrue(new ParallelCommandGroup(
@@ -180,8 +182,8 @@ public class RobotContainer {
                         new SequentialCommandGroup(
                                 new ShooterSpinUpCommand(
                                         m_shooterTopSubsystem, m_shooterBottomSubsystem,
-                                        ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
-                                        ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
+                                        ShooterConstants.TOP_DEFAULT_RPM,
+                                        ShooterConstants.BOTTOM_DEFAULT_RPM),
                                 new ParallelDeadlineGroup(
                                         m_feederSubsystem.getPullStop(),
                                         Compositions.shootersHoldNStop(m_shooterTopSubsystem,
@@ -193,7 +195,7 @@ public class RobotContainer {
         m_subsystemController.x().whileTrue(new ParallelCommandGroup(
                 m_intakeSubsystem.getPushStop(),
                 m_feederSubsystem.getPushStop()));
-        m_subsystemController.a().whileTrue(m_limelightSubsystem.blinkLeds());
+        m_subsystemController.a().whileTrue(m_limelightSubsystem.blinkLedsOnce().repeatedly());
 
         m_subsystemController.leftBumper().whileTrue(m_climberLeftSubsystem.getUpStop());
         m_subsystemController.rightBumper().whileTrue(m_climberRightSubsystem.getUpStop());
@@ -204,6 +206,9 @@ public class RobotContainer {
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand());
         m_shooterBottomSubsystem
                 .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
+
+        m_intakeSubsystem.beamBreakEngaged().onTrue(
+                m_limelightSubsystem.blinkLeds(5));
     }
 
     private void updateMultipliers() {
