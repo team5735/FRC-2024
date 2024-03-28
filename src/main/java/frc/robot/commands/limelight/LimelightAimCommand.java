@@ -27,6 +27,7 @@ import frc.robot.util.NTDoubleSection;
 public class LimelightAimCommand extends Command {
     private LimelightSubsystem limelight;
     private DrivetrainSubsystem drivetrain;
+    @SuppressWarnings("unused")
     private AngleSubsystem angleChanger;
     private boolean targetAcquired = false;
     private Watchdog watchdog = new Watchdog(0.02, () -> {
@@ -34,7 +35,7 @@ public class LimelightAimCommand extends Command {
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain angle",
-            "hood vector x", "hood vector y", "angle changer radians");
+            "hood vector x", "hood vector y", "angle changer radians", "angle changer degrees");
 
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming", "spinning");
 
@@ -195,17 +196,19 @@ public class LimelightAimCommand extends Command {
      */
     private void aimVertically(Translation3d angler, Translation3d target) {
         // right triangle spam
-        // theta 0 is parallel to the ground and facing the front of the robot
+        // theta 0 is parallel to the ground and facing the front of the robot for my
+        // coordinate system, in the angle changer's it's facing the back and increases
+        // the other direction
         Translation3d anglerToTarget = target.minus(angler);
-        double anglerToTargetAngle1 = Math.atan2(anglerToTarget.getZ(), anglerToTarget.getX());
-        // double check this
+        double anglerToTargetAngle1 = Math.atan2(anglerToTarget.getZ(), anglerToTarget.toTranslation2d().getNorm());
         double anglerToTargetAngle2 = Math.acos(LimelightConstants.ANGLE_CHANGER_RADIUS / anglerToTarget.getNorm());
         double angleChangerDesiredAngle = radiansEnsureInBounds(anglerToTargetAngle1 + anglerToTargetAngle2);
         double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
 
         m_doubles.set("angle changer radians", angleChangerDesiredAngle);
+        m_doubles.set("angle changer degrees", anglerSetpoint);
 
-        angleChanger.setSetpoint(anglerSetpoint);
+        // angleChanger.setSetpoint(anglerSetpoint);
     }
 
     /**
