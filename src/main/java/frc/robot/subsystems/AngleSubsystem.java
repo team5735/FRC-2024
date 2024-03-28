@@ -8,12 +8,15 @@ import java.util.function.DoubleSupplier;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FactoryCommands;
 import frc.robot.constants.AngleConstants;
@@ -28,7 +31,7 @@ import frc.robot.constants.Constants;
  * @author Jacoby (with formatting and Command help from others)
  */
 public class AngleSubsystem extends SubsystemBase {
-    private PIDController m_pid;
+    private ProfiledPIDController m_pid;
     private ArmFeedforward m_feedForward;
     private boolean enabled = true;
     private double startPosition = 0;
@@ -53,7 +56,11 @@ public class AngleSubsystem extends SubsystemBase {
 
         m_sparkMax_left.follow(m_sparkMax_right, true);
 
-        m_pid = new PIDController(0, 0, 0);
+        m_pid = new ProfiledPIDController(
+                0, 0, 0,
+                new TrapezoidProfile.Constraints(2, 1)
+        // TODO choose real numbers
+        );
         m_feedForward = new ArmFeedforward(0, 0, 0);
 
         updateProportions();
@@ -117,7 +124,8 @@ public class AngleSubsystem extends SubsystemBase {
      */
     public void useOutput(double pidOutput) {
         double feedOutput = m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput);
-        double volts = ((m_setpoint == AngleConstants.BASE_POS_DEG && isAtBase()) || !enabled) ? 0 : pidOutput + feedOutput;
+        double volts = ((m_setpoint == AngleConstants.BASE_POS_DEG && isAtBase()) || !enabled) ? 0
+                : pidOutput + feedOutput;
         m_sparkMax_right.setVoltage(volts);
         SmartDashboard.putNumber("angleHypotheticalOutput", volts);
         m_sparkMax_right.setVoltage(0);
@@ -145,7 +153,7 @@ public class AngleSubsystem extends SubsystemBase {
      * Resets the {@link PIDController} that this subsystem uses.
      */
     public void pidReset() {
-        m_pid.reset();
+        m_pid.reset(getMeasurement());
     }
 
     /**
@@ -201,12 +209,23 @@ public class AngleSubsystem extends SubsystemBase {
      * command of this subsystem. Being a PIDCommand, it never finishes unless
      * interrupted.
      *
+     * <p>
+     * This uses {@link edu.wpi.first.math.trajectory.Trajectory.State.State} to
+     * create a trapezoidal motion profile.
+     *
      * @param s The {@link AngleSubsystem} that this requires.
      *
      * @return A PIDCommand that runs *this* subsystem, requiring *s*.
      */
-    public PIDCommand anglePIDCommand(AngleSubsystem s) {
-        return new PIDCommand(m_pid, () -> getMeasurement(), () -> m_setpoint, a -> useOutput(a), s);
+    public ProfiledPIDCommand anglePIDCommand(AngleSubsystem s) {
+        return new ProfiledPIDCommand(
+                m_pid,
+                () -> getMeasurement(),
+                () -> {
+                    return new State(m_setpoint, 0);
+                },
+                (a, b) -> useOutput(a),
+                s);
     }
 
     /**
