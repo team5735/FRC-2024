@@ -18,7 +18,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private DoubleArraySubscriber botposeSubscriber = limelightTable.getDoubleArrayTopic("botpose")
             .subscribe(new double[8]);
     private DoubleSubscriber targetVisibleSubscriber = limelightTable.getDoubleTopic("tv").subscribe(0);
-    private DoublePublisher ledModePublisher = limelightTable.getDoubleTopic("ledMode").publish();
+    private static DoublePublisher ledModePublisher = limelightTable.getDoubleTopic("ledMode").publish();
 
     public Pose3d getBotPose() {
         double[] botpose = botposeSubscriber.get();
@@ -39,15 +39,15 @@ public class LimelightSubsystem extends SubsystemBase {
         return (int) botposeSubscriber.get()[7];
     }
 
-    public void ledsOn() {
+    public static void ledsOn() {
         ledModePublisher.set(3);
     }
 
-    public void ledsOff() {
+    public static void ledsOff() {
         ledModePublisher.set(1);
     }
 
-    public Command blinkLedsOnce() {
+    public static Command blinkLedsOnce() {
         return Commands.sequence(
                 Commands.runOnce(() -> ledsOn()),
                 Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)),
@@ -55,7 +55,7 @@ public class LimelightSubsystem extends SubsystemBase {
                 Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)));
     }
 
-    public Command blinkLeds(int numberOfTimes) {
+    public static Command blinkLeds(int numberOfTimes) {
         Command currentlyBuiltCommand = Commands.none();
         for (int i = 0; i < numberOfTimes; i++) {
             currentlyBuiltCommand = currentlyBuiltCommand.andThen(blinkLedsOnce());

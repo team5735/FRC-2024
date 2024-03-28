@@ -24,6 +24,8 @@ public class FeederSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_pull = new CANSparkMax(Constants.FEEDER_MOTOR_ID, MotorType.kBrushless);
     private final DigitalInput m_switch = new DigitalInput(Constants.FEEDER_BEAM_PIN);
 
+    private boolean lastBeamBreakStatus = false;
+
     /**
      * Creates a new FeederSubsystem and inverts the motor.
      */
@@ -68,6 +70,11 @@ public class FeederSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("feederSwitchStatus", getSwitchStatus());
         SmartDashboard.putNumber("feederVoltage", m_sparkMax_pull.getBusVoltage());
+
+        if (lastBeamBreakStatus != getSwitchStatus() && getSwitchStatus() == false) {
+            LimelightSubsystem.blinkLedsOnce().schedule();
+        }
+        lastBeamBreakStatus = getSwitchStatus();
     }
 
     /**

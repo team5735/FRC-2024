@@ -22,6 +22,9 @@ import frc.robot.constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_pull = new CANSparkMax(Constants.INTAKE_MOTOR_ID, MotorType.kBrushless);
     private final DigitalInput m_switch = new DigitalInput(Constants.INTAKE_BEAM_PIN);
+
+    private boolean lastBeamBreakStatus = false;
+
     /**
      * Creates a new IntakeSubsystem and inverts the motor.
      */
@@ -29,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_sparkMax_pull.setInverted(true);
     }
 
-     /**
+    /**
      * Sets the motor's voltage to {@link IntakeConstants}'s
      * {@code PULL_VOLTS}.
      */
@@ -56,13 +59,22 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     /**
-     * Logs values to {@link SmartDashboard}:
+     * Logs values to {@link SmartDashboard}.
+     * 
      * <p>
      * {@code "intakeSwitchStatus"} - The boolean state of the beam break
+     *
+     * <p>
+     * Also checks the intake switch.
      */
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("intakeSwitchStatus", getSwitchStatus());
+
+        if (lastBeamBreakStatus != getSwitchStatus() && getSwitchStatus() == false) {
+            LimelightSubsystem.blinkLedsOnce().schedule();
+        }
+        lastBeamBreakStatus = getSwitchStatus();
     }
 
     /**
@@ -100,7 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return runOnce(() -> stop());
     }
 
-    public Trigger beamBreakEngaged(){
+    public Trigger beamBreakEngaged() {
         return new Trigger(() -> !getSwitchStatus());
     }
 }
