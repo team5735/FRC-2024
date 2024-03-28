@@ -23,6 +23,7 @@ import frc.robot.constants.FeederConstants;
 public class FeederSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_pull = new CANSparkMax(Constants.FEEDER_MOTOR_ID, MotorType.kBrushless);
     private final DigitalInput m_switch = new DigitalInput(Constants.FEEDER_BEAM_PIN);
+
     private boolean lastBeamBreakStatus = false;
 
     /**
