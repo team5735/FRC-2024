@@ -23,8 +23,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_pull = new CANSparkMax(Constants.INTAKE_MOTOR_ID, MotorType.kBrushless);
     private final DigitalInput m_switch = new DigitalInput(Constants.INTAKE_BEAM_PIN);
 
-    private boolean lastBeamBreakStatus = false;
-
     /**
      * Creates a new IntakeSubsystem and inverts the motor.
      */
@@ -70,11 +68,6 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("intakeSwitchStatus", getSwitchStatus());
-
-        if (lastBeamBreakStatus != getSwitchStatus() && getSwitchStatus() == false) {
-            LimelightSubsystem.blinkLedsOnce().schedule();
-        }
-        lastBeamBreakStatus = getSwitchStatus();
     }
 
     /**
@@ -101,7 +94,7 @@ public class IntakeSubsystem extends SubsystemBase {
      *         {@code push()} and {@code stop()} methods of this subsystem.
      */
     public Command getPushStop() {
-        return runOnce(() -> push());
+        return startEnd(() -> push(), () -> stop());
     }
 
     /**

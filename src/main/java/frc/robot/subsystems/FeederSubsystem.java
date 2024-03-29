@@ -70,11 +70,6 @@ public class FeederSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("feederSwitchStatus", getSwitchStatus());
         SmartDashboard.putNumber("feederVoltage", m_sparkMax_pull.getBusVoltage());
-
-        if (lastBeamBreakStatus != getSwitchStatus() && getSwitchStatus() == false) {
-            LimelightSubsystem.blinkLedsOnce().schedule();
-        }
-        lastBeamBreakStatus = getSwitchStatus();
     }
 
     /**

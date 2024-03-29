@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -61,6 +62,9 @@ public class AngleSubsystem extends SubsystemBase {
                 new TrapezoidProfile.Constraints(2, 1)
         // TODO choose real numbers
         );
+
+        m_pid.reset(AngleConstants.BASE_POS_DEG);
+
         m_feedForward = new ArmFeedforward(0, 0, 0);
 
         updateProportions();
@@ -123,12 +127,24 @@ public class AngleSubsystem extends SubsystemBase {
      *                  {@link PIDCommand}.
      */
     public void useOutput(double pidOutput) {
-        double feedOutput = m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput);
-        double volts = ((m_setpoint == AngleConstants.BASE_POS_DEG && isAtBase()) || !enabled) ? 0
-                : pidOutput + feedOutput;
-        m_sparkMax_right.setVoltage(volts);
-        SmartDashboard.putNumber("angleHypotheticalOutput", volts);
-        m_sparkMax_right.setVoltage(0);
+        // double feedOutput = m_feedForward.calculate(Math.toRadians(getMeasurement()),
+        // pidOutput);
+        // double volts = ((m_setpoint == AngleConstants.BASE_POS_DEG && isAtBase()) ||
+        // !enabled) ? 0
+        // : pidOutput + feedOutput;
+        // m_sparkMax_right.setVoltage(volts);
+        // SmartDashboard.putNumber("angleHypotheticalOutput", volts);
+        // m_sparkMax_right.setVoltage(0);
+        if (enabled) {
+            double feedOutput = (!isAtBase())
+                    ? m_feedForward.calculate(Math.toRadians(getMeasurement()), pidOutput)
+                    : 0;
+            double volts = pidOutput + feedOutput;
+            m_sparkMax_right.setVoltage(volts);
+            SmartDashboard.putNumber("angleHypotheticalOutput", volts);
+        } else {
+            m_sparkMax_right.setVoltage(0);
+        }
         m_activeOutput = pidOutput;
     }
 
@@ -221,9 +237,7 @@ public class AngleSubsystem extends SubsystemBase {
         return new ProfiledPIDCommand(
                 m_pid,
                 () -> getMeasurement(),
-                () -> {
-                    return new State(m_setpoint, 0);
-                },
+                () -> new State(m_setpoint, 0),
                 (a, b) -> useOutput(a),
                 s);
     }
