@@ -23,8 +23,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax m_sparkMax_pull = new CANSparkMax(Constants.INTAKE_MOTOR_ID, MotorType.kBrushless);
     private final DigitalInput m_switch = new DigitalInput(Constants.INTAKE_BEAM_PIN);
 
-    private boolean lastBeamBreakStatus = false;
-
     /**
      * Creates a new IntakeSubsystem and inverts the motor.
      */
