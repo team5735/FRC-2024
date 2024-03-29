@@ -74,6 +74,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("intakePullVoltage", IntakeConstants.INTAKE_PULL_VOLTS);
         SmartDashboard.putNumber("intakePushVoltage", IntakeConstants.INTAKE_PUSH_VOLTS);
 
+        SmartDashboard.putBoolean("intakeSwitchStatus", false);
+
         SmartDashboard.putNumber("shootTopKP", ShooterConstants.SHOOTER_TOP_KP);
         SmartDashboard.putNumber("shootTopKI", ShooterConstants.SHOOTER_TOP_KI);
         SmartDashboard.putNumber("shootTopKD", ShooterConstants.SHOOTER_TOP_KD);
