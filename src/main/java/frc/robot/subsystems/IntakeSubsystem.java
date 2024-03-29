@@ -70,11 +70,6 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("intakeSwitchStatus", getSwitchStatus());
-
-        if (lastBeamBreakStatus != getSwitchStatus() && getSwitchStatus() == false) {
-            LimelightSubsystem.blinkLedsOnce().schedule();
-        }
-        lastBeamBreakStatus = getSwitchStatus();
     }
 
     /**
@@ -101,7 +96,7 @@ public class IntakeSubsystem extends SubsystemBase {
      *         {@code push()} and {@code stop()} methods of this subsystem.
      */
     public Command getPushStop() {
-        return runOnce(() -> push());
+        return startEnd(() -> push(), () -> stop());
     }
 
     /**
