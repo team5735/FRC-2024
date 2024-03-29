@@ -149,7 +149,7 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     public boolean isAtBase() {
-        return Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) < 2;
+        return Math.abs(getMeasurement() - AngleConstants.ANGLE_START_POS_DEG) < 4;
     }
 
     public boolean isAtPosition(double setPos) {

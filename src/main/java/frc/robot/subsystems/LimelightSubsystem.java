@@ -65,7 +65,6 @@ public class LimelightSubsystem extends SubsystemBase {
         ledModePublisher.set(1);
     }
 
-
     public Pose3d getBotPose3d() {
         tryFetchLL();
         return m_targetingResults.getBotPose3d();
@@ -77,7 +76,7 @@ public class LimelightSubsystem extends SubsystemBase {
                 m_targetingResults.latency_jsonParse;
     }
 
-        public static Command blinkLedsOnce() {
+    public static Command blinkLedsOnce() {
         return Commands.sequence(
                 Commands.runOnce(() -> ledsOn()),
                 Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)),
