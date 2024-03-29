@@ -226,6 +226,10 @@ public class RobotContainer {
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand());
         m_shooterBottomSubsystem
                 .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
+
+        m_intakeSubsystem.beamBreakEngaged().debounce(.1).onTrue(
+            m_limelightSubsystem.blinkLeds(5));
+    
     }
 
     private void updateMultipliers() {

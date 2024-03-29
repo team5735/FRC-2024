@@ -27,4 +27,7 @@ public class LimelightConstants {
 
     // seconds per frame
     public static final double SPF = 0.1;
+
+    public static final double BLINK_TIME = 1.0;
+    public static final int BLINK_COUNT = 5;
 }

@@ -6,9 +6,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.LimelightConstants;
 import frc.robot.libraries.LimelightHelpers;
 import frc.robot.libraries.LimelightHelpers.LimelightResults;
 import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
@@ -16,10 +20,13 @@ import frc.robot.libraries.LimelightHelpers.LimelightTarget_Fiducial;
 public class LimelightSubsystem extends SubsystemBase {
     private boolean m_staleLLData = false;
     private LimelightHelpers.Results m_targetingResults;
+    private static NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
 
     /** Creates a new ExampleSubsystem. */
     public LimelightSubsystem() {
     }
+
+    private static DoublePublisher ledModePublisher = limelightTable.getDoubleTopic("ledMode").publish();
 
     /**
      * An example method querying a boolean state of the subsystem (for example,
@@ -50,6 +57,15 @@ public class LimelightSubsystem extends SubsystemBase {
         return m_targetingResults.getBotPose2d();
     }
 
+    public static void ledsOn() {
+        ledModePublisher.set(3);
+    }
+
+    public static void ledsOff() {
+        ledModePublisher.set(1);
+    }
+
+
     public Pose3d getBotPose3d() {
         tryFetchLL();
         return m_targetingResults.getBotPose3d();
@@ -61,11 +77,27 @@ public class LimelightSubsystem extends SubsystemBase {
                 m_targetingResults.latency_jsonParse;
     }
 
+        public static Command blinkLedsOnce() {
+        return Commands.sequence(
+                Commands.runOnce(() -> ledsOn()),
+                Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)),
+                Commands.runOnce(() -> ledsOff()),
+                Commands.runOnce(() -> Commands.waitSeconds(LimelightConstants.BLINK_TIME)));
+    }
+
     private void tryFetchLL() {
         if (m_staleLLData) {
             LimelightResults latestResults = LimelightHelpers.getLatestResults("");
             m_targetingResults = latestResults.targetingResults;
         }
+    }
+
+    public static Command blinkLeds(int numberOfTimes) {
+        Command currentlyBuiltCommand = Commands.none();
+        for (int i = 0; i < numberOfTimes; i++) {
+            currentlyBuiltCommand = currentlyBuiltCommand.andThen(blinkLedsOnce());
+        }
+        return currentlyBuiltCommand.andThen(Commands.runOnce(() -> ledsOff()));
     }
 
     public Command seedSwerveDrivetrain(DrivetrainSubsystem drivetrain) {
