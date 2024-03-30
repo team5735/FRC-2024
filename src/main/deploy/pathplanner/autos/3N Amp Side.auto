@@ -71,7 +71,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 5.0
+                        "waitTime": 3.0
                       }
                     },
                     {
@@ -142,7 +142,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3N Amp Combined"
+                  "pathName": "3N Amp Pickup"
                 }
               },
               {
@@ -150,27 +150,20 @@
                 "data": {
                   "name": "getNote"
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 4.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shooterStart"
-                      }
-                    }
-                  ]
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterStart"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3N Amp Shoot"
           }
         },
         {
@@ -213,6 +206,6 @@
       ]
     }
   },
-  "folder": "3N",
+  "folder": null,
   "choreoAuto": false
 }

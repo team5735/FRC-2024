@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.6,
-        "y": 0.72
+        "y": 0.6558068465637642
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.6,
-        "y": 0.7200000000000001
+        "x": 7.5460247108796645,
+        "y": 1.0773969622118988
       },
       "isLocked": false,
       "linkedName": null
@@ -43,10 +43,10 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "3N Source",
+  "folder": null,
   "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+    "rotation": -20.0,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }
