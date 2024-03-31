@@ -117,6 +117,9 @@ public class LimelightAimCommand extends Command {
      * towards the speaker, but if the robot is far enough that it needs to drive,
      * it can't see the AprilTags well enough anyway.
      *
+     * <p>
+     * Why did I implement this again?
+     *
      * @param robotPosition  The current robot's position in field space
      * @param targetPosition The target's position in field space
      */
