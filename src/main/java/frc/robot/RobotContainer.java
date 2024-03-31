@@ -28,6 +28,7 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.feeder.FeederCommandIn;
 import frc.robot.commands.feeder.FeederCommandOut;
+import frc.robot.commands.intake.IntakeCommandIn;
 import frc.robot.commands.intake.IntakeCommandOut;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.shooter.ShooterHoldNStopCommand;
@@ -187,6 +188,10 @@ public class RobotContainer {
                         SmartDashboard.getNumber("shootBottomRPM",
                                 ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
+        m_subsystemController.b().whileTrue(new ParallelCommandGroup(
+                new FeederCommandIn(m_feederSubsystem),
+                new IntakeCommandIn(m_intakeSubsystem)));
+
         // m_subsystemController.b().whileTrue(Compositions.shootNAngleFromStageFront(
         // m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
         // m_feederSubsystem
@@ -209,9 +214,10 @@ public class RobotContainer {
 
                                 ))));
 
-        m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
-                m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem,
-                m_intakeSubsystem));
+        // m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
+        // m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem,
+        // m_feederSubsystem,
+        // m_intakeSubsystem));
 
         m_subsystemController.x().whileTrue(new ParallelCommandGroup(
                 new IntakeCommandOut(m_intakeSubsystem),

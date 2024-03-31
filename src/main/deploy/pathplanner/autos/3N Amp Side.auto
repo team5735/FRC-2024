@@ -136,7 +136,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -155,15 +155,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3N Amp Shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3N Amp Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "getNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterStart"
+                }
+              }
+            ]
           }
         },
         {
