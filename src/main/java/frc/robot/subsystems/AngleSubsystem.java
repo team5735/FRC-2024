@@ -32,7 +32,7 @@ import frc.robot.constants.Constants;
  * @author Jacoby (with formatting and Command help from others)
  */
 public class AngleSubsystem extends SubsystemBase {
-    private ProfiledPIDController m_pid;
+    private PIDController m_pid;
     private ArmFeedforward m_feedForward;
     private boolean enabled = true;
     private double startPosition = 0;
@@ -57,13 +57,9 @@ public class AngleSubsystem extends SubsystemBase {
 
         m_sparkMax_left.follow(m_sparkMax_right, true);
 
-        m_pid = new ProfiledPIDController(
-                0, 0, 0,
-                new TrapezoidProfile.Constraints(2, 1)
-        // TODO choose real numbers
-        );
+        m_pid = new PIDController(0, 0, 0);
 
-        m_pid.reset(AngleConstants.BASE_POS_DEG);
+        m_pid.reset();
 
         m_feedForward = new ArmFeedforward(0, 0, 0);
 
@@ -169,7 +165,7 @@ public class AngleSubsystem extends SubsystemBase {
      * Resets the {@link PIDController} that this subsystem uses.
      */
     public void pidReset() {
-        m_pid.reset(getMeasurement());
+        m_pid.reset();
     }
 
     /**
@@ -226,20 +222,13 @@ public class AngleSubsystem extends SubsystemBase {
      * interrupted.
      *
      * <p>
-     * This uses {@link edu.wpi.first.math.trajectory.Trajectory.State.State} to
-     * create a trapezoidal motion profile.
      *
      * @param s The {@link AngleSubsystem} that this requires.
      *
      * @return A PIDCommand that runs *this* subsystem, requiring *s*.
      */
-    public ProfiledPIDCommand anglePIDCommand(AngleSubsystem s) {
-        return new ProfiledPIDCommand(
-                m_pid,
-                () -> getMeasurement(),
-                () -> new State(m_setpoint, 0),
-                (a, b) -> useOutput(a),
-                s);
+    public PIDCommand anglePIDCommand(AngleSubsystem s) {
+        return new PIDCommand(m_pid, () -> getMeasurement(), () -> m_setpoint, (a) -> useOutput(a), s);
     }
 
     /**
