@@ -55,7 +55,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -65,74 +65,12 @@
                 }
               },
               {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "getNote"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2N middle shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "waitShootSpinup"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "shootNote"
+                  "name": "getNote"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShooter"
           }
         },
         {
@@ -142,41 +80,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4N Mid N3 Pickup"
+                  "pathName": "2N middle shoot"
                 }
               },
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "getNote"
-                      }
-                    }
-                  ]
+                  "name": "shooterStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "getNote"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4N Mid N3 Shoot"
           }
         },
         {
@@ -188,7 +107,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.25
+            "waitTime": 0.0
           }
         },
         {
@@ -217,7 +136,88 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4N Mid N3 Pickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "getNote"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4N Mid N3 Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterStart"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "getNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitShootSpinup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.0
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShooter"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -236,15 +236,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "shooterStart"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4N Mid N4 Shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4N Mid N4 Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "getNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterStart"
+                }
+              }
+            ]
           }
         },
         {
@@ -256,7 +269,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.25
+            "waitTime": 0.0
           }
         },
         {
