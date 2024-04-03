@@ -7,12 +7,14 @@
     "2N Mid",
     "2N Source",
     "3N Amp",
+    "3N Source",
     "4N Mid",
-    "3N Source"
+    "3N Mid"
   ],
   "autoFolders": [
-    "2N",
-    "3N"
+    "1N",
+    "3N",
+    "2N"
   ],
   "defaultMaxVel": 6.0,
   "defaultMaxAccel": 3.0,
