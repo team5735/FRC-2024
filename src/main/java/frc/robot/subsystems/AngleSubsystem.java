@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -136,6 +137,14 @@ public class AngleSubsystem extends SubsystemBase {
     public void engageBrakes() {
         m_sparkMax_right.setIdleMode(IdleMode.kBrake);
         enabled = true;
+    }
+
+    public Command getReleaseBrakes(AngleSubsystem s) {
+        return s.runOnce(() -> releaseBrakes());
+    }
+
+    public Command getEngageBrakes(AngleSubsystem s) {
+        return s.runOnce(() -> engageBrakes());
     }
 
     public PIDCommand anglePIDCommand(AngleSubsystem s) {
