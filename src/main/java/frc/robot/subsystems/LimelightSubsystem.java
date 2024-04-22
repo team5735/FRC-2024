@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -19,6 +22,13 @@ public class LimelightSubsystem extends SubsystemBase {
             .subscribe(new double[8]);
     private DoubleSubscriber targetVisibleSubscriber = limelightTable.getDoubleTopic("tv").subscribe(0);
     private static DoublePublisher ledModePublisher = limelightTable.getDoubleTopic("ledMode").publish();
+
+    private Pose3d lastBotPose;
+    private Consumer<Pose2d> visionMeasurementConsumer;
+
+    public LimelightSubsystem(final Consumer<Pose2d> visionMeasurementConsumer) {
+        this.visionMeasurementConsumer = visionMeasurementConsumer;
+    }
 
     public Pose3d getBotPose() {
         double[] botpose = botposeSubscriber.get();
@@ -61,5 +71,24 @@ public class LimelightSubsystem extends SubsystemBase {
             currentlyBuiltCommand = currentlyBuiltCommand.andThen(blinkLedsOnce());
         }
         return currentlyBuiltCommand.andThen(Commands.runOnce(() -> ledsOff()));
+    }
+
+    private void tryAddVisionMeasurement() {
+        if (!hasTarget()) {
+            return;
+        }
+        Pose3d botPose = getBotPose();
+        if (botPose.minus(lastBotPose).getTranslation().getNorm() < 0.1) {
+            return;
+        }
+        if (Math.abs(botPose.minus(lastBotPose).getRotation().getZ()) < 0.1) {
+            return;
+        }
+        visionMeasurementConsumer.accept(botPose.toPose2d());
+    }
+
+    @Override
+    public void periodic() {
+        tryAddVisionMeasurement();
     }
 }

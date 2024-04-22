@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoCommands;
@@ -26,7 +27,6 @@ import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.LimelightConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -53,8 +53,6 @@ public class RobotContainer {
     private final CommandXboxController m_subsystemController = new CommandXboxController(
             OperatorConstants.SUBSYSTEM_CONTROLLER_PORT);
 
-    private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
-
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
     private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
@@ -65,6 +63,11 @@ public class RobotContainer {
     private final ClimberSubsystem m_climberRightSubsystem = new ClimberSubsystem("right climber",
             Constants.CLIMBER_MOTOR_RIGHT_ID);
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
+    private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem(
+            (Pose2d robotPose) -> {
+                m_drivetrain.addVisionMeasurement(robotPose, Timer.getFPGATimestamp());
+                System.out.println("added vision measurement");
+            });
 
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
@@ -88,6 +91,8 @@ public class RobotContainer {
                 m_shooterBottomSubsystem);
         m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("pick an auto", m_autoChooser);
+
+        m_drivetrain.seedFieldRelative(m_limelightSubsystem.getBotPose().toPose2d());
 
         configureBindings();
     }
@@ -207,7 +212,7 @@ public class RobotContainer {
                 .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
 
         m_intakeSubsystem.beamBreakEngaged().debounce(.1).onTrue(
-                m_limelightSubsystem.blinkLeds(5));
+                LimelightSubsystem.blinkLeds(5));
     }
 
     private void updateMultipliers() {
