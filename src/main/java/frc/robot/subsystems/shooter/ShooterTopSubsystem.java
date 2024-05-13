@@ -44,12 +44,12 @@ public class ShooterTopSubsystem extends SubsystemBase {
      * </ul>
      */
     public void updateProportions() {
-        double tkp = ShooterConstants.SHOOTER_TOP_KP;
-        double tki = ShooterConstants.SHOOTER_TOP_KI;
-        double tkd = ShooterConstants.SHOOTER_TOP_KD;
+        double tkp = ShooterConstants.TOP_KP;
+        double tki = ShooterConstants.TOP_KI;
+        double tkd = ShooterConstants.TOP_KD;
 
-        double tks = ShooterConstants.SHOOTER_TOP_KS;
-        double tkv = ShooterConstants.SHOOTER_TOP_KV;
+        double tks = ShooterConstants.TOP_KS;
+        double tkv = ShooterConstants.TOP_KV;
 
         m_pid_top.setPID(tkp, tki, tkd);
         m_feedForward_top = new SimpleMotorFeedforward(tks, tkv);
