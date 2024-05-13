@@ -105,6 +105,9 @@ public class IntakeSubsystem extends SubsystemBase {
         return runOnce(() -> stop());
     }
 
+    /**
+     * @return whether or not the beam break is currently broken
+     */
     public Trigger beamBreakEngaged() {
         return new Trigger(() -> !getSwitchStatus());
     }
