@@ -50,6 +50,15 @@ public class CANdleSubsystem extends SubsystemBase {
         return setToColorByID(CANdleConstants.SHOOTING);
     }
 
+    /**
+     * Creates a {@code runOnce} {@link Command} to set the leds to a certain color.
+     * 
+     * @param id - the index of the selected {@link Color} in
+     *           {@link CANdleConstants}'s {@code COLORS} array.
+     * @return a {@link Command} which will requre this subsytem, run the
+     *         {@code setToColor} method with the selected {@link Color} and
+     *         promptly end.
+     */
     private Command setToColorByID(int id) {
         return runOnce(() -> {
             setToColor(CANdleConstants.COLORS[id]);
