@@ -19,8 +19,8 @@ public class ShooterSpinUpCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_subsystemTop.setSetpoint(m_setpoint_top);
-        m_subsystemBottom.setSetpoint(m_setpoint_bottom);
+        m_subsystemTop.setSetpointRPM(m_setpoint_top);
+        m_subsystemBottom.setSetpointRPM(m_setpoint_bottom);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

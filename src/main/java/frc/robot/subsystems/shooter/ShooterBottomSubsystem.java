@@ -75,7 +75,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
     public void periodic() {
         updateProportions();
 
-        SmartDashboard.putNumber("shootBottomOutput", Math.abs(getBottomMeasurement()));
+        SmartDashboard.putNumber("shootBottomOutput", Math.abs(getMotorRPM()));
         SmartDashboard.putNumber("shootBottomPIDError", Math.abs(m_pid_bottom.getPositionError()));
         SmartDashboard.putNumber("shootBottomSetpoint", m_setpoint);
         SmartDashboard.putNumber("shootTopAmps", m_talon_bottom.getStatorCurrent().getValueAsDouble());
@@ -90,7 +90,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      * @param pidOutput - the value passed from the {@link PIDCommand} to be
      *                  consumed
      */
-    public void useOutput(double pidOutput) {
+    public void useOutputVolts(double pidOutput) {
         if (m_pid_bottom.getSetpoint() != 0) {
             double feedOutput = m_feedForward_bottom.calculate(m_pid_bottom.getSetpoint());
             m_talon_bottom.setVoltage(
@@ -104,7 +104,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      * @return The velocity reading from the motor, in the units of rotations per
      *         second
      */
-    public double getBottomMeasurement() {
+    public double getMotorRPM() {
         return m_talon_bottom.getVelocity().getValueAsDouble() * 60;
     }
 
@@ -113,7 +113,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      *                 the flywheels.
      * 
      */
-    public void setSetpoint(double setpoint) {
+    public void setSetpointRPM(double setpoint) {
         if (setpoint >= 0)
             m_setpoint = setpoint;
     }
@@ -122,7 +122,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      * Sets the velocity setpoint to zero rpm, as defined in {@code setSetpoint()}
      */
     public void stop() {
-        setSetpoint(0);
+        setSetpointRPM(0);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      *         {@code useOutput()} method, also with the subsystem itself.
      */
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_bottom, () -> getBottomMeasurement(), () -> m_setpoint,
-                a -> useOutput(a), this);
+        return new PIDCommand(m_pid_bottom, () -> getMotorRPM(), () -> m_setpoint,
+                a -> useOutputVolts(a), this);
     }
 }

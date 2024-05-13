@@ -76,7 +76,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
     public void periodic() {
         // updateProportions();
 
-        SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
+        SmartDashboard.putNumber("shootTopOutput", Math.abs(getMotorRPM()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
         SmartDashboard.putNumber("shootTopSetpoint", m_setpoint);
         SmartDashboard.putNumber("shootTopAmps", m_talon_top.getStatorCurrent().getValueAsDouble());
@@ -91,7 +91,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
      * @param pidOutput - the value passed from the {@link PIDCommand} to be
      *                  consumed
      */
-    public void useOutput(double pidOutput) {
+    public void useOutputVolts(double pidOutput) {
         if (m_pid_top.getSetpoint() != 0) {
             double feedOutput = m_feedForward_top.calculate(m_pid_top.getSetpoint());
             m_talon_top.setVoltage(
@@ -105,7 +105,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
      * @return The velocity reading from the motor, in the units of rotations per
      *         second
      */
-    public double getTopMeasurement() {
+    public double getMotorRPM() {
         return m_talon_top.getVelocity().getValueAsDouble() * 60;
     }
 
@@ -114,7 +114,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
      *                 the flywheels.
      * 
      */
-    public void setSetpoint(double setpoint) {
+    public void setSetpointRPM(double setpoint) {
         if (setpoint >= 0)
             m_setpoint = setpoint;
     }
@@ -123,7 +123,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
      * Sets the velocity setpoint to zero rpm, as defined in {@code setSetpoint()}
      */
     public void stop() {
-        setSetpoint(0);
+        setSetpointRPM(0);
     }
 
     /**
@@ -140,7 +140,7 @@ public class ShooterTopSubsystem extends SubsystemBase {
      *         {@code useOutput()} method, also with the subsystem itself.
      */
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_setpoint, a -> useOutput(a),
+        return new PIDCommand(m_pid_top, () -> getMotorRPM(), () -> m_setpoint, a -> useOutputVolts(a),
                 this);
     }
 }
