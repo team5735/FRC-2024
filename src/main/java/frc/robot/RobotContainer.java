@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoCommands;
@@ -26,7 +25,6 @@ import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.LimelightConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.AngleSubsystem;
@@ -207,7 +205,7 @@ public class RobotContainer {
                 .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
 
         m_intakeSubsystem.beamBreakEngaged().debounce(.1).onTrue(
-                m_limelightSubsystem.blinkLeds(5));
+                LimelightSubsystem.blinkLeds(5));
     }
 
     private void updateMultipliers() {
