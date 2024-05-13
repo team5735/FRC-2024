@@ -43,8 +43,8 @@ public class AngleSubsystem extends SubsystemBase {
 
     /**
      * Creates a new AngleSubsystem. Inverts both motors, and sets the left motor to
-     * follow the right. Also initializes the PID and feed forward using the
-     * constants in AngleConstants and gives the PID an IZone of 1. Finally, the
+     * follow the right. Also initializes the PID and FF using the
+     * constants in {@link AngleConstants}. Finally, the
      * setpoint is set to the resting position and the encoder is initialized.
      */
     public AngleSubsystem() {
@@ -68,7 +68,7 @@ public class AngleSubsystem extends SubsystemBase {
 
     /**
      * This implementation of periodic() simply puts a few numbers into
-     * SmartDashboard for debugging purposes. The only reason we don't use an
+     * {@link SmartDashboard} for debugging purposes. The only reason we don't use an
      * {@link frc.robot.util.NTDoubleSection} here is because the code hasn't been
      * touched since that was implemented.
      */
@@ -184,7 +184,6 @@ public class AngleSubsystem extends SubsystemBase {
 
     /**
      * Returns the custom angle value stored in {@link SmartDashboard}
-     * <p>
      * 
      * @return the angle tied to {@code "testShootAngle"} in SmartDashboard
      */
@@ -228,8 +227,6 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns whether the absolute position error is less than 5.
-     *
      * @return Whether the absolute position error is less than 5
      */
     public boolean isAtSetpoint() {
@@ -237,11 +234,9 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns whether the absolute difference between the measurement and the start
+     * @return whether the absolute difference between {@code getMeasurement} and the start
      * position is less than 2. The start position is defined in
-     * {@link AngleConstants} as {@code START_POS_DEG}.
-     * 
-     * @return Whether the measurment is less than 5 units from the start pos
+     * {@link AngleConstants} as {@code BASE_POS_DEG}.
      */
     public boolean isAtBase() {
         return Math.abs(getMeasurement() - AngleConstants.BASE_POS_DEG) < 2;
@@ -295,10 +290,6 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Continuously sets the setpoint to 10 less than what it was when
      * the function was called.
-     * 
-     * @deprecated
-     *             This method has been deprecated due to the trapezoidal motion
-     *             profile now utilized
      */
     public Command angleIncrease() {
         return getSetAngle(() -> m_setpoint - 10).repeatedly();
@@ -307,10 +298,6 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Continuously sets the setpoint to 10 greater than what it was
      * when the function was called.
-     * 
-     * @deprecated
-     *             This method has been deprecated due to the trapezoidal motion
-     *             profile now utilized
      */
     public Command angleDecrease() {
         return getSetAngle(() -> m_setpoint + 10).repeatedly();
