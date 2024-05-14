@@ -8,6 +8,9 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+/**
+ * Utility class to aid in managing an {@link NetworkTable}s section, specifically a section for double entries.
+ */
 public class NTDoubleSection {
     private static final String sectionName = "sections";
 

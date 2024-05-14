@@ -42,7 +42,7 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the motor's voltage to the oppsite of {@link FeederConstants}'s
+     * Sets the motor's voltage to the opposite of {@link FeederConstants}'s
      * {@code PUSH_VOLTS}.
      * <p>
      * (The opposite is used here simply for the ease of editing values in the

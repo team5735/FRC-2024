@@ -13,7 +13,7 @@ import frc.robot.constants.ShooterConstants;
 
 /**
  * This class represents a ShooterBottomSubsystem. It utilizes a sequence of
- * compliant wheels attatched to an axle driven by an {@link TalonFX}. The Talon
+ * compliant wheels attached to an axle driven by an {@link TalonFX}. The Talon
  * is controlled via a {@link PIDController} and a
  * {@link SimpleMotorFeedforward} for accurate and precise speed management.
  * 
@@ -28,7 +28,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
 
     /**
      * Creates a new ShooterBottom Subsystem, setting the motor to coast mode and
-     * initizalizing PID and FF values via {@code updateProportions()}
+     * initializing PID and FF values via {@code updateProportions()}
      */
     public ShooterBottomSubsystem() {
         m_talon_bottom.setNeutralMode(NeutralModeValue.Coast);
@@ -85,7 +85,7 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      * A method to send voltage to the motor, passed as a
      * {@link java.util.function.DoubleConsumer} to the {@link PIDCommand}. The
      * output will be set to zero if the RPM setpoint is zero, and will have the
-     * {@link SimpleMotorFeedforward} calculqations applied to it when not.
+     * {@link SimpleMotorFeedforward} calculations applied to it when not.
      * 
      * @param pidOutput - the value passed from the {@link PIDCommand} to be
      *                  consumed
