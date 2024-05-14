@@ -7,6 +7,16 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+/**
+ * Utility class for creating a {@link NetworkTable} value storing one double,
+ * to be changed and read both in and out of code. This is a common utility in
+ * many codebases that we plan on including more with time.
+ * <p>
+ * "stolen with <3 from team 190's 2024 code."
+ * <p>
+ * 
+ * @author FRC Team 190, Gompei and the Herd
+ */
 public class TunableNumber {
     private static final String kBaseTable = "tunables";
 
