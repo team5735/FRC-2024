@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANdleConstants;
 import frc.robot.constants.Constants;
 
+/**
+ * This class represents a CANdleSubsystem. It utilizes a {@link CANdle} to control a series of LEDs.
+ */
 public class CANdleSubsystem extends SubsystemBase {
     private CANdle candle;
 
@@ -22,30 +25,51 @@ public class CANdleSubsystem extends SubsystemBase {
         candle = new CANdle(Constants.CANDLE_ID);
     }
 
+    /**
+     * Sets the {@link CANdle} to a present idle animation, this being a rainbow.
+     */
     public void setIdle() {
         candle.animate(new RainbowAnimation(0.5, 1.0, 8));
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined ready color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorReady() {
         return setToColorByID(CANdleConstants.READY);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined auto color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorAuto() {
         return setToColorByID(CANdleConstants.AUTO);
     }
-
+    
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined aiming color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorAiming() {
         return setToColorByID(CANdleConstants.AIMING);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined aimed color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorAimed() {
         return setToColorByID(CANdleConstants.AIMED);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined color for running intake, as outlined in {@link CANdleConstants}.
+     */
     public Command colorIntakeRunning() {
         return setToColorByID(CANdleConstants.INTAKE_RUNNING);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined shooting color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorShooting() {
         return setToColorByID(CANdleConstants.SHOOTING);
     }
@@ -65,6 +89,11 @@ public class CANdleSubsystem extends SubsystemBase {
         });
     }
 
+    /**
+     * Method to set the {@link CANdle}'s LEDs to a passed-in {@link Color} value.
+     * 
+     * @param color - the {@link Color} to set the {@link CANdle}'s LEDs to.
+     */
     private void setToColor(Color color) {
         candle.setLEDs(color.getRed(), color.getGreen(), color.getBlue());
     }
