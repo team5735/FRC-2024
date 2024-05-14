@@ -39,7 +39,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the motor's voltage to the oppsite of {@link ClimberConstants}'s
+     * Sets the motor's voltage to the opposite of {@link ClimberConstants}'s
      * {@code UP_VOLTS}.
      * <p>
      * (The opposite is used here simply for the ease of editing values in the

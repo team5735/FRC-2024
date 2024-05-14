@@ -175,7 +175,7 @@ public class AngleSubsystem extends SubsystemBase {
      * angle at which we can shoot into the amp, and 235 is the angle at which we
      * shoot into the speaker, which is the same as the resting position.
      *
-     * @param angle The angle that the subsystem will attemt to reach
+     * @param angle The angle that the subsystem will attempt to reach
      */
     public void setSetpoint(double angle) {
         if (angle > AngleConstants.LOWEST_DEG && angle < AngleConstants.HIGHEST_DEG)
