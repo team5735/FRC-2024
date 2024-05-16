@@ -7,12 +7,8 @@ package frc.robot.constants;
  */
 
 public class IntakeConstants {
-    /**
-     * Voltage to feed to the intake motor when pulling notes in.
-     */
+    /** Voltage to feed to the intake motor when pulling notes in. */
     public static final double PULL_VOLTS = 10;
-    /**
-     * Voltage to feed to the intake motor when pushing notes out.
-     */
+    /** Voltage to feed to the intake motor when pushing notes out. */
     public static final double PUSH_VOLTS = 6;
 }
