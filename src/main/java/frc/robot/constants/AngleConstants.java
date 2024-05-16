@@ -7,39 +7,56 @@ package frc.robot.constants;
  */
 public class AngleConstants {
 
-    // PID values for Angle feedback
+    /** P value for Angle feedback PID loop */
     public static final double KP = 0.0625;
+    /** I value for Angle feedback PID loop */
     public static final double KI = 0;
+    /** D value for Angle feedback PID loop */
     public static final double KD = 0.005;
 
-    // SGV values for Angle feedforward
+    /** S value for Angle feedforward */
     public static final double KS = 0;
+    /** G value for Angle feedforward */
     public static final double KG = 0.78;
+    /** V value for Angle feedforward */
     public static final double KV = 0;
 
-    // The starting position of the structure, in encoder rotation fractions
+    /** The starting position of the structure, in encoder rotation fractions */
     public static final double BASE_POS_ROT = 235. / 360;
-    // The starting position of the structure, in degrees
+    /** The starting position of the structure, in degrees */
     public static final double BASE_POS_DEG = convertRotationsToDegrees(BASE_POS_ROT);
 
-    // The highest safe position of the structure, in degrees
+    /** The highest safe position of the structure, in degrees */
     public static final double HIGHEST_DEG = 237;
-    // The lowest safe position of the structure, in degrees
+    /** The lowest safe position of the structure, in degrees */
     public static final double LOWEST_DEG = 120;
 
-    // The preset position of the structure for amp shooting, in degrees
+    /** The preset position of the structure for amp shooting, in degrees */
     public static final double AMP_DEG = 125;
-    // The preset position of the structure for speaker shots from stage back, in
-    // degrees
-    // This position unfortunately has not been properly tested and is not ideal
+
+    /**
+     * The preset position of the structure for speaker shots from stage back, in
+     * degrees
+     * 
+     * @deprecated - this position unfortunately has not been properly tested and is
+     *             not ideal
+     */
     public static final double STAGE_BACK_DEG = 190;
+    /**
+     * The preset position of the structure for speaker shots from stage front, in
+     * degrees
+     * 
+     * @deprecated - this position unfortunately has not been properly tested and is
+     *             not ideal
+     */
     public static final double STAGE_FRONT_DEG = 200;
 
-    // The rotation ratio from the motor to the structure, calculated thus:
-    // planetary 9:1, chain drive 16:42
+    /**
+     * The rotation ratio from the motor to the structure, calculated thus:
+     * planetary 9:1, chain drive 16:42
+     */
     public static final double MOTOR_TO_OUTPUT_RATIO = 1. / 9 * 16. / 42;
-    // The rotation ratio from the structure from the motor, calculated from the
-    // inverse of the previous ratio
+    /**  The rotation ratio from the structure from the motor, calculated from the inverse of {@link AngleContstants}'s {@code MOTOR_TO_OUTPUT_RATIO} */
     public static final double OUTPUT_TO_MOTOR_RATIO = 1. / MOTOR_TO_OUTPUT_RATIO;
 
     /**
