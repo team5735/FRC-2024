@@ -18,35 +18,19 @@ public class ShooterConstants {
 
     /**
      * The stage back shooting setpoint for Shooter Top, in rotations per minute
-     * 
-     * @deprecated - this position unfortunately has not been properly tested and
-     *             is
-     *             not ideal
      */
     public static final double TOP_STAGE_BACK_RPM = 4000.0;
     /**
      * The stage back shooting setpoint for Shooter Bottom, in rotations per minute
-     * 
-     * @deprecated - this position unfortunately has not been properly tested and
-     *             is
-     *             not ideal
      */
     public static final double BOTTOM_STAGE_BACK_RPM = 4000.0;
 
     /**
      * The stage front shooting setpoint for Shooter Top, in rotations per minute
-     * 
-     * @deprecated - this position unfortunately has not been properly tested and
-     *             is
-     *             not ideal
      */    
     public static final double TOP_STAGE_FRONT_RPM = 3500.0;
     /**
      * The stage front shooting setpoint for Shooter Bottom, in rotations per minute
-     * 
-     * @deprecated - this position unfortunately has not been properly tested and
-     *             is
-     *             not ideal
      */    
     public static final double BOTTOM_STAGE_FRONT_RPM = 3500.0;
 

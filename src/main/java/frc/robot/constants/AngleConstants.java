@@ -37,17 +37,11 @@ public class AngleConstants {
     /**
      * The preset position of the structure for speaker shots from stage back, in
      * degrees
-     * 
-     * @deprecated - this position unfortunately has not been properly tested and is
-     *             not ideal
      */
     public static final double STAGE_BACK_DEG = 190;
     /**
      * The preset position of the structure for speaker shots from stage front, in
      * degrees
-     * 
-     * @deprecated - this position unfortunately has not been properly tested and is
-     *             not ideal
      */
     public static final double STAGE_FRONT_DEG = 200;
 
