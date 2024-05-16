@@ -232,8 +232,8 @@ public class RobotContainer {
     }
 
     public void resetShenanigans() {
-        m_shooterTopSubsystem.setSetpoint(0);
-        m_shooterBottomSubsystem.setSetpoint(0);
+        m_shooterTopSubsystem.setSetpointRPM(0);
+        m_shooterBottomSubsystem.setSetpointRPM(0);
         m_angleSubsystem.setSetpoint(235);
     }
 }

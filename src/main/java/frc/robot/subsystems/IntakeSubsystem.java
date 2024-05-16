@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the motor's voltage to the oppsite of {@link IntakeConstants}'s
+     * Sets the motor's voltage to the opposite of {@link IntakeConstants}'s
      * {@code PUSH_VOLTS}.
      * <p>
      * (The opposite is used here simply for the ease of editing values in the
@@ -105,6 +105,9 @@ public class IntakeSubsystem extends SubsystemBase {
         return runOnce(() -> stop());
     }
 
+    /**
+     * @return whether or not the beam break is currently broken
+     */
     public Trigger beamBreakEngaged() {
         return new Trigger(() -> !getSwitchStatus());
     }

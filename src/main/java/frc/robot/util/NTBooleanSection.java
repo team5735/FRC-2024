@@ -8,6 +8,9 @@ import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+/**
+ * Utility class to aid in managing an {@link NetworkTable}s section, specifically a section for boolean entries.
+ */
 public class NTBooleanSection {
     private static final String sectionName = "sections";
 

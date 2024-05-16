@@ -11,6 +11,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.ShooterConstants;
 
+/**
+ * This class represents a ShooterTopSubsystem. It utilizes a sequence of
+ * compliant wheels attached to an axle driven by an {@link TalonFX}. The Talon
+ * is controlled via a {@link PIDController} and a
+ * {@link SimpleMotorFeedforward} for accurate and precise speed management.
+ * 
+ * @author Jacoby (with help for Commands)
+ */
 public class ShooterTopSubsystem extends SubsystemBase {
     private PIDController m_pid_top;
     private SimpleMotorFeedforward m_feedForward_top;
@@ -18,6 +26,10 @@ public class ShooterTopSubsystem extends SubsystemBase {
 
     private final TalonFX m_talon_top = new TalonFX(Constants.SHOOTER_MOTOR_TOP_ID);
 
+    /**
+     * Creates a new ShooterBottom Subsystem, setting the motor to coast mode and
+     * initializing PID and FF values via {@code updateProportions()}
+     */
     public ShooterTopSubsystem() {
         m_talon_top.setNeutralMode(NeutralModeValue.Coast);
         m_talon_top.setInverted(false);
@@ -29,18 +41,19 @@ public class ShooterTopSubsystem extends SubsystemBase {
     }
 
     /**
-     * Gets values from {@link SmartDashboard} for the {@link PIDController} and the
-     * {@link SimpleMotorFeedforward}. Then, m_pid_bottom and m_feedForward_bottom
-     * are reconstructed based on the values acquired from {@link SmartDashboard.}
+     * Gets values from {@link ShooterConstants} for the {@link PIDController} and
+     * the
+     * {@link SimpleMotorFeedforward}. Then, {@code m_pid_top} and {@code m_feedForward_top}
+     * are reconstructed based on the values acquired from {@link ShooterConstants}.
      *
      * <p>
      * Uses the following values:
      * <ul>
-     * <li>shootTopKP
-     * <li>shootTopKI
-     * <li>shootTopKD
-     * <li>shootTopKS
-     * <li>shootTopKV
+     * <li>{@code TOP_KP}
+     * <li>{@code TOP_KI}
+     * <li>{@code TOP_KD}
+     * <li>{@code TOP_KS}
+     * <li>{@code TOP_KV}
      * </ul>
      */
     public void updateProportions() {
@@ -55,17 +68,30 @@ public class ShooterTopSubsystem extends SubsystemBase {
         m_feedForward_top = new SimpleMotorFeedforward(tks, tkv);
     }
 
+    /**
+     * Periodic method called by the CommandScheduler, changes the PID and FF values
+     * via {@code UpdateProportions()} and logs values to {@link SmartDashboard}.
+     */
     @Override
     public void periodic() {
         // updateProportions();
 
-        SmartDashboard.putNumber("shootTopOutput", Math.abs(getTopMeasurement()));
+        SmartDashboard.putNumber("shootTopOutput", Math.abs(getMotorRPM()));
         SmartDashboard.putNumber("shootTopPIDError", Math.abs(m_pid_top.getPositionError()));
         SmartDashboard.putNumber("shootTopSetpoint", m_setpoint);
         SmartDashboard.putNumber("shootTopAmps", m_talon_top.getStatorCurrent().getValueAsDouble());
     }
 
-    public void useOutput(double pidOutput) {
+    /**
+     * A method to send voltage to the motor, passed as a
+     * {@link java.util.function.DoubleConsumer} to the {@link PIDCommand}. The
+     * output will be set to zero if the RPM setpoint is zero, and will have the
+     * {@link SimpleMotorFeedforward} calculations applied to it when not.
+     * 
+     * @param pidOutput - the value passed from the {@link PIDCommand} to be
+     *                  consumed
+     */
+    public void useOutputVolts(double pidOutput) {
         if (m_pid_top.getSetpoint() != 0) {
             double feedOutput = m_feedForward_top.calculate(m_pid_top.getSetpoint());
             m_talon_top.setVoltage(
@@ -75,25 +101,46 @@ public class ShooterTopSubsystem extends SubsystemBase {
         }
     }
 
-    public double getTopMeasurement() {
+    /**
+     * @return The velocity reading from the motor, in the units of rotations per
+     *         second
+     */
+    public double getMotorRPM() {
         return m_talon_top.getVelocity().getValueAsDouble() * 60;
     }
 
-    public void setSetpoint(double setpoint) {
+    /**
+     * @param setpoint - the nonnegative desired velocity in rotations per second of
+     *                 the flywheels.
+     * 
+     */
+    public void setSetpointRPM(double setpoint) {
         if (setpoint >= 0)
             m_setpoint = setpoint;
     }
 
+    /**
+     * Sets the velocity setpoint to zero rpm, as defined in {@code setSetpoint()}
+     */
     public void stop() {
-        setSetpoint(0);
+        setSetpointRPM(0);
     }
 
+    /**
+     * @return whether or not the flywheels are within 100 rpm of the desired velocity, thus
+     *         if they are "spun up".
+     */
     public boolean isSpunUp() {
         return (Math.abs(m_pid_top.getPositionError()) < 100);
     }
 
+    /**
+     * @return a new {@link PIDCommand}, constructed with the subsystem's
+     *         {@link PIDController}, rpm readings, desired velocity, and
+     *         {@code useOutput()} method, also with the subsystem itself.
+     */
     public PIDCommand shootPIDCommand() {
-        return new PIDCommand(m_pid_top, () -> getTopMeasurement(), () -> m_setpoint, a -> useOutput(a),
+        return new PIDCommand(m_pid_top, () -> getMotorRPM(), () -> m_setpoint, a -> useOutputVolts(a),
                 this);
     }
 }

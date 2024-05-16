@@ -62,7 +62,7 @@ public class FactoryCommands {
      * Returns a new {@link Command} that runs an action once and finishes when a
      * {@link Supplier} for a boolean returns true, running another action and
      * descheduling the Command. This makes a new composition that on schedule, runs
-     * start, then querys isFinished constantly and runs action and ends when it
+     * start, then queries isFinished constantly and runs action and ends when it
      * returns true.
      *
      * @param start        The {@link Runnable} to run on schedule

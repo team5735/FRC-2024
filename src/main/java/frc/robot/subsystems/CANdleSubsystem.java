@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANdleConstants;
 import frc.robot.constants.Constants;
 
+/**
+ * This class represents a CANdleSubsystem. It utilizes a {@link CANdle} to control a series of LEDs.
+ */
 public class CANdleSubsystem extends SubsystemBase {
     private CANdle candle;
 
@@ -22,62 +25,76 @@ public class CANdleSubsystem extends SubsystemBase {
         candle = new CANdle(Constants.CANDLE_ID);
     }
 
+    /**
+     * Sets the {@link CANdle} to a present idle animation, this being a rainbow.
+     */
     public void setIdle() {
         candle.animate(new RainbowAnimation(0.5, 1.0, 8));
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined ready color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorReady() {
         return setToColorByID(CANdleConstants.READY);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined auto color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorAuto() {
         return setToColorByID(CANdleConstants.AUTO);
     }
-
+    
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined aiming color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorAiming() {
         return setToColorByID(CANdleConstants.AIMING);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined aimed color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorAimed() {
         return setToColorByID(CANdleConstants.AIMED);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined color for running intake, as outlined in {@link CANdleConstants}.
+     */
     public Command colorIntakeRunning() {
         return setToColorByID(CANdleConstants.INTAKE_RUNNING);
     }
 
+    /**
+     * @return a Command to set the {@link CANdle} to a predetermined shooting color, as outlined in {@link CANdleConstants}.
+     */
     public Command colorShooting() {
         return setToColorByID(CANdleConstants.SHOOTING);
     }
 
+    /**
+     * Creates a {@code runOnce} {@link Command} to set the leds to a certain color.
+     * 
+     * @param id - the index of the selected {@link Color} in
+     *           {@link CANdleConstants}'s {@code COLORS} array.
+     * @return a {@link Command} which will require this subsystem, run the
+     *         {@code setToColor} method with the selected {@link Color} and
+     *         promptly end.
+     */
     private Command setToColorByID(int id) {
         return runOnce(() -> {
             setToColor(CANdleConstants.COLORS[id]);
         });
     }
 
+    /**
+     * Method to set the {@link CANdle}'s LEDs to a passed-in {@link Color} value.
+     * 
+     * @param color - the {@link Color} to set the {@link CANdle}'s LEDs to.
+     */
     private void setToColor(Color color) {
         candle.setLEDs(color.getRed(), color.getGreen(), color.getBlue());
-    }
-
-    /**
-     * An example method querying a boolean state of the subsystem (for example,
-     * a digital sensor).
-     *
-     * @return value of some boolean subsystem state, such as a digital sensor.
-     */
-    public boolean exampleCondition() {
-        // Query some boolean state, such as a digital sensor.
-        return false;
-    }
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
     }
 }

@@ -9,7 +9,17 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
+/**
+ * Utility class to aid with computing Poses and Translations, based on what
+ * alliance the robot is on.
+ */
 public class AllianceSwitcher {
+    /**
+     * Constructor for this class, not intended to be used. Will throw an exception
+     * stating such.
+     * 
+     * @deprecated "This is a utility class!" - don't use its constructor
+     */
     public AllianceSwitcher() {
         throw new UnsupportedOperationException("This is a utility class!");
     }

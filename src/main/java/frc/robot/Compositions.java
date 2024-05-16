@@ -98,10 +98,10 @@ public class Compositions {
      * Returns a command that stops the shooters when interrupted. This does not
      * require either subsystem passed into it.
      *
-     * @param shooterTop    The top shooter subsystem, .stop()ed when interruped
-     * @param shooterBottom The bottom shooter subsystem, .stop()ed when interruped
+     * @param shooterTop    The top shooter subsystem, {@code .stop()}ed when interrupted
+     * @param shooterBottom The bottom shooter subsystem, {@code .stop()}ed when interrupted
      *
-     * @return The Command that stops both when interrupted
+     * @return The {@link Command} that stops both when interrupted
      */
     public static Command shootersHoldNStop(ShooterTopSubsystem shooterTop, ShooterBottomSubsystem shooterBottom) {
         return Commands.startEnd(() -> {

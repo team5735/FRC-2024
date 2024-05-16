@@ -9,15 +9,11 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FactoryCommands;
 import frc.robot.constants.AngleConstants;
@@ -47,8 +43,8 @@ public class AngleSubsystem extends SubsystemBase {
 
     /**
      * Creates a new AngleSubsystem. Inverts both motors, and sets the left motor to
-     * follow the right. Also initializes the PID and feed forward using the
-     * constants in AngleConstants and gives the PID an IZone of 1. Finally, the
+     * follow the right. Also initializes the PID and FF using the
+     * constants in {@link AngleConstants}. Finally, the
      * setpoint is set to the resting position and the encoder is initialized.
      */
     public AngleSubsystem() {
@@ -72,7 +68,7 @@ public class AngleSubsystem extends SubsystemBase {
 
     /**
      * This implementation of periodic() simply puts a few numbers into
-     * SmartDashboard for debugging purposes. The only reason we don't use an
+     * {@link SmartDashboard} for debugging purposes. The only reason we don't use an
      * {@link frc.robot.util.NTDoubleSection} here is because the code hasn't been
      * touched since that was implemented.
      */
@@ -179,7 +175,7 @@ public class AngleSubsystem extends SubsystemBase {
      * angle at which we can shoot into the amp, and 235 is the angle at which we
      * shoot into the speaker, which is the same as the resting position.
      *
-     * @param angle The angle that the subsystem will attemt to reach
+     * @param angle The angle that the subsystem will attempt to reach
      */
     public void setSetpoint(double angle) {
         if (angle > AngleConstants.LOWEST_DEG && angle < AngleConstants.HIGHEST_DEG)
@@ -188,7 +184,6 @@ public class AngleSubsystem extends SubsystemBase {
 
     /**
      * Returns the custom angle value stored in {@link SmartDashboard}
-     * <p>
      * 
      * @return the angle tied to {@code "testShootAngle"} in SmartDashboard
      */
@@ -232,8 +227,6 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns whether the absolute position error is less than 5.
-     *
      * @return Whether the absolute position error is less than 5
      */
     public boolean isAtSetpoint() {
@@ -241,11 +234,9 @@ public class AngleSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns whether the absolute difference between the measurement and the start
+     * @return whether the absolute difference between {@code getMeasurement} and the start
      * position is less than 2. The start position is defined in
-     * {@link AngleConstants} as {@code START_POS_DEG}.
-     * 
-     * @return Whether the measurment is less than 5 units from the start pos
+     * {@link AngleConstants} as {@code BASE_POS_DEG}.
      */
     public boolean isAtBase() {
         return Math.abs(getMeasurement() - AngleConstants.BASE_POS_DEG) < 2;
@@ -299,10 +290,6 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Continuously sets the setpoint to 10 less than what it was when
      * the function was called.
-     * 
-     * @deprecated
-     *             This method has been deprecated due to the trapezoidal motion
-     *             profile now utilized
      */
     public Command angleIncrease() {
         return getSetAngle(() -> m_setpoint - 10).repeatedly();
@@ -311,10 +298,6 @@ public class AngleSubsystem extends SubsystemBase {
     /**
      * Continuously sets the setpoint to 10 greater than what it was
      * when the function was called.
-     * 
-     * @deprecated
-     *             This method has been deprecated due to the trapezoidal motion
-     *             profile now utilized
      */
     public Command angleDecrease() {
         return getSetAngle(() -> m_setpoint + 10).repeatedly();
