@@ -3,7 +3,7 @@ package frc.robot.constants;
 /**
  * Constants file for storing public static final data and some utility methods,
  * hence constants. This file is specifically intended to be used in conjunction
- * with {@link frc.robot.subsystems.AngleSubsystem}
+ * with {@link frc.robot.subsystems.AngleSubsystem}.
  */
 public class AngleConstants {
 
