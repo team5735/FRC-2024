@@ -15,11 +15,18 @@ package frc.robot.constants;
  * classes) wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * Ports for the controllers. Shouldn't really be changed.
+     */
     public static class OperatorConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int SUBSYSTEM_CONTROLLER_PORT = 1;
     }
 
+    /**
+     * These are the CAN IDs of most of the subsystems in the robot. Other constants
+     * here are either very common across many subsystems or should be sorted.
+     */
     public static final int CANDLE_ID = 33;
 
     public static final int ANGLE_MOTOR_RIGHT_ID = 15; // TALON
@@ -40,5 +47,8 @@ public final class Constants {
 
     public static final int PDH_ID = 59;
 
-    public static final double TOLERANCE = 0.01; // For PIDs.
+    /**
+     * This tolerance can be used as a starting point for most PIDs on the robot.
+     */
+    public static final double TOLERANCE = 0.01;
 }
