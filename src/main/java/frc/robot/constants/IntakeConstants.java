@@ -7,8 +7,9 @@ package frc.robot.constants;
  */
 
 public class IntakeConstants {
-    // Voltage to be applied when pulling note (to feeder) and pushing out,
-    // respectively
+    /**
+     * Voltages to feed to the intake motor.
+     */
     public static final double PULL_VOLTS = 10;
     public static final double PUSH_VOLTS = 6;
 }

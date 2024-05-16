@@ -6,8 +6,9 @@ package frc.robot.constants;
  * with {@link frc.robot.subsystems.FeederSubsystem}.
  */
 public class FeederConstants {
-    // Voltage to be applied when pulling note (to shooter) and pushing out,
-    // respectively
+    /**
+     * Voltages to feed to the feeder motor.
+     */
     public static final double PULL_VOLTS = 2.5;
     public static final double PUSH_VOLTS = 2.5;
 }
