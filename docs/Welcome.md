@@ -5,5 +5,7 @@ You can view these files however you like - markdown is quite friendly to its pl
 Some files you may not be able to read (e.g. [[Code Structure.canvas|Code Structure]]); they're meant to be viewed with obsidian.
 
 ### Introduction to the repository
-[[What is WPILib?]]
-[[Subsystems]]
+[[What is WPILib?]] should be the very first document you read.
+All the documents below assume its knowledge.
+- [[Subsystems]]
+- [[Commands]]
