@@ -162,8 +162,7 @@ public class RobotContainer {
                     m_shooterTopSubsystem.stop();
                 })); // Sometimes, redunancy is needed.
 
-        // m_drivingController.x().whileTrue(
-        // new LimelightAimCommand(m_limelightSubsystem, m_drivetrain));
+        m_drivingController.x().whileTrue(new LimelightAimCommand(m_limelightSubsystem, m_drivetrain));
         m_drivingController.y().onTrue(Commands.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
@@ -230,6 +229,8 @@ public class RobotContainer {
 
         m_subsystemController.a().onTrue(m_angleSubsystem.getReleaseBrakes(m_angleSubsystem));
         m_subsystemController.y().onTrue(m_angleSubsystem.getEngageBrakes(m_angleSubsystem));
+
+        m_subsystemController.povUp().whileTrue(m_drivetrain.run(() -> m_drivetrain.drive(1.0, 0.0, 0.0)));
 
         m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem));
         m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand());

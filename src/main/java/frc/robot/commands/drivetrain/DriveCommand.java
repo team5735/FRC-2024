@@ -2,6 +2,8 @@ package frc.robot.commands.drivetrain;
 
 import java.util.function.Supplier;
 
+import org.ejml.ops.DConvertArrays;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -44,7 +46,8 @@ public class DriveCommand extends Command {
             driveWithSRL();
         } else {
             double multiplier = m_multiplier.get();
-            m_drivetrain.drive(m_stickY.get() * multiplier, m_stickX.get() * multiplier, m_rotate.get() * multiplier);
+            m_drivetrain.drive(m_stickY.get() * multiplier, m_stickX.get() * multiplier,
+                    m_rotate.get() * DrivetrainConstants.TURN_SPEED);
         }
 
         m_watchdog.addEpoch("drivetrain_update");
@@ -62,7 +65,7 @@ public class DriveCommand extends Command {
         double multiplier = m_multiplier.get();
         double speedX = m_stickY.get() * multiplier;
         double speedY = m_stickX.get() * multiplier;
-        double speedOmega = m_omegaLimiter.calculate(m_rotate.get() * multiplier);
+        double speedOmega = m_omegaLimiter.calculate(m_rotate.get());
         if (DrivetrainConstants.USING_THETA_MAGNITUDE_LIMITING) {
             double theta = m_thetaLimiter.calculate(new Rotation2d(speedX, speedY).getRadians());
             double magnitude = m_magnitudeLimiter.calculate(Math.sqrt(speedX * speedX + speedY * speedY));
