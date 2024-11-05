@@ -87,7 +87,8 @@ public class RobotContainer {
         m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("pick an auto", m_autoChooser);
 
-        configureBindings();
+        configureDriverBindings();
+        // configureSubsystemBindings();
     }
 
     private static double deadband(double input) {
@@ -111,7 +112,7 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {
+    private void configureDriverBindings() {
         m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(
                 m_intakeSubsystem.getPushStop(),
                 m_feederSubsystem.getPushStop()));
@@ -165,15 +166,6 @@ public class RobotContainer {
 
         // some lines were not copied from the drivetrain
 
-        m_subsystemController.a().whileTrue(
-                Compositions.feedAndShootAlsoIntake(
-                        m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
-                        m_shooterBottomSubsystem,
-                        SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
-                        SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
-
         m_drivingController.povRight()
                 .whileTrue(new ParallelCommandGroup(
                         m_angleSubsystem.getSetSmartDashboard(),
@@ -186,6 +178,17 @@ public class RobotContainer {
                                         m_feederSubsystem.getPullStop(),
                                         Compositions.shootersHoldNStop(m_shooterTopSubsystem,
                                                 m_shooterBottomSubsystem)))));
+    }
+
+    private void configureSubsystemBindings() {
+        m_subsystemController.a().whileTrue(
+                Compositions.feedAndShootAlsoIntake(
+                        m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
+                        m_shooterBottomSubsystem,
+                        SmartDashboard.getNumber("shootTopRPM",
+                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+                        SmartDashboard.getNumber("shootBottomRPM",
+                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
         m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
                 m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem,
