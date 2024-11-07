@@ -21,6 +21,7 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
+import frc.robot.commands.limelight.LimelightTurnToCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
 import frc.robot.subsystems.shooter.ShooterTopSubsystem;
+import frc.robot.util.TunableNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -98,6 +100,8 @@ public class RobotContainer {
         return input;
     }
 
+    private TunableNumber drivetrainTargetAngle = new TunableNumber("turn to radians", 0.0);
+
     /**
      * Use this method to define your trigger → command mappings. Triggers can be
      * created via the
@@ -140,14 +144,18 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        m_drivingController.a().whileTrue(
-                Compositions.feedAndShootAlsoIntake(
-                        m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
-                        m_shooterBottomSubsystem,
-                        SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
-                        SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+        // m_drivingController.a().whileTrue(
+        // Compositions.feedAndShootAlsoIntake(
+        // m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
+        // m_shooterBottomSubsystem,
+        // // smartdashboard.getnumber("shoottoprpm",
+        // ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
+        // SmartDashboard.getNumber("shootBottomRPM",
+        // ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
+
+        m_drivingController.a().onTrue(this.m_drivetrain.runOnce(() -> {
+            new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, drivetrainTargetAngle.get());
+        }));
 
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
@@ -163,8 +171,6 @@ public class RobotContainer {
                 m_angleSubsystem.angleToBase());
 
         m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(180));
-
-        // some lines were not copied from the drivetrain
 
         m_drivingController.povRight()
                 .whileTrue(new ParallelCommandGroup(
