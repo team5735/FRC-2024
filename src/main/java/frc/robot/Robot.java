@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -107,6 +111,43 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
     }
 
+    private NetworkTableEntry limelightPositions = NetworkTableInstance.getDefault().getTable("limelight")
+            .getEntry("botpose_targetspace");
+    private static final int numAverage = 5;
+    private double[] averagesArrayX = new double[numAverage];
+    private double[] averagesArrayY = new double[numAverage];
+    private double[] averagesArrayZ = new double[numAverage];
+    private int averagesIndex = 0;
+    private double[] oldPosition = new double[6];
+
+    private void runLimelightShenanigans() {
+        double[] position = limelightPositions.getDoubleArray(new double[6]);
+        if (Arrays.equals(position, oldPosition)) {
+            return;
+        }
+        oldPosition = position;
+        averagesArrayX[averagesIndex] = position[0];
+        averagesArrayY[averagesIndex] = position[1];
+        averagesArrayZ[averagesIndex] = position[2];
+        averagesIndex++;
+        if (averagesIndex == numAverage) {
+            averagesIndex = 0;
+        }
+
+        double averageX = 0, averageY = 0, averageZ = 0;
+        for (int i = 0; i < numAverage; i++) {
+            averageX += averagesArrayX[i];
+            averageY += averagesArrayY[i];
+            averageZ += averagesArrayZ[i];
+        }
+        averageX /= numAverage;
+        averageY /= numAverage;
+        averageZ /= numAverage;
+        SmartDashboard.putNumber("limelightAvgX", averageX);
+        SmartDashboard.putNumber("limelightAvgY", averageY);
+        SmartDashboard.putNumber("limelightAvgZ", averageZ);
+    }
+
     /**
      * This function is called every 20 ms, no matter the mode. Use this for
      * items like diagnostics that you want ran during disabled, autonomous,
@@ -128,6 +169,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("PD 6", m_PD.getCurrent(6));
         SmartDashboard.putNumber("PD total", m_PD.getTotalCurrent());
         SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
+
+        runLimelightShenanigans();
     }
 
     /**
