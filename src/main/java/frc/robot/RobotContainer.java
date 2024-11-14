@@ -101,7 +101,7 @@ public class RobotContainer {
         return input;
     }
 
-    private TunableNumber drivetrainTargetAngle = new TunableNumber("turn to radians", 0.0);
+    private TunableNumber drivetrainTargetAngle = new TunableNumber("turn to radians", -0.785);
 
     /**
      * Use this method to define your trigger → command mappings. Triggers can be
@@ -145,7 +145,7 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        m_limelightSubsystem.setDefaultCommand(new LimelightPoseEstimatorCommand(m_drivetrain));
+        // m_limelightSubsystem.setDefaultCommand(new LimelightPoseEstimatorCommand(m_drivetrain, m_limelightSubsystem));
 
         // m_drivingController.a().whileTrue(
         // Compositions.feedAndShootAlsoIntake(
@@ -156,16 +156,15 @@ public class RobotContainer {
         // SmartDashboard.getNumber("shootBottomRPM",
         // ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
-        m_drivingController.a().onTrue(this.m_drivetrain.runOnce(() -> {
-            new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, drivetrainTargetAngle.get());
-        }));
+        m_drivingController.a().onTrue(new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, () -> drivetrainTargetAngle.get()));
 
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
-        m_drivingController.y().onTrue(Commands.runOnce(() -> {
+        m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
-        }, m_drivetrain));
+            m_drivetrain.getPigeon2().reset();
+        }));
 
         m_drivingController.povUp().onTrue(
                 Compositions.angleUpdateWithIntake(m_angleSubsystem.angleToMax(), m_angleSubsystem,

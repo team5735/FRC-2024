@@ -4,6 +4,8 @@
 
 package frc.robot.commands.limelight;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -19,9 +21,10 @@ public class LimelightTurnToCommand extends Command {
     LimelightSubsystem m_limelight;
     PIDController m_pid;
     double m_pigeonStartingNumber;
+    Supplier<Double> setpointGetter;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "drivetrain omega", "measurement",
-            "setpoint");
+            "setpoint", "position error");
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming");
 
     private final TunableNumber m_kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
@@ -30,26 +33,30 @@ public class LimelightTurnToCommand extends Command {
 
     /** Creates a new LimelightTurnToCommand. */
     public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
-            final double offset) {
+            Supplier<Double> setpointGetter) {
         m_drivetrain = drivetrain;
         m_limelight = limelight;
 
         addRequirements(m_drivetrain);
 
-        m_pid = new PIDController(m_kP.get(), m_kI.get(), m_kD.get());
-
-        m_pid.setTolerance(Constants.TOLERANCE);
-        m_pid.setSetpoint(LimelightAimCommand.positiveToPosNeg(m_drivetrain.getRotation3d().getZ() + offset));
-        m_pid.enableContinuousInput(-Math.PI, Math.PI);
-
-        m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
-
-        m_doubles.set("setpiont", m_pid.getSetpoint());
+        this.setpointGetter = setpointGetter;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        System.out.println("started");
+        m_pid = new PIDController(m_kP.get(), m_kI.get(), m_kD.get());
+
+        m_pid.setTolerance(Constants.TOLERANCE);
+        // m_pid.setSetpoint(LimelightAimCommand.positiveToPosNeg(m_drivetrain.getRotation3d().getZ()
+        // + offset));
+        m_pid.setSetpoint(setpointGetter.get());
+        m_pid.enableContinuousInput(-Math.PI, Math.PI);
+
+        m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
+
+        m_doubles.set("setpoint", m_pid.getSetpoint());
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -58,8 +65,12 @@ public class LimelightTurnToCommand extends Command {
         double measurement = getMeasurement();
         m_doubles.set("measurement", measurement);
         double omega = m_pid.calculate(measurement);
+        if (Math.abs(omega) > 1) {
+        omega = 1 * Math.signum(omega);
+        }
         m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);
+        m_doubles.set("position error", m_pid.getPositionError());
     }
 
     // Called once the command ends or is interrupted.

@@ -122,7 +122,7 @@ public class Robot extends TimedRobot {
 
     private void runLimelightShenanigans() {
         double[] position = limelightPositions.getDoubleArray(new double[6]);
-        if (Arrays.equals(position, oldPosition)) {
+        if (Arrays.equals(position, oldPosition) || (position[0] == 0 && position[1] == 0 && position[2] == 0.0) ){
             return;
         }
         oldPosition = position;

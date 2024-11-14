@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.NTDoubleSection;
 
 public class LimelightPoseEstimatorCommand extends Command {
@@ -77,8 +78,14 @@ public class LimelightPoseEstimatorCommand extends Command {
     LimelightMeasurement averagingMeasurements[] = new LimelightMeasurement[LimelightConstants.AVERAGING_WINDOW];
     private int index = 0;
 
-    public LimelightPoseEstimatorCommand(DrivetrainSubsystem drivetrain) {
+    public LimelightPoseEstimatorCommand(DrivetrainSubsystem drivetrain, LimelightSubsystem limelight) {
         this.drivetrain = drivetrain;
+        addRequirements(limelight);
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("please, does this work?");
     }
 
     private double distanceBetween(double a, double b) {
