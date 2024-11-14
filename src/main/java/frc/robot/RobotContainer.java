@@ -22,6 +22,7 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.limelight.LimelightTurnToCommand;
+import frc.robot.commands.limelight.LimelightPoseEstimatorCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -143,6 +144,8 @@ public class RobotContainer {
                                                     ? m_slowMultiplier
                                                     : m_normalMultiplier);
                         }));
+
+        m_limelightSubsystem.setDefaultCommand(new LimelightPoseEstimatorCommand(m_limelightSubsystem));
 
         // m_drivingController.a().whileTrue(
         // Compositions.feedAndShootAlsoIntake(
