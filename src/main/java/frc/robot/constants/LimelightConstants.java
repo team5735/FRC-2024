@@ -26,4 +26,7 @@ public class LimelightConstants {
     public static final double TURN_SRL = 8;
 
     public static final double BLINK_TIME = 1.0;
+
+    public static final int AVERAGING_WINDOW = 20;
+    public static final double PERFECT_NEGATION_WINDOW = 0.1;
 }

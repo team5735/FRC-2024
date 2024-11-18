@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
@@ -65,29 +66,32 @@ public class LimelightPoseEstimatorCommand extends Command {
         }
     }
 
-    LimelightMeasurement lastLimelightPose;
+    LimelightMeasurement lastMeasuredPose;
 
-    public static final int AVERAGING_WINDOW = 20;
-    LimelightMeasurement averagingMeasurements[] = new LimelightMeasurement[AVERAGING_WINDOW];
+    LimelightMeasurement averagingMeasurements[] = new LimelightMeasurement[LimelightConstants.AVERAGING_WINDOW];
     private int index = 0;
-
-    public static final double NEGATION_DETECTION_ERROR = 0.1;
 
     public LimelightPoseEstimatorCommand(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
         this.limelight = limelight;
         this.drivetrain = drivetrain;
     }
 
+    private double distanceBetween(double a, double b) {
+        return Math.abs(a - b);
+    }
+
     @Override
     public void execute() {
         LimelightMeasurement measurement = new LimelightMeasurement();
-        if (measurement == lastLimelightPose) {
+        if (measurement == lastMeasuredPose) {
+            // no actual measurement
             return;
         }
-        if (Math.abs(measurement.normal() - (-lastLimelightPose.normal())) > NEGATION_DETECTION_ERROR) {
+        if (distanceBetween(measurement.normal(),
+                -lastMeasuredPose.normal()) > LimelightConstants.PERFECT_NEGATION_WINDOW) {
             return;
         }
-        lastLimelightPose = measurement;
+        lastMeasuredPose = measurement;
 
         register(measurement);
         this.drivetrain.addVisionMeasurement(measurement.toPose2d(), measurement.getTimestamp());
