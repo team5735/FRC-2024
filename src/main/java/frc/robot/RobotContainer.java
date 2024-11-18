@@ -145,7 +145,7 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        m_limelightSubsystem.setDefaultCommand(new LimelightPoseEstimatorCommand(m_limelightSubsystem));
+        m_limelightSubsystem.setDefaultCommand(new LimelightPoseEstimatorCommand(m_drivetrain));
 
         // m_drivingController.a().whileTrue(
         // Compositions.feedAndShootAlsoIntake(

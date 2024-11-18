@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.NTDoubleSection;
 
 public class LimelightPoseEstimatorCommand extends Command {
@@ -17,7 +16,6 @@ public class LimelightPoseEstimatorCommand extends Command {
     private NTDoubleSection doubles_drivetrain = new NTDoubleSection("drivetrain_pose_estimator", "estimated X",
             "estimated Y", "estimated Z");
 
-    private LimelightSubsystem limelight;
     private DrivetrainSubsystem drivetrain;
 
     class LimelightMeasurement {
@@ -78,8 +76,7 @@ public class LimelightPoseEstimatorCommand extends Command {
     LimelightMeasurement averagingMeasurements[] = new LimelightMeasurement[LimelightConstants.AVERAGING_WINDOW];
     private int index = 0;
 
-    public LimelightPoseEstimatorCommand(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
-        this.limelight = limelight;
+    public LimelightPoseEstimatorCommand(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
     }
 
