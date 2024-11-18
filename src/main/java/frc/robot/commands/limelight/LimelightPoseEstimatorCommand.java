@@ -2,6 +2,7 @@ package frc.robot.commands.limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -97,11 +98,12 @@ public class LimelightPoseEstimatorCommand extends Command {
         }
         lastMeasuredPose = measurement;
 
-        register(measurement);
+        var average = register(measurement);
+        report(measurement, average);
         this.drivetrain.addVisionMeasurement(measurement.toPose2d(), measurement.getTimestamp());
     }
 
-    private void register(LimelightMeasurement measurement) {
+    private LimelightMeasurement register(LimelightMeasurement measurement) {
         averagingMeasurements[index] = measurement;
         index = (index + 1) % LimelightConstants.AVERAGING_WINDOW;
 
@@ -110,12 +112,26 @@ public class LimelightPoseEstimatorCommand extends Command {
             average.add(averagingMeasurements[i]);
         }
         average.divide(LimelightConstants.AVERAGING_WINDOW);
+        return average;
+    }
 
+    private void report(LimelightMeasurement measurement, LimelightMeasurement average) {
         doubles.set("estimated X", average.x);
         doubles.set("estimated Y", average.y);
         doubles.set("estimated Z", average.z);
         doubles.set("reported X", measurement.x);
         doubles.set("reported Y", measurement.y);
         doubles.set("reported Z", measurement.z);
+
+        Pose2d pose = this.drivetrain.getState().Pose;
+        doubles_drivetrain.set("estimated X", pose.getX());
+        doubles_drivetrain.set("estimated Y", pose.getY());
+        // there is no estimated Z, because they thought we wouldn't need it. :)
+        Rotation3d rot = this.drivetrain.getRotation3d();
+        // TODO: double-check that X, Y, and Z are actually roll, pitch, and yaw
+        // respectively
+        doubles_drivetrain.set("estimated roll", rot.getX());
+        doubles_drivetrain.set("estimated pitch", rot.getY());
+        doubles_drivetrain.set("estimated yaw", rot.getZ());
     }
 }
