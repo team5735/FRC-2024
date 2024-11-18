@@ -14,6 +14,9 @@ public class LimelightPoseEstimatorCommand extends Command {
     private NTDoubleSection doubles = new NTDoubleSection("limelight_pose_estimator", "estimated X", "estimated Y",
             "estimated Z", "reported X", "reported Y", "reported Z");
 
+    private NTDoubleSection doubles_drivetrain = new NTDoubleSection("drivetrain_pose_estimator", "estimated X",
+            "estimated Y", "estimated Z");
+
     private LimelightSubsystem limelight;
     private DrivetrainSubsystem drivetrain;
 
@@ -103,14 +106,19 @@ public class LimelightPoseEstimatorCommand extends Command {
 
     private void register(LimelightMeasurement measurement) {
         averagingMeasurements[index] = measurement;
-        index = (index + 1) % AVERAGING_WINDOW;
+        index = (index + 1) % LimelightConstants.AVERAGING_WINDOW;
 
         LimelightMeasurement average = new LimelightMeasurement();
-        for (int i = 0; i < AVERAGING_WINDOW; i++) {
+        for (int i = 0; i < LimelightConstants.AVERAGING_WINDOW; i++) {
             average.add(averagingMeasurements[i]);
         }
-        average.divide(AVERAGING_WINDOW);
+        average.divide(LimelightConstants.AVERAGING_WINDOW);
 
-        doubles.get("estimated X").
+        doubles.set("estimated X", average.x);
+        doubles.set("estimated Y", average.y);
+        doubles.set("estimated Z", average.z);
+        doubles.set("reported X", measurement.x);
+        doubles.set("reported Y", measurement.y);
+        doubles.set("reported Z", measurement.z);
     }
 }
