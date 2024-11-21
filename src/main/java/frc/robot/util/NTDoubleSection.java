@@ -45,13 +45,13 @@ public class NTDoubleSection {
      * instance is for.
      * 
      * <p>
-     * A value of 0 is published to the DoubleTopic initially.
+     * Nothing is published to the DoubleTopic initially.
      *
      * @param name The name of the entry.
      */
     public void addEntry(String name) {
         DoublePublisher publisher = table.getDoubleTopic(name).publish();
-        publisher.set(0);
+        // publisher.set(0);
         entries.put(name, publisher);
     }
 

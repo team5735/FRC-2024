@@ -12,7 +12,7 @@ public class NTBooleanSection {
     private static final String sectionName = "sections";
 
     private final NetworkTable table;
-    private Map<String, BooleanTopic> entries = new HashMap<>();
+    private Map<String, BooleanPublisher> entries = new HashMap<>();
 
     /**
      * Creates a new NTBooleanSection. This makes the section as a subtable in the
@@ -47,7 +47,7 @@ public class NTBooleanSection {
      * @param name The name of the entry.
      */
     public void addEntry(String name) {
-        entries.put(name, table.getBooleanTopic(name));
+        entries.put(name, table.getBooleanTopic(name).publish());
     }
 
     /**
@@ -58,6 +58,6 @@ public class NTBooleanSection {
      * @param value The value to set the entry to
      */
     public void set(String entry, boolean value) {
-        entries.get(entry).publish().set(value);
+        entries.get(entry).set(value);
     }
 }

@@ -171,6 +171,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
 
         runLimelightShenanigans();
+
+        SmartDashboard.putNumber("drivetrain reported theta", m_robotContainer.getDrivetrainPigeonRotation());
     }
 
     /**

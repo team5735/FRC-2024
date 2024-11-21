@@ -68,8 +68,6 @@ public class DriveCommand extends Command {
             m_watchdog.printEpochs();
         }
 
-        // Testing please remove unless you put this here and still need it
-        SmartDashboard.putNumber("drivetrain reported theta", m_drivetrain.getRotation3d().getZ());
     }
 
     /**

@@ -4,6 +4,8 @@
 
 package frc.robot.commands.limelight;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -27,10 +29,11 @@ public class LimelightAimCommand extends Command {
     private boolean m_targetAcquired = false;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
+    private Supplier<Double> measurementGetter;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
-            "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain angle",
-            "hood vector x", "hood vector y", "angle changer radians");
+            "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset",
+            "hood vector x", "hood vector y", "angle changer radians", "bot x", "bot y");
 
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming", "spinning");
 
@@ -47,13 +50,14 @@ public class LimelightAimCommand extends Command {
      * @param angle      The angle changer, used to aim vertically
      */
     public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
-            final AngleSubsystem angleSubsystem) {
+            final AngleSubsystem angleSubsystem, final Supplier<Double> measurementSupplier) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(limelight, drivetrain);
         m_limelight = limelight;
         m_drivetrain = drivetrain;
         m_angleChanger = angleSubsystem;
         m_targetAcquired = false;
+        measurementGetter = measurementSupplier;
     }
 
     // Called when the command is initially scheduled.
@@ -68,7 +72,7 @@ public class LimelightAimCommand extends Command {
 
         Pose3d botPose = m_limelight.getBotPose();
         m_watchdog.addEpoch("get bot pose");
-        if (m_limelight.getNumTargets() < 2) {
+        if (m_limelight.getNumTargets() < 1) {
             m_booleans.set("spinning", true);
             m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
             return;
@@ -86,6 +90,9 @@ public class LimelightAimCommand extends Command {
         // speaker.
 
         Pose2d currentRobotPose = botPose.toPose2d();
+        m_doubles.set("bot x", currentRobotPose.getX());
+        m_doubles.set("bot y", currentRobotPose.getY());
+
         Translation3d hoodPos = m_hoodPos;
         checkBotCanAim(currentRobotPose.getTranslation(), hoodPos);
         m_watchdog.addEpoch("checked bot can aim");
@@ -111,31 +118,36 @@ public class LimelightAimCommand extends Command {
     private void checkBotCanAim(Translation2d robotPosition, Translation3d targetPosition) {
         boolean botIsCloseEnough = robotPosition
                 .getDistance(targetPosition.toTranslation2d()) < LimelightConstants.BOT_SHOOTING_DISTANCE;
-        if (!botIsCloseEnough) {
-            m_doubles.set("cannot aim distance",
-                    robotPosition.getDistance(m_hoodPos.toTranslation2d()));
-            Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
-            Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
-                    .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
-                                                                          // movement speed
-            // m_drivetrain.drive(desiredVelocity);
-            m_doubles.set("drivetrain speed x", desiredVelocity.getX());
-            m_doubles.set("drivetrain speed y", desiredVelocity.getY());
+        if (botIsCloseEnough) {
             return;
         }
+
+        m_doubles.set("cannot aim distance",
+                robotPosition.getDistance(m_hoodPos.toTranslation2d()));
+        Translation2d robotToTarget = targetPosition.toTranslation2d().minus(robotPosition);
+        Translation2d desiredVelocity = robotToTarget.div(robotToTarget.getNorm()) // normalize the vector
+                .times(LimelightConstants.DRIVETRAIN_MOVEMENT_SPEED); // set magnitude to allowed drivetrain
+                                                                      // movement speed
+        // m_drivetrain.drive(desiredVelocity);
+        m_doubles.set("drivetrain speed x", desiredVelocity.getX());
+        m_doubles.set("drivetrain speed y", desiredVelocity.getY());
+        return;
     }
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double offset = posNegToPositive(drivetrainDesiredAngle);
+        double target = radiansEnsureInBounds(drivetrainDesiredAngle + measurementGetter.get());
 
-        m_doubles.set("desired drivetrain angle", drivetrainDesiredAngle);
+        m_doubles.set("desired drivetrain offset", drivetrainDesiredAngle);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
 
-        // new LimelightTurnToCommand(m_drivetrain, m_limelight, offset).schedule();
+        new LimelightTurnToCommand(m_drivetrain, m_limelight, () -> target, measurementGetter).schedule();
     }
 
+    // Sometimes angles go past +pi or -pi. This function returns an angle that
+    // represents the same rotation, but is actually within the bounds set. Probably
+    // not needed - I think PIDControllers do this automatically - but I was bored.
     private double radiansEnsureInBounds(double angle) {
         if (angle > -Math.PI && angle < Math.PI) {
             return angle;

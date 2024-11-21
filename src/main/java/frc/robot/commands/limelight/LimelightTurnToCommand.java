@@ -7,6 +7,7 @@ package frc.robot.commands.limelight;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.constants.LimelightConstants;
@@ -22,10 +23,11 @@ public class LimelightTurnToCommand extends Command {
     PIDController m_pid;
     double m_pigeonStartingNumber;
     Supplier<Double> setpointGetter;
+    private Supplier<Double> getMeasurement;
 
-    private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "drivetrain omega", "measurement",
+    private final NTDoubleSection m_doubles = new NTDoubleSection("limelight turn", "drivetrain omega", "measurement",
             "setpoint", "position error");
-    private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming");
+    private final NTBooleanSection m_booleans = new NTBooleanSection("limelight turn", "aiming");
 
     private final TunableNumber m_kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
     private final TunableNumber m_kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
@@ -33,13 +35,14 @@ public class LimelightTurnToCommand extends Command {
 
     /** Creates a new LimelightTurnToCommand. */
     public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
-            Supplier<Double> setpointGetter) {
+            Supplier<Double> setpointGetter, Supplier<Double> drivetrainRotationSupplier) {
         m_drivetrain = drivetrain;
         m_limelight = limelight;
 
         addRequirements(m_drivetrain);
 
         this.setpointGetter = setpointGetter;
+        this.getMeasurement = drivetrainRotationSupplier;
     }
 
     // Called when the command is initially scheduled.
@@ -57,13 +60,13 @@ public class LimelightTurnToCommand extends Command {
         m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
 
         m_doubles.set("setpoint", m_pid.getSetpoint());
+        m_booleans.set("aiming", true);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double measurement = getMeasurement();
-        m_doubles.set("measurement", measurement);
+        double measurement = getMeasurement.get();
         double omega = m_pid.calculate(measurement);
         if (Math.abs(omega) > 1) {
         omega = 1 * Math.signum(omega);
@@ -71,6 +74,7 @@ public class LimelightTurnToCommand extends Command {
         m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);
         m_doubles.set("position error", m_pid.getPositionError());
+        SmartDashboard.putNumber("drivetrain reported theta", getMeasurement.get());
     }
 
     // Called once the command ends or is interrupted.
@@ -80,13 +84,9 @@ public class LimelightTurnToCommand extends Command {
         m_booleans.set("aiming", false);
     }
 
-    private double getMeasurement() {
-        return m_drivetrain.getRotation3d().getZ();
-    }
-
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return Math.abs(getMeasurement() - m_pid.getSetpoint()) < Constants.TOLERANCE;
+        return Math.abs(getMeasurement.get() - m_pid.getSetpoint()) < Constants.TOLERANCE;
     }
 }

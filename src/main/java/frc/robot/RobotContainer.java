@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import javax.imageio.plugins.tiff.GeoTIFFTagSet;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,7 +24,6 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.limelight.LimelightTurnToCommand;
-import frc.robot.commands.limelight.LimelightPoseEstimatorCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
@@ -77,6 +78,10 @@ public class RobotContainer {
     private double m_turboMultiplier = DrivetrainConstants.TURBO_SPEED;
 
     private final SendableChooser<Command> m_autoChooser;
+
+    public double getDrivetrainPigeonRotation() {
+        return m_drivetrain.getRotation3d().getZ();
+    }
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and
@@ -145,7 +150,8 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        // m_limelightSubsystem.setDefaultCommand(new LimelightPoseEstimatorCommand(m_drivetrain, m_limelightSubsystem));
+        // m_limelightSubsystem.setDefaultCommand(new
+        // LimelightPoseEstimatorCommand(m_drivetrain, m_limelightSubsystem));
 
         // m_drivingController.a().whileTrue(
         // Compositions.feedAndShootAlsoIntake(
@@ -156,10 +162,11 @@ public class RobotContainer {
         // SmartDashboard.getNumber("shootBottomRPM",
         // ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
-        m_drivingController.a().onTrue(new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, () -> drivetrainTargetAngle.get()));
+        m_drivingController.a().onTrue(
+                new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, () -> drivetrainTargetAngle.get(), () -> getDrivetrainPigeonRotation()));
 
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem));
+                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem, () -> getDrivetrainPigeonRotation()));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
