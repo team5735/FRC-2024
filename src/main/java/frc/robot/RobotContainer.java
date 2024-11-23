@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
-import javax.imageio.plugins.tiff.GeoTIFFTagSet;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -163,10 +161,12 @@ public class RobotContainer {
         // ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.a().onTrue(
-                new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, () -> drivetrainTargetAngle.get(), () -> getDrivetrainPigeonRotation()));
+                new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, () -> drivetrainTargetAngle.get(),
+                        () -> getDrivetrainPigeonRotation()));
 
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem, () -> getDrivetrainPigeonRotation()));
+                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem,
+                        () -> getDrivetrainPigeonRotation()));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
