@@ -29,7 +29,11 @@ public class LimelightAimCommand extends Command {
     private boolean m_targetAcquired = false;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
+
+    private double setpoint;
     private Supplier<Double> measurementGetter;
+    private Supplier<Double> setpointGetter = () -> this.setpoint;
+    private LimelightTurnToCommand turningCommand = new LimelightTurnToCommand(m_drivetrain, m_limelight, setpointGetter, measurementGetter);
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset",
@@ -135,14 +139,15 @@ public class LimelightAimCommand extends Command {
     }
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
-        double drivetrainDesiredAngle = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double target = radiansEnsureInBounds(drivetrainDesiredAngle + measurementGetter.get());
+        double drivetrainAngleToTarget = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
+        double target = radiansEnsureInBounds(measurementGetter.get() - drivetrainAngleToTarget);
 
-        m_doubles.set("desired drivetrain offset", drivetrainDesiredAngle);
+        m_doubles.set("desired drivetrain offset", drivetrainAngleToTarget);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
 
-        new LimelightTurnToCommand(m_drivetrain, m_limelight, () -> target, measurementGetter).schedule();
+        this.setpoint = target;
+        this.turningCommand.schedule();
     }
 
     // Sometimes angles go past +pi or -pi. This function returns an angle that
