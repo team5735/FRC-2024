@@ -134,7 +134,8 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    private Pose2d getEstimatedPosition() {
+    // public because MegaTag2 needs it to be
+    public Pose2d getEstimatedPosition() {
         m_stateLock.readLock().lock();
         var pose = m_odometry.getEstimatedPosition();
         m_stateLock.readLock().unlock();

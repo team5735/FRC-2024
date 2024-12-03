@@ -12,14 +12,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.NTBooleanSection;
 import frc.robot.util.NTDoubleSection;
 import frc.robot.util.TunableNumber;
 
 public class LimelightTurnToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
-    LimelightSubsystem m_limelight;
     PIDController m_pid;
     double m_pigeonStartingNumber;
     Supplier<Double> setpointGetter;
@@ -34,10 +32,9 @@ public class LimelightTurnToCommand extends Command {
     private final TunableNumber m_kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
 
     /** Creates a new LimelightTurnToCommand. */
-    public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
+    public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain,
             Supplier<Double> setpointGetter, Supplier<Double> drivetrainRotationSupplier) {
         m_drivetrain = drivetrain;
-        m_limelight = limelight;
 
         addRequirements(m_drivetrain);
 
@@ -69,7 +66,7 @@ public class LimelightTurnToCommand extends Command {
         double measurement = getMeasurement.get();
         double omega = m_pid.calculate(measurement);
         if (Math.abs(omega) > 1) {
-        omega = 1 * Math.signum(omega);
+            omega = 1 * Math.signum(omega);
         }
         m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);

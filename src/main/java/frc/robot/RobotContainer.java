@@ -6,10 +6,10 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
-import javax.imageio.plugins.tiff.GeoTIFFTagSet;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,9 +35,9 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
 import frc.robot.subsystems.shooter.ShooterTopSubsystem;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.TunableNumber;
 
 /**
@@ -54,8 +54,6 @@ public class RobotContainer {
             OperatorConstants.DRIVER_CONTROLLER_PORT);
     private final CommandXboxController m_subsystemController = new CommandXboxController(
             OperatorConstants.SUBSYSTEM_CONTROLLER_PORT);
-
-    private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
 
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
@@ -79,8 +77,23 @@ public class RobotContainer {
 
     private final SendableChooser<Command> m_autoChooser;
 
-    public double getDrivetrainPigeonRotation() {
-        return m_drivetrain.getRotation3d().getZ();
+    public Rotation2d getEstimatedRotation() {
+        return m_drivetrain.getEstimatedPosition().getRotation();
+    }
+
+    public void setLimelightRotation() {
+        LimelightHelpers.SetRobotOrientation(null, m_drivetrain.getEstimatedPosition().getRotation().getDegrees(), 0, 0,
+                0, 0, 0);
+    }
+
+    public void addVisionMeasurementToKalmanFilter() {
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (mt2.tagCount == 0) {
+            return;
+        }
+        m_drivetrain.addVisionMeasurement(
+                mt2.pose,
+                mt2.timestampSeconds);
     }
 
     /**
@@ -97,6 +110,8 @@ public class RobotContainer {
 
         configureDriverBindings();
         // configureSubsystemBindings();
+
+        m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
     }
 
     private static double deadband(double input) {
@@ -163,10 +178,12 @@ public class RobotContainer {
         // ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
 
         m_drivingController.a().onTrue(
-                new LimelightTurnToCommand(m_drivetrain, m_limelightSubsystem, () -> drivetrainTargetAngle.get(), () -> getDrivetrainPigeonRotation()));
+                new LimelightTurnToCommand(m_drivetrain, () -> drivetrainTargetAngle.get(),
+                        () -> getEstimatedRotation().getRadians()));
 
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_limelightSubsystem, m_drivetrain, m_angleSubsystem, () -> getDrivetrainPigeonRotation()));
+                new LimelightAimCommand(m_drivetrain, m_angleSubsystem,
+                        () -> getEstimatedRotation().getRadians()));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
@@ -211,7 +228,6 @@ public class RobotContainer {
         m_subsystemController.x().whileTrue(new ParallelCommandGroup(
                 m_intakeSubsystem.getPushStop(),
                 m_feederSubsystem.getPushStop()));
-        m_subsystemController.a().whileTrue(m_limelightSubsystem.blinkLeds());
 
         m_subsystemController.leftBumper().whileTrue(m_climberLeftSubsystem.getUpStop());
         m_subsystemController.rightBumper().whileTrue(m_climberRightSubsystem.getUpStop());

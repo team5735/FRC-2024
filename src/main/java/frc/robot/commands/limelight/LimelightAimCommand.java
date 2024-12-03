@@ -7,7 +7,6 @@ package frc.robot.commands.limelight;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -16,14 +15,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.AllianceSwitcher;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.NTBooleanSection;
 import frc.robot.util.NTDoubleSection;
 
 /** An example command that uses an example subsystem. */
 public class LimelightAimCommand extends Command {
-    private LimelightSubsystem m_limelight;
     private DrivetrainSubsystem m_drivetrain;
     private AngleSubsystem m_angleChanger;
     private boolean m_targetAcquired = false;
@@ -33,7 +31,8 @@ public class LimelightAimCommand extends Command {
     private double setpoint;
     private Supplier<Double> measurementGetter;
     private Supplier<Double> setpointGetter = () -> this.setpoint;
-    private LimelightTurnToCommand turningCommand = new LimelightTurnToCommand(m_drivetrain, m_limelight, setpointGetter, measurementGetter);
+    private LimelightTurnToCommand turningCommand = new LimelightTurnToCommand(m_drivetrain,
+            setpointGetter, measurementGetter);
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset",
@@ -53,11 +52,10 @@ public class LimelightAimCommand extends Command {
      *                   horizontally
      * @param angle      The angle changer, used to aim vertically
      */
-    public LimelightAimCommand(final LimelightSubsystem limelight, final DrivetrainSubsystem drivetrain,
+    public LimelightAimCommand(final DrivetrainSubsystem drivetrain,
             final AngleSubsystem angleSubsystem, final Supplier<Double> measurementSupplier) {
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(limelight, drivetrain);
-        m_limelight = limelight;
+        addRequirements(drivetrain);
         m_drivetrain = drivetrain;
         m_angleChanger = angleSubsystem;
         m_targetAcquired = false;
@@ -74,14 +72,9 @@ public class LimelightAimCommand extends Command {
     public void execute() {
         m_watchdog.reset();
 
-        Pose3d botPose = m_limelight.getBotPose();
+        var botPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(null);
+        Pose2d currentRobotPose = botPoseEstimate.pose;
         m_watchdog.addEpoch("get bot pose");
-        if (m_limelight.getNumTargets() < 1) {
-            m_booleans.set("spinning", true);
-            m_drivetrain.drive(LimelightConstants.CLUELESS_TURN_SPEED);
-            return;
-        }
-        m_watchdog.addEpoch("check num targets");
 
         m_booleans.set("aiming", true);
         m_targetAcquired = true;
@@ -93,7 +86,6 @@ public class LimelightAimCommand extends Command {
         // positive theta is counterclockwise and theta 0 is facing the red alliance
         // speaker.
 
-        Pose2d currentRobotPose = botPose.toPose2d();
         m_doubles.set("bot x", currentRobotPose.getX());
         m_doubles.set("bot y", currentRobotPose.getY());
 
@@ -140,7 +132,7 @@ public class LimelightAimCommand extends Command {
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainAngleToTarget = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double target = radiansEnsureInBounds(measurementGetter.get() - drivetrainAngleToTarget);
+        double target = radiansEnsureInBounds(drivetrainAngleToTarget - measurementGetter.get());
 
         m_doubles.set("desired drivetrain offset", drivetrainAngleToTarget);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
