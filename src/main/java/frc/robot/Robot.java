@@ -131,6 +131,8 @@ public class Robot extends TimedRobot {
 
         m_robotContainer.setLimelightRotation();
         m_robotContainer.addVisionMeasurementToKalmanFilter();
+
+        SmartDashboard.putNumber("drivetrain pose estimation", m_robotContainer.getEstimatedRotation().getRadians());
     }
 
     /**
