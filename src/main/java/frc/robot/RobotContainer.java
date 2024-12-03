@@ -114,11 +114,11 @@ public class RobotContainer {
         m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
     }
 
-    private static double deadband(double input) {
-        if (Math.abs(input) <= DrivetrainConstants.DEADBAND) {
+    private static double deadband(double 入力) {
+        if (Math.abs(入力) <= DrivetrainConstants.DEADBAND) {
             return 0;
         }
-        return input;
+        return 入力;
     }
 
     private TunableNumber drivetrainTargetAngle = new TunableNumber("turn to radians", -0.785);
