@@ -31,8 +31,7 @@ public class LimelightAimCommand extends Command {
     private double setpoint;
     private Supplier<Double> measurementGetter;
     private Supplier<Double> setpointGetter = () -> this.setpoint;
-    private LimelightTurnToCommand turningCommand = new LimelightTurnToCommand(m_drivetrain,
-            setpointGetter, measurementGetter);
+    private LimelightTurnToCommand turningCommand;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset",
@@ -60,6 +59,8 @@ public class LimelightAimCommand extends Command {
         m_angleChanger = angleSubsystem;
         m_targetAcquired = false;
         measurementGetter = measurementSupplier;
+        turningCommand = new LimelightTurnToCommand(m_drivetrain,
+                setpointGetter, measurementGetter);
     }
 
     // Called when the command is initially scheduled.
