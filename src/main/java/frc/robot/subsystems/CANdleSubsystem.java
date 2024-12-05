@@ -8,6 +8,7 @@ import java.awt.Color;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +21,7 @@ public class CANdleSubsystem extends SubsystemBase {
     /** Creates a new CANdle Subsystem. */
     public CANdleSubsystem() {
         candle = new CANdle(Constants.CANDLE_ID);
+        candle.configLEDType(LEDStripType.GRB);
     }
 
     public void setIdle() {
