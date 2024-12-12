@@ -19,13 +19,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
-import frc.robot.commands.limelight.LimelightTurnToCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.LimelightHelpers;
-import frc.robot.util.TunableNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -113,8 +111,6 @@ public class RobotContainer {
         }
         return input;
     }
-
-    private TunableNumber drivetrainTargetAngle = new TunableNumber("turn to radians", -0.785);
 
     /**
      * Use this method to define your trigger → command mappings. Triggers can be
