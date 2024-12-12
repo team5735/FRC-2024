@@ -30,7 +30,7 @@ public class LimelightAimCommand extends Command {
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset", "setpoint",
-            "hood vector x", "hood vector y", "angle changer radians", "bot x", "bot y");
+            "hood vector x", "hood vector y", "angle changer radians", "angler setpoint", "bot x", "bot y");
 
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming", "spinning");
 
@@ -125,12 +125,14 @@ public class LimelightAimCommand extends Command {
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainAngleToTarget = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double offset = radiansEnsureInBounds(drivetrainAngleToTarget - curRobotRot);
+        double target = radiansEnsureInBounds(drivetrainAngleToTarget - curRobotRot);
 
         m_doubles.set("desired drivetrain offset", drivetrainAngleToTarget);
-        m_doubles.set("setpoint", measurementGetter.get() + offset);
+        m_doubles.set("setpoint", measurementGetter.get() + target);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
+
+        m_drivetrain.setRotationTarget(target);
     }
 
     // Sometimes angles go past +pi or -pi. This function returns an angle that
@@ -155,6 +157,7 @@ public class LimelightAimCommand extends Command {
         double anglerSetpoint = -Math.toDegrees(angleChangerDesiredAngle) + 180;
 
         m_doubles.set("angle changer radians", angleChangerDesiredAngle);
+        m_doubles.set("angler setpoint", anglerSetpoint);
 
         // m_angleChanger.setSetpoint(anglerSetpoint);
     }
@@ -176,6 +179,7 @@ public class LimelightAimCommand extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(final boolean interrupted) {
+        m_drivetrain.setRotationTarget(null);
     }
 
     // Returns true when the command should end.

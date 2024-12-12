@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -37,7 +38,11 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     private SwerveRequest.RobotCentric m_robotCentric = new SwerveRequest.RobotCentric();
     private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric();
     private SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
+    private SwerveRequest.FieldCentricFacingAngle m_facingAngle = new SwerveRequest.FieldCentricFacingAngle();
     private Supplier<Boolean> m_isFieldCentric;
+
+    private boolean hasFacingRequest = false;
+    private double facingRequestDirection = 0;
 
     public DrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             Supplier<Boolean> fieldCentric, SwerveModuleConstants... modules) {
@@ -105,6 +110,33 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
                 .withRotationalRate(omega)
                 .withDriveRequestType(DriveRequestType.Velocity)
                 .withDeadband(.1));
+    }
+
+    public void driveFieldCentricObeyTurn(double vx, double vy, double omega) {
+        if (hasFacingRequest) {
+            setControl(m_facingAngle.withDeadband(.1)
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                    .withVelocityX(vx)
+                    .withVelocityY(vy)
+                    .withTargetDirection(new Rotation2d(facingRequestDirection)));
+        }
+
+        setControl(m_robotCentric.withVelocityX(vx)
+                .withVelocityY(vy)
+                .withRotationalRate(omega)
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                .withDeadband(.1));
+    }
+
+    public void setRotationTarget(Double target) {
+        if (target == null) {
+            this.hasFacingRequest = false;
+            this.facingRequestDirection = 0;
+            return;
+        }
+
+        this.hasFacingRequest = true;
+        this.facingRequestDirection = target;
     }
 
     public void brake() {

@@ -58,7 +58,7 @@ public class DriveCommand extends Command {
         } else if (DrivetrainConstants.SLEW_RATE_LIMITER_MODE == SlewRateLimiterMode.AXES) {
             driveAxesSRL(speedX, speedY, speedOmega);
         } else {
-            m_drivetrain.drive(speedX, speedY, speedOmega);
+            m_drivetrain.driveFieldCentricObeyTurn(speedX, speedY, speedOmega);
         }
 
         m_watchdog.addEpoch("drivetrain_update");
@@ -80,7 +80,7 @@ public class DriveCommand extends Command {
         SmartDashboard.putNumber("drive_speedX", speedX);
         SmartDashboard.putNumber("drive_speedY", speedY);
         SmartDashboard.putNumber("drive_speedOmega", speedOmega);
-        m_drivetrain.drive(speedX, speedY, speedOmega);
+        m_drivetrain.driveFieldCentricObeyTurn(speedX, speedY, speedOmega);
     }
 
     /**
@@ -108,6 +108,7 @@ public class DriveCommand extends Command {
         Translation2d thetaMagnitudeMovement = new Translation2d(r, theta);
         SmartDashboard.putNumber("drive_theta", theta);
         SmartDashboard.putNumber("drive_magnitude", r);
-        m_drivetrain.drive(thetaMagnitudeMovement, speedOmega);
+        m_drivetrain.driveFieldCentricObeyTurn(thetaMagnitudeMovement.getX(), thetaMagnitudeMovement.getY(),
+                speedOmega);
     }
 }
