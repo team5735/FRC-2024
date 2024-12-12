@@ -113,12 +113,14 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     }
 
     public void driveFieldCentricObeyTurn(double vx, double vy, double omega) {
+        SmartDashboard.putBoolean("drivetrain has a facing request", hasFacingRequest);
         if (hasFacingRequest) {
             setControl(m_facingAngle.withDeadband(.1)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
                     .withVelocityX(vx)
                     .withVelocityY(vy)
                     .withTargetDirection(new Rotation2d(facingRequestDirection)));
+            return;
         }
 
         setControl(m_robotCentric.withVelocityX(vx)
