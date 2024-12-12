@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LimelightConstants;
-import frc.robot.subsystems.AngleSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.AllianceSwitcher;
 import frc.robot.util.LimelightHelpers;
@@ -23,15 +22,11 @@ import frc.robot.util.NTDoubleSection;
 /** An example command that uses an example subsystem. */
 public class LimelightAimCommand extends Command {
     private DrivetrainSubsystem m_drivetrain;
-    private AngleSubsystem m_angleChanger;
     private boolean m_targetAcquired = false;
     private Watchdog m_watchdog = new Watchdog(0.02, () -> {
     });
 
-    private double setpoint;
     private Supplier<Double> measurementGetter;
-    private Supplier<Double> setpointGetter = () -> this.setpoint;
-    private LimelightTurnToCommand turningCommand;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset", "setpoint",
@@ -52,15 +47,12 @@ public class LimelightAimCommand extends Command {
      * @param angle      The angle changer, used to aim vertically
      */
     public LimelightAimCommand(final DrivetrainSubsystem drivetrain,
-            final AngleSubsystem angleSubsystem, final Supplier<Double> measurementSupplier) {
+            final Supplier<Double> measurementSupplier) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drivetrain);
         m_drivetrain = drivetrain;
-        m_angleChanger = angleSubsystem;
         m_targetAcquired = false;
         measurementGetter = measurementSupplier;
-        turningCommand = new LimelightTurnToCommand(m_drivetrain,
-                setpointGetter, measurementGetter);
     }
 
     // Called when the command is initially scheduled.
@@ -139,8 +131,6 @@ public class LimelightAimCommand extends Command {
         m_doubles.set("setpoint", measurementGetter.get() + offset);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
-
-        this.setpoint = offset;
     }
 
     // Sometimes angles go past +pi or -pi. This function returns an angle that
@@ -166,7 +156,7 @@ public class LimelightAimCommand extends Command {
 
         m_doubles.set("angle changer radians", angleChangerDesiredAngle);
 
-        m_angleChanger.setSetpoint(anglerSetpoint);
+        // m_angleChanger.setSetpoint(anglerSetpoint);
     }
 
     public static double positiveToPosNeg(double in) {

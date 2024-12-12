@@ -14,29 +14,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AutoCommands;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.limelight.LimelightTurnToCommand;
-import frc.robot.commands.shooter.ShooterSpinUpCommand;
-import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.TunerConstants;
-import frc.robot.subsystems.AngleSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
-import frc.robot.subsystems.shooter.ShooterTopSubsystem;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.TunableNumber;
 
@@ -52,24 +39,13 @@ public class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_drivingController = new CommandXboxController(
             OperatorConstants.DRIVER_CONTROLLER_PORT);
-    private final CommandXboxController m_subsystemController = new CommandXboxController(
-            OperatorConstants.SUBSYSTEM_CONTROLLER_PORT);
 
-    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-    private final AngleSubsystem m_angleSubsystem = new AngleSubsystem();
-    private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
-    private final ShooterTopSubsystem m_shooterTopSubsystem = new ShooterTopSubsystem();
-    private final ShooterBottomSubsystem m_shooterBottomSubsystem = new ShooterBottomSubsystem();
-    private final ClimberSubsystem m_climberLeftSubsystem = new ClimberSubsystem("left climber",
-            Constants.CLIMBER_MOTOR_LEFT_ID);
-    private final ClimberSubsystem m_climberRightSubsystem = new ClimberSubsystem("right climber",
-            Constants.CLIMBER_MOTOR_RIGHT_ID);
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
 
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
     public static Supplier<Boolean> m_getFieldCentric = () -> m_isFieldCentric;
-    // private final Telemetry m_telemetry = new Telemetry(.1);
+    private final Telemetry m_telemetry = new Telemetry(.1);
 
     private double m_slowMultiplier = DrivetrainConstants.SLOW_SPEED;
     private double m_normalMultiplier = DrivetrainConstants.NORMAL_SPEED;
@@ -121,15 +97,12 @@ public class RobotContainer {
      * commands.
      */
     public RobotContainer() {
-        // m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
+        m_drivetrain.registerTelemetry(m_telemetry::telemeterize);
         // Configure the trigger bindings
-        AutoCommands.registerCommands(m_intakeSubsystem, m_feederSubsystem, m_shooterTopSubsystem,
-                m_shooterBottomSubsystem);
         m_autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("pick an auto", m_autoChooser);
 
         configureDriverBindings();
-        // configureSubsystemBindings();
 
         m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
     }
@@ -158,12 +131,6 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureDriverBindings() {
-        m_drivingController.leftBumper().whileTrue(new ParallelCommandGroup(
-                m_intakeSubsystem.getPushStop(),
-                m_feederSubsystem.getPushStop()));
-        m_drivingController.rightBumper()
-                .whileTrue(Compositions.feedNIn(m_feederSubsystem, m_intakeSubsystem));
-
         m_drivingController.start().onTrue(Commands.runOnce(() -> updateMultipliers()));
 
         m_drivetrain.setDefaultCommand(
@@ -185,81 +152,18 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        // m_limelightSubsystem.setDefaultCommand(new
-        // LimelightPoseEstimatorCommand(m_drivetrain, m_limelightSubsystem));
-
-        // m_drivingController.a().whileTrue(
-        // Compositions.feedAndShootAlsoIntake(
-        // m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
-        // m_shooterBottomSubsystem,
-        // // smartdashboard.getnumber("shoottoprpm",
-        // ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
-        // SmartDashboard.getNumber("shootBottomRPM",
-        // ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
-
         m_drivingController.a().onTrue(
                 new LimelightTurnToCommand(m_drivetrain, () -> drivetrainTargetAngle.get(),
                         () -> getEstimatedRotation().getRadians()));
 
         m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_drivetrain, m_angleSubsystem,
+                new LimelightAimCommand(m_drivetrain,
                         () -> getEstimatedRotation().getRadians()));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
             m_drivetrain.getPigeon2().reset();
         }));
-
-        m_drivingController.povUp().onTrue(
-                Compositions.angleUpdateWithIntake(m_angleSubsystem.angleToMax(), m_angleSubsystem,
-                        m_intakeSubsystem));
-        m_drivingController.povDown().onTrue(
-                m_angleSubsystem.angleToBase());
-
-        m_drivingController.povLeft().onTrue(m_angleSubsystem.getSetAngle(180));
-
-        m_drivingController.povRight()
-                .whileTrue(new ParallelCommandGroup(
-                        m_angleSubsystem.getSetSmartDashboard(),
-                        new SequentialCommandGroup(
-                                new ShooterSpinUpCommand(
-                                        m_shooterTopSubsystem,
-                                        m_shooterBottomSubsystem,
-                                        ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
-                                        ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
-                                new ParallelDeadlineGroup(
-                                        m_feederSubsystem.getPullStop(),
-                                        Compositions.shootersHoldNStop(
-                                                m_shooterTopSubsystem,
-                                                m_shooterBottomSubsystem)))));
-    }
-
-    private void configureSubsystemBindings() {
-        m_subsystemController.a().whileTrue(
-                Compositions.feedAndShootAlsoIntake(
-                        m_feederSubsystem, m_intakeSubsystem, m_shooterTopSubsystem,
-                        m_shooterBottomSubsystem,
-                        SmartDashboard.getNumber("shootTopRPM",
-                                ShooterConstants.SHOOTER_TOP_DEFAULT_RPM),
-                        SmartDashboard.getNumber("shootBottomRPM",
-                                ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM)));
-
-        m_subsystemController.y().whileTrue(Compositions.shootNAngleFromStageBack(
-                m_angleSubsystem, m_shooterTopSubsystem, m_shooterBottomSubsystem, m_feederSubsystem,
-                m_intakeSubsystem));
-        m_subsystemController.x().whileTrue(new ParallelCommandGroup(
-                m_intakeSubsystem.getPushStop(),
-                m_feederSubsystem.getPushStop()));
-
-        m_subsystemController.leftBumper().whileTrue(m_climberLeftSubsystem.getUpStop());
-        m_subsystemController.rightBumper().whileTrue(m_climberRightSubsystem.getUpStop());
-        m_subsystemController.leftTrigger(0.1).whileTrue(m_climberLeftSubsystem.getDownStop());
-        m_subsystemController.rightTrigger(0.1).whileTrue(m_climberRightSubsystem.getDownStop());
-
-        m_angleSubsystem.setDefaultCommand(m_angleSubsystem.anglePIDCommand(m_angleSubsystem));
-        m_shooterTopSubsystem.setDefaultCommand(m_shooterTopSubsystem.shootPIDCommand());
-        m_shooterBottomSubsystem
-                .setDefaultCommand(m_shooterBottomSubsystem.shootPIDCommand());
     }
 
     private void updateMultipliers() {
@@ -283,11 +187,5 @@ public class RobotContainer {
 
         // we need to get the starting pose from the Limelight
         return auto;
-    }
-
-    public void resetShenanigans() {
-        m_shooterTopSubsystem.setSetpoint(0);
-        m_shooterBottomSubsystem.setSetpoint(0);
-        m_angleSubsystem.setSetpoint(235);
     }
 }

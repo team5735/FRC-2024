@@ -67,7 +67,6 @@ public class DriveCommand extends Command {
             System.out.println("watchdog expired :( ");
             m_watchdog.printEpochs();
         }
-
     }
 
     /**
