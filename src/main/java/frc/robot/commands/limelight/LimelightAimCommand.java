@@ -34,7 +34,7 @@ public class LimelightAimCommand extends Command {
     private LimelightTurnToCommand turningCommand;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
-            "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset",
+            "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset", "setpoint",
             "hood vector x", "hood vector y", "angle changer radians", "bot x", "bot y");
 
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight", "aiming", "spinning");
@@ -133,14 +133,14 @@ public class LimelightAimCommand extends Command {
 
     private void aimHorizontally(Translation2d currentRobotPoseToTarget, double curRobotRot) {
         double drivetrainAngleToTarget = Math.atan2(currentRobotPoseToTarget.getY(), currentRobotPoseToTarget.getX());
-        double target = radiansEnsureInBounds(drivetrainAngleToTarget - measurementGetter.get());
+        double offset = radiansEnsureInBounds(drivetrainAngleToTarget - curRobotRot);
 
         m_doubles.set("desired drivetrain offset", drivetrainAngleToTarget);
+        m_doubles.set("setpoint", measurementGetter.get() + offset);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
 
-        this.setpoint = target;
-        this.turningCommand.schedule();
+        this.setpoint = offset;
     }
 
     // Sometimes angles go past +pi or -pi. This function returns an angle that

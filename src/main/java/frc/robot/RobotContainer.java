@@ -77,17 +77,37 @@ public class RobotContainer {
 
     private final SendableChooser<Command> m_autoChooser;
 
+    private double pigeonOffset = 0;
+
+    public void limelightFetchOffset() {
+        var pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
+        if (pose == null) {
+            throw new RuntimeException("Limelight has no targets. :(");
+        }
+        double limelightRotation = pose.getRotation().getRadians();
+        double pigeonRotation = m_drivetrain.getPigeon2().getYaw().getValueAsDouble();
+        pigeonOffset = limelightRotation - pigeonRotation;
+        SmartDashboard.putNumber("limelight limelight rotation", limelightRotation);
+        SmartDashboard.putNumber("limelight pigeon rotation", pigeonRotation);
+        SmartDashboard.putNumber("limelight pigeon offset", pigeonOffset);
+    }
+
     public Rotation2d getEstimatedRotation() {
         return m_drivetrain.getEstimatedPosition().getRotation();
     }
 
     public void setLimelightRotation() {
-        LimelightHelpers.SetRobotOrientation(null, m_drivetrain.getEstimatedPosition().getRotation().getDegrees(), 0, 0,
+        LimelightHelpers.SetRobotOrientation(null,
+                m_drivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0,
                 0, 0, 0);
     }
 
     public void addVisionMeasurementToKalmanFilter() {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (mt2 == null) {
+            return;
+
+        }
         if (mt2.tagCount == 0) {
             return;
         }
@@ -203,12 +223,14 @@ public class RobotContainer {
                         m_angleSubsystem.getSetSmartDashboard(),
                         new SequentialCommandGroup(
                                 new ShooterSpinUpCommand(
-                                        m_shooterTopSubsystem, m_shooterBottomSubsystem,
+                                        m_shooterTopSubsystem,
+                                        m_shooterBottomSubsystem,
                                         ShooterConstants.SHOOTER_TOP_DEFAULT_RPM,
                                         ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM),
                                 new ParallelDeadlineGroup(
                                         m_feederSubsystem.getPullStop(),
-                                        Compositions.shootersHoldNStop(m_shooterTopSubsystem,
+                                        Compositions.shootersHoldNStop(
+                                                m_shooterTopSubsystem,
                                                 m_shooterBottomSubsystem)))));
     }
 

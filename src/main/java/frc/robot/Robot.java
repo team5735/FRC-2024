@@ -105,6 +105,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
 
         SmartDashboard.putNumber("testShootAngle", AngleConstants.ANGLE_START_POS_DEG);
+
+        m_robotContainer.limelightFetchOffset();
     }
 
     /**
