@@ -148,9 +148,6 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        m_drivingController.a().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.setRotationTarget(1.)));
-        m_drivingController.b().onTrue(m_drivetrain.runOnce(() -> m_drivetrain.setRotationTarget(null)));
-
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_drivetrain,
                         () -> getEstimatedRotation().getRadians()));
