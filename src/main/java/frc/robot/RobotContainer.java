@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
+import frc.robot.commands.limelight.LimelightTurnToCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -147,6 +148,9 @@ public class RobotContainer {
                                                     ? m_slowMultiplier
                                                     : m_normalMultiplier);
                         }));
+
+        m_drivingController.a()
+                .onTrue(new LimelightTurnToCommand(m_drivetrain, () -> 1.0, () -> getEstimatedRotation().getRadians()));
 
         m_drivingController.x().whileTrue(
                 new LimelightAimCommand(m_drivetrain,
