@@ -1,8 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
 
 // This file is not actually generated. But I have a problem and I will fix it the wrong way.
 public class SuperSwerveModuleConstantsFactory extends SwerveModuleConstantsFactory {
@@ -19,8 +19,8 @@ public class SuperSwerveModuleConstantsFactory extends SwerveModuleConstantsFact
         return new SwerveModuleConstants()
                 .withSteerMotorId(steerId)
                 .withDriveMotorId(driveId)
-                .withCANcoderId(cancoderId)
-                .withCANcoderOffset(cancoderOffset)
+                .withEncoderId(cancoderId)
+                .withEncoderOffset(cancoderOffset)
                 .withLocationX(locationX)
                 .withLocationY(locationY)
                 .withDriveMotorGearRatio(DriveMotorGearRatio)
