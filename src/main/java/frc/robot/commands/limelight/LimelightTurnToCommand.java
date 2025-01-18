@@ -16,6 +16,10 @@ import frc.robot.util.NTBooleanSection;
 import frc.robot.util.NTDoubleSection;
 import frc.robot.util.TunableNumber;
 
+/**
+ * Uses a {@link PIDController} to turn the drivetrain to a specified angle.
+ * Accounts for the pigeon's offset.
+ */
 public class LimelightTurnToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
     PIDController m_pid;
@@ -42,7 +46,6 @@ public class LimelightTurnToCommand extends Command {
         this.getMeasurement = drivetrainRotationSupplier;
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         System.out.println("started");
@@ -60,7 +63,9 @@ public class LimelightTurnToCommand extends Command {
         m_booleans.set("aiming", true);
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /**
+     * Uses the output of the PID to drive the drivetrain towards the setpoint.
+     */
     @Override
     public void execute() {
         double measurement = getMeasurement.get();
@@ -74,14 +79,20 @@ public class LimelightTurnToCommand extends Command {
         SmartDashboard.putNumber("drivetrain reported theta", getMeasurement.get());
     }
 
-    // Called once the command ends or is interrupted.
+    /**
+     * Stops the drivetrain and sets aiming to false so it's known that aiming is
+     * done.
+     */
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.drive(0);
         m_booleans.set("aiming", false);
     }
 
-    // Returns true when the command should end.
+    /**
+     * Determines whether the absolute difference between the setpoint and the
+     * measurement is less than the tolerance.
+     */
     @Override
     public boolean isFinished() {
         return Math.abs(getMeasurement.get() - m_pid.getSetpoint()) < Constants.TOLERANCE;

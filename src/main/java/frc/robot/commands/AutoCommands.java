@@ -45,9 +45,9 @@ public class AutoCommands {
     public static Command shooterStart(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
         return new ParallelCommandGroup(
                 Commands.runOnce(() -> top.setSetpoint(
-                        SmartDashboard.getNumber("shootTopRPM", ShooterConstants.SHOOTER_TOP_DEFAULT_RPM))),
+                        SmartDashboard.getNumber("shootTopRPM", ShooterConstants.TOP_DEFAULT_RPM))),
                 Commands.runOnce(() -> bottom.setSetpoint(
-                        SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.SHOOTER_BOTTOM_DEFAULT_RPM))));
+                        SmartDashboard.getNumber("shootBottomRPM", ShooterConstants.BOTTOM_DEFAULT_RPM))));
     }
 
     public static Command stopShooter(ShooterTopSubsystem top, ShooterBottomSubsystem bottom) {
