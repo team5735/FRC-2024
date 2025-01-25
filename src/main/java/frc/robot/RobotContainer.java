@@ -9,7 +9,9 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,6 +55,7 @@ public class RobotContainer {
     private final SendableChooser<Command> m_autoChooser;
 
     private double pigeonOffset = 0;
+    private StructPublisher<Pose2d> visionTelemetryPublisher;
 
     public void limelightFetchOffset() {
         var pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
@@ -73,7 +76,7 @@ public class RobotContainer {
 
     public void setLimelightRotation() {
         LimelightHelpers.SetRobotOrientation(null,
-                m_drivetrain.getPigeon2().getYaw().getValueAsDouble(), 0, 0,
+                m_drivetrain.getEstimatedPosition().getRotation().getDegrees(), 0, 0,
                 0, 0, 0);
     }
 
@@ -86,9 +89,14 @@ public class RobotContainer {
         if (mt2.tagCount == 0) {
             return;
         }
+        m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
         m_drivetrain.addVisionMeasurement(
                 mt2.pose,
                 mt2.timestampSeconds);
+    }
+
+    public void visionTelemetry() {
+        this.visionTelemetryPublisher.set(m_drivetrain.getEstimatedPosition());
     }
 
     /**
