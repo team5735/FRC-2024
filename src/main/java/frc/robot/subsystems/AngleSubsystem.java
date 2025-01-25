@@ -300,6 +300,7 @@ public class AngleSubsystem extends SubsystemBase {
      *             This method has been deprecated due to the trapezoidal motion
      *             profile now utilized
      */
+    @Deprecated
     public Command angleIncrease() {
         return getSetAngle(() -> m_setpoint - 10).repeatedly();
     }
@@ -312,6 +313,7 @@ public class AngleSubsystem extends SubsystemBase {
      *             This method has been deprecated due to the trapezoidal motion
      *             profile now utilized
      */
+    @Deprecated
     public Command angleDecrease() {
         return getSetAngle(() -> m_setpoint + 10).repeatedly();
     }
