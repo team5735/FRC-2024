@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,20 +55,18 @@ public class RobotContainer {
 
     private final SendableChooser<Command> m_autoChooser;
 
-    private double pigeonOffset = 0;
-    private StructPublisher<Pose2d> visionTelemetryPublisher;
+    private final StructPublisher<Pose2d> limelightPosePublisher = NetworkTableInstance.getDefault()
+            .getTable("telemetry").getStructTopic("pose estimation", Pose2d.struct).publish();
+    private final StructPublisher<Pose2d> limelightMt2Publisher = NetworkTableInstance.getDefault()
+            .getTable("telemetry").getStructTopic("mt2", Pose2d.struct).publish();
 
-    public void limelightFetchOffset() {
+    public void initLimelightStuff() {
         var pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
         if (pose == null) {
             throw new RuntimeException("Limelight has no targets. :(");
         }
         double limelightRotation = pose.getRotation().getRadians();
-        double pigeonRotation = m_drivetrain.getPigeon2().getYaw().getValueAsDouble();
-        pigeonOffset = limelightRotation - pigeonRotation;
-        SmartDashboard.putNumber("limelight limelight rotation", limelightRotation);
-        SmartDashboard.putNumber("limelight pigeon rotation", pigeonRotation);
-        SmartDashboard.putNumber("limelight pigeon offset", pigeonOffset);
+        m_drivetrain.getPigeon2().setYaw(limelightRotation);
     }
 
     public Rotation2d getEstimatedRotation() {
@@ -83,20 +82,23 @@ public class RobotContainer {
     public void addVisionMeasurementToKalmanFilter() {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
         if (mt2 == null) {
+            System.out.println("failed to get mt2 object");
             return;
-
         }
         if (mt2.tagCount == 0) {
+            System.out.println("mt2 object contained no items");
             return;
         }
+
         m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
         m_drivetrain.addVisionMeasurement(
                 mt2.pose,
                 mt2.timestampSeconds);
+        this.limelightMt2Publisher.set(mt2.pose);
     }
 
     public void visionTelemetry() {
-        this.visionTelemetryPublisher.set(m_drivetrain.getEstimatedPosition());
+        this.limelightPosePublisher.set(m_drivetrain.getEstimatedPosition());
     }
 
     /**

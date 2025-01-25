@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
         SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
 
-        m_robotContainer.limelightFetchOffset();
+        m_robotContainer.initLimelightStuff();
     }
 
     /**
