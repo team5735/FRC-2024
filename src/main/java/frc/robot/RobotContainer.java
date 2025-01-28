@@ -82,13 +82,16 @@ public class RobotContainer {
     public void addVisionMeasurementToKalmanFilter() {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
         if (mt2 == null) {
-            System.out.println("failed to get mt2 object");
+            // failed to get mt2
+            SmartDashboard.putNumber("poseestimator_status", -1);
             return;
         }
         if (mt2.tagCount == 0) {
-            System.out.println("mt2 object contained no items");
+            // no tags
+            SmartDashboard.putNumber("poseestimator_status", -2);
             return;
         }
+        SmartDashboard.putNumber("poseestimator_status", 0);
 
         m_drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
         m_drivetrain.addVisionMeasurement(
