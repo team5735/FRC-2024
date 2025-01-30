@@ -4,8 +4,6 @@
 
 package frc.robot.commands.limelight;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,8 +28,6 @@ public class LimelightAimCommand extends Command {
     private Watchdog watchdog = new Watchdog(0.02, () -> {
     });
 
-    private Supplier<Double> measurementGetter;
-
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight", "current rotation", "hood distance",
             "cannot aim distance", "drivetrain speed x", "drivetrain speed y", "desired drivetrain offset", "setpoint",
             "hood vector x", "hood vector y", "angle changer radians", "angler setpoint", "bot x", "bot y");
@@ -50,13 +46,11 @@ public class LimelightAimCommand extends Command {
      *                   horizontally
      * @param angle      The angle changer, used to aim vertically
      */
-    public LimelightAimCommand(final DrivetrainSubsystem drivetrain,
-            final Supplier<Double> measurementSupplier) {
+    public LimelightAimCommand(final DrivetrainSubsystem drivetrain) {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drivetrain);
         m_drivetrain = drivetrain;
         targetAcquired = false;
-        measurementGetter = measurementSupplier;
     }
 
     /**
@@ -152,7 +146,7 @@ public class LimelightAimCommand extends Command {
         double target = radiansEnsureInBounds(drivetrainAngleToTarget - curRobotRot);
 
         m_doubles.set("desired drivetrain offset", drivetrainAngleToTarget);
-        m_doubles.set("setpoint", measurementGetter.get() + target);
+        // m_doubles.set("setpoint", measurementGetter.get() + target);
         m_doubles.set("hood vector x", currentRobotPoseToTarget.getX());
         m_doubles.set("hood vector y", currentRobotPoseToTarget.getY());
 

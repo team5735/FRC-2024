@@ -25,7 +25,6 @@ public class LimelightTurnToCommand extends Command {
     PIDController m_pid;
     double m_pigeonStartingNumber;
     Supplier<Double> setpointGetter;
-    private Supplier<Double> getMeasurement;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight turn", "drivetrain omega", "measurement",
             "setpoint", "position error");
@@ -37,13 +36,12 @@ public class LimelightTurnToCommand extends Command {
 
     /** Creates a new LimelightTurnToCommand. */
     public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain,
-            Supplier<Double> setpointGetter, Supplier<Double> drivetrainRotationSupplier) {
+            Supplier<Double> setpointGetter) {
         m_drivetrain = drivetrain;
 
         addRequirements(m_drivetrain);
 
         this.setpointGetter = setpointGetter;
-        this.getMeasurement = drivetrainRotationSupplier;
     }
 
     @Override
@@ -68,7 +66,7 @@ public class LimelightTurnToCommand extends Command {
      */
     @Override
     public void execute() {
-        double measurement = getMeasurement.get();
+        double measurement = m_drivetrain.getEstimatedPosition().getRotation().getRadians();
         double omega = m_pid.calculate(measurement);
         if (Math.abs(omega) > 1) {
             omega = 1 * Math.signum(omega);
@@ -76,7 +74,8 @@ public class LimelightTurnToCommand extends Command {
         m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);
         m_doubles.set("position error", m_pid.getPositionError());
-        SmartDashboard.putNumber("drivetrain reported theta", getMeasurement.get());
+        SmartDashboard.putNumber("drivetrain reported theta",
+                m_drivetrain.getEstimatedPosition().getRotation().getRadians());
     }
 
     /**
@@ -95,6 +94,7 @@ public class LimelightTurnToCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(getMeasurement.get() - m_pid.getSetpoint()) < Constants.TOLERANCE;
+        return Math.abs(m_drivetrain.getEstimatedPosition().getRotation().getRadians()
+                - m_pid.getSetpoint()) < Constants.TOLERANCE;
     }
 }

@@ -103,8 +103,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("llv2_turnP", LimelightConstants.TURN_P);
         SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
         SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
-
-        m_robotContainer.initLimelightStuff();
     }
 
     /**
@@ -128,12 +126,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("PD 6", m_PD.getCurrent(6));
         SmartDashboard.putNumber("PD total", m_PD.getTotalCurrent());
         SmartDashboard.putNumber("PD total voltage", m_PD.getVoltage());
-
-        m_robotContainer.setLimelightRotation();
-        m_robotContainer.addVisionMeasurementToKalmanFilter();
-        m_robotContainer.visionTelemetry();
-
-        SmartDashboard.putNumber("drivetrain pose estimation", m_robotContainer.getEstimatedRotation().getRadians());
     }
 
     /**
