@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,9 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
-import frc.robot.commands.limelight.LimelightAimCommand;
-import frc.robot.commands.limelight.LimelightTurnToCommand;
-import frc.robot.commands.limelight.VisionMoveCommand;
+import frc.robot.commands.limelight.VisionTransRot;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -118,9 +115,8 @@ public class RobotContainer {
         this.vision.setDefaultCommand(Commands.idle(this.vision));
 
         m_drivingController.a()
-                .onTrue(new LimelightTurnToCommand(m_drivetrain, () -> turningTarget.get()));
+                .onTrue(new VisionTransRot(m_drivetrain, () -> turningTarget.get()));
         m_drivingController.b().onTrue(this.vision.getSeedPigeon());
-        m_drivingController.x().onTrue(new VisionMoveCommand(m_drivetrain, new Translation2d(.5, .5)));
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();

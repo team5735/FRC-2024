@@ -20,44 +20,41 @@ import frc.robot.util.TunableNumber;
  * Uses a {@link PIDController} to turn the drivetrain to a specified angle.
  * Accounts for the pigeon's offset.
  */
-public class LimelightTurnToCommand extends Command {
+public class VisionTransRot extends Command {
     DrivetrainSubsystem m_drivetrain;
-    PIDController m_pid;
+    PIDController pid;
     double m_pigeonStartingNumber;
-    Supplier<Double> setpointGetter;
+    Supplier<Double> rotationSetpointGetter;
 
     private final NTDoubleSection m_doubles = new NTDoubleSection("limelight turn", "drivetrain omega", "measurement",
             "setpoint", "position error");
     private final NTBooleanSection m_booleans = new NTBooleanSection("limelight turn", "aiming");
 
-    private final TunableNumber m_kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
-    private final TunableNumber m_kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
-    private final TunableNumber m_kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
+    private final TunableNumber kP = new TunableNumber("limelight", "kP", LimelightConstants.TURN_P);
+    private final TunableNumber kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
+    private final TunableNumber kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
 
-    /** Creates a new LimelightTurnToCommand. */
-    public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain,
-            Supplier<Double> setpointGetter) {
+    public VisionTransRot(final DrivetrainSubsystem drivetrain,
+            Supplier<Double> rotationSetpoint) {
         m_drivetrain = drivetrain;
 
         addRequirements(m_drivetrain);
 
-        this.setpointGetter = setpointGetter;
+        this.rotationSetpointGetter = rotationSetpoint;
     }
 
     @Override
     public void initialize() {
         System.out.println("started");
-        m_pid = new PIDController(m_kP.get(), m_kI.get(), m_kD.get());
+        pid = new PIDController(kP.get(), kI.get(), kD.get());
 
-        m_pid.setTolerance(Constants.TOLERANCE);
-        // m_pid.setSetpoint(LimelightAimCommand.positiveToPosNeg(m_drivetrain.getRotation3d().getZ()
-        // + offset));
-        m_pid.setSetpoint(setpointGetter.get());
-        m_pid.enableContinuousInput(-Math.PI, Math.PI);
+        pid.setTolerance(Constants.TOLERANCE);
+        pid.setSetpoint(rotationSetpointGetter.get());
+        pid.enableContinuousInput(-Math.PI, Math.PI);
 
         m_pigeonStartingNumber = m_drivetrain.getRotation3d().getZ();
 
-        m_doubles.set("setpoint", m_pid.getSetpoint());
+        m_doubles.set("setpoint", pid.getSetpoint());
         m_booleans.set("aiming", true);
     }
 
@@ -67,13 +64,13 @@ public class LimelightTurnToCommand extends Command {
     @Override
     public void execute() {
         double measurement = m_drivetrain.getEstimatedPosition().getRotation().getRadians();
-        double omega = m_pid.calculate(measurement);
+        double omega = pid.calculate(measurement);
         if (Math.abs(omega) > 1) {
             omega = 1 * Math.signum(omega);
         }
         m_doubles.set("drivetrain omega", omega);
         m_drivetrain.drive(omega);
-        m_doubles.set("position error", m_pid.getPositionError());
+        m_doubles.set("position error", pid.getPositionError());
         SmartDashboard.putNumber("drivetrain reported theta",
                 m_drivetrain.getEstimatedPosition().getRotation().getRadians());
     }
@@ -95,6 +92,6 @@ public class LimelightTurnToCommand extends Command {
     @Override
     public boolean isFinished() {
         return Math.abs(m_drivetrain.getEstimatedPosition().getRotation().getRadians()
-                - m_pid.getSetpoint()) < Constants.TOLERANCE;
+                - pid.getSetpoint()) < Constants.TOLERANCE;
     }
 }
