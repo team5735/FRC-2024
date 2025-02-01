@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import org.opencv.dnn.Net;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -31,22 +29,25 @@ public class VisionSubsystem extends SubsystemBase {
         seedPigeon();
     }
 
-    private LimelightHelpers.PoseEstimate botPoseEstimate;
+    private Pose2d botPose;
 
     private void seedPigeon() {
-        botPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(null);
-        if (botPoseEstimate == null) {
+        Pose2d botPose = LimelightHelpers.getBotPose2d_wpiBlue(null);
+        if (botPose == null || !LimelightHelpers.getTV(null)) {
+            this.botPose = null;
             return;
         }
-        double limelightRotation = botPoseEstimate.pose.getRotation().getRadians();
+        this.botPose = botPose;
+        double limelightRotation = botPose.getRotation().getDegrees();
+        System.out.println("setting yaw to: " + limelightRotation);
         drivetrain.getPigeon2().setYaw(limelightRotation);
     }
 
     public Command getSeedPigeon() {
         return new SequentialCommandGroup(
                 runOnce(() -> SmartDashboard.putBoolean("pigeon resetting", true)),
-                run(() -> seedPigeon()).until(() -> botPoseEstimate != null && botPoseEstimate.tagCount > 0),
-                runOnce(() -> SmartDashboard.putBoolean("pigeon resetting", false)));
+                runEnd(() -> seedPigeon(), () -> SmartDashboard.putBoolean("pigeon resetting", false))
+                        .until(() -> this.botPose != null));
     }
 
     private void keepDriftInCheck() {

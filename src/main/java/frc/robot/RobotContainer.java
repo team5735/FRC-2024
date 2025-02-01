@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -118,7 +117,7 @@ public class RobotContainer {
 
         m_drivingController.a()
                 .onTrue(Compositions.visionTransRot(m_drivetrain, () -> turningTarget.get(),
-                        () -> new Translation2d(0, 0)));
+                        () -> this.m_drivetrain.getEstimatedPosition().getTranslation()));
         m_drivingController.b().onTrue(this.vision.getSeedPigeon());
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
