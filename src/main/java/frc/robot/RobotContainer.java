@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
-import frc.robot.commands.limelight.VisionTransRot;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -75,6 +75,8 @@ public class RobotContainer {
     }
 
     TunableNumber turningTarget = new TunableNumber("turn target");
+    TunableNumber transTargetX = new TunableNumber("trans target x");
+    TunableNumber transTargetY = new TunableNumber("trans target y");
 
     /**
      * Use this method to define your trigger → command mappings. Triggers can be
@@ -115,7 +117,8 @@ public class RobotContainer {
         this.vision.setDefaultCommand(Commands.idle(this.vision));
 
         m_drivingController.a()
-                .onTrue(new VisionTransRot(m_drivetrain, () -> turningTarget.get()));
+                .onTrue(Compositions.visionTransRot(m_drivetrain, () -> turningTarget.get(),
+                        () -> new Translation2d(0, 0)));
         m_drivingController.b().onTrue(this.vision.getSeedPigeon());
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {

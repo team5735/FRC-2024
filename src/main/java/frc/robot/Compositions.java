@@ -1,5 +1,10 @@
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -9,10 +14,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.shooter.ShooterSpinUpCommand;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.AngleSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterBottomSubsystem;
 import frc.robot.subsystems.shooter.ShooterTopSubsystem;
+import frc.robot.util.TunablePIDCommand;
 
 /**
  * A collection of composition commands which don't have a clear subsystem they
@@ -109,5 +116,31 @@ public class Compositions {
             shooterTop.stop();
             shooterBottom.stop();
         });
+    }
+
+    private static Translation2d workingDeltaTrans = new Translation2d();
+    private static double workingDeltaRot;
+
+    public static Command visionTransRot(DrivetrainSubsystem drivetrain, Supplier<Double> turningTarget,
+            Supplier<Translation2d> transTarget) {
+        return new ParallelDeadlineGroup(new ParallelCommandGroup(
+                new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getRotation().getDegrees(),
+                        turningTarget, (Double value) -> {
+                            workingDeltaRot = value;
+                        }, "rotation",
+                        drivetrain),
+                new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getX(),
+                        transTarget.get().getX(), (Double value) -> {
+                            workingDeltaTrans = new Translation2d(value, workingDeltaTrans.getY());
+                        }, "translation_x",
+                        drivetrain),
+                new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getY(),
+                        transTarget.get().getY(), (Double value) -> {
+                            workingDeltaTrans = new Translation2d(workingDeltaTrans.getX(), value);
+                        }, "translation_y",
+                        drivetrain)),
+                Commands.run(() -> {
+                    drivetrain.drive(workingDeltaTrans, workingDeltaRot);
+                }));
     }
 }
