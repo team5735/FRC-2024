@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,10 +20,12 @@ import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.limelight.LimelightAimCommand;
 import frc.robot.commands.limelight.LimelightTurnToCommand;
+import frc.robot.commands.limelight.VisionMoveCommand;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.TunableNumber;
 
 /**
@@ -39,6 +42,7 @@ public class RobotContainer {
             OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     private final DrivetrainSubsystem m_drivetrain = TunerConstants.DriveTrain;
+    private final VisionSubsystem vision = new VisionSubsystem(m_drivetrain);
 
     // Programming war crime :3
     private static boolean m_isFieldCentric = true;
@@ -73,7 +77,7 @@ public class RobotContainer {
         return input;
     }
 
-    TunableNumber turningTarget = new TunableNumber("limelightTurning");
+    TunableNumber turningTarget = new TunableNumber("turn target");
 
     /**
      * Use this method to define your trigger → command mappings. Triggers can be
@@ -111,11 +115,13 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
+        this.vision.setDefaultCommand(Commands.idle(this.vision));
+
         m_drivingController.a()
                 .onTrue(new LimelightTurnToCommand(m_drivetrain, () -> turningTarget.get()));
+        m_drivingController.b().onTrue(this.vision.getSeedPigeon());
+        m_drivingController.x().onTrue(new VisionMoveCommand(m_drivetrain, new Translation2d(.5, .5)));
 
-        m_drivingController.x().whileTrue(
-                new LimelightAimCommand(m_drivetrain));
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
             m_drivetrain.getPigeon2().setYaw(0);
