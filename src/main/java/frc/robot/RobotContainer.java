@@ -8,7 +8,9 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -113,17 +115,16 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        this.vision.setDefaultCommand(Commands.idle(this.vision));
+        this.vision.setDefaultCommand(this.vision.getSeedPigeon());
 
         m_drivingController.a()
                 .onTrue(Compositions.visionTransRot(m_drivetrain, () -> turningTarget.get(),
                         () -> this.m_drivetrain.getEstimatedPosition().getTranslation()));
-        m_drivingController.b().onTrue(this.vision.getSeedPigeon());
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
-            m_drivetrain.seedFieldRelative();
-            m_drivetrain.getPigeon2().setYaw(0);
-            m_drivetrain.getPigeon2().reset();
+            m_drivetrain.seedFieldRelative(
+                    Rotation2d.fromRadians(MathUtil.angleModulus(
+                            m_drivetrain.getEstimatedPosition().getRotation().unaryMinus().getRadians())));
         }));
     }
 
