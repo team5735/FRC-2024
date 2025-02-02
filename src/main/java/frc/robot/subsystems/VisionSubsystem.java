@@ -30,21 +30,13 @@ public class VisionSubsystem extends SubsystemBase {
         seedPigeon();
     }
 
-    private LinearFilter filter = LinearFilter.movingAverage(5);
-    private Pose2d lastPose;
-
     private void seedPigeon() {
         Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
         boolean hasTarget = LimelightHelpers.getTV(null);
         if (pose == null || !hasTarget) {
-            filter.calculate(drivetrain.getEstimatedPosition().getRotation().getRadians());
             return;
         }
-        if (pose.equals(lastPose)) {
-            filter.calculate(pose.getRotation().getRadians());
-        }
-        lastPose = pose;
-        double rot = filter.calculate(pose.getRotation().getRadians());
+        double rot = pose.getRotation().getRadians();
         System.out.println("setting yaw to: " + rot);
         drivetrain.getPigeon2().setYaw(rot);
     }

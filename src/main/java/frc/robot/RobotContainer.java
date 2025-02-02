@@ -24,6 +24,7 @@ import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.util.TunableNumber;
 
 /**
@@ -115,11 +116,12 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        this.vision.setDefaultCommand(this.vision.getSeedPigeon());
+        this.vision.setDefaultCommand(Commands.idle(this.vision));
 
         m_drivingController.a()
                 .onTrue(Compositions.visionTransRot(m_drivetrain, () -> turningTarget.get(),
                         () -> this.m_drivetrain.getEstimatedPosition().getTranslation()));
+        m_drivingController.b().onTrue(this.vision.getSeedPigeon().until(() -> LimelightHelpers.getTV(null)));
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative(
