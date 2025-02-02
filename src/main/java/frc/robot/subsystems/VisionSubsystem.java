@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -29,25 +30,29 @@ public class VisionSubsystem extends SubsystemBase {
         seedPigeon();
     }
 
-    private Pose2d botPose;
+    private LinearFilter filter = LinearFilter.movingAverage(5);
+    private Pose2d lastPose;
 
     private void seedPigeon() {
-        Pose2d botPose = LimelightHelpers.getBotPose2d_wpiBlue(null);
-        if (botPose == null || !LimelightHelpers.getTV(null)) {
-            this.botPose = null;
+        Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
+        boolean hasTarget = LimelightHelpers.getTV(null);
+        if (pose == null || !hasTarget) {
+            filter.calculate(drivetrain.getEstimatedPosition().getRotation().getRadians());
             return;
         }
-        this.botPose = botPose;
-        double limelightRotation = botPose.getRotation().getDegrees();
-        System.out.println("setting yaw to: " + limelightRotation);
-        drivetrain.getPigeon2().setYaw(limelightRotation);
+        if (pose.equals(lastPose)) {
+            filter.calculate(pose.getRotation().getRadians());
+        }
+        lastPose = pose;
+        double rot = filter.calculate(pose.getRotation().getRadians());
+        System.out.println("setting yaw to: " + rot);
+        drivetrain.getPigeon2().setYaw(rot);
     }
 
     public Command getSeedPigeon() {
         return new SequentialCommandGroup(
                 runOnce(() -> SmartDashboard.putBoolean("pigeon resetting", true)),
-                runEnd(() -> seedPigeon(), () -> SmartDashboard.putBoolean("pigeon resetting", false))
-                        .until(() -> this.botPose != null));
+                runEnd(() -> seedPigeon(), () -> SmartDashboard.putBoolean("pigeon resetting", false)));
     }
 
     private void keepDriftInCheck() {
