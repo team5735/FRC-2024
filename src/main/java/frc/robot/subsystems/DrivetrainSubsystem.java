@@ -171,6 +171,22 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public void seedFieldRelative(Rotation2d rot) {
+        if (rot == null) {
+            seedFieldRelative();
+        }
+
+        else {
+            try {
+                m_stateLock.writeLock().lock();
+
+                m_fieldRelativeOffset = rot;
+            } finally {
+                m_stateLock.writeLock().unlock();
+            }
+        }
+    }
+
     // public because MegaTag2 needs it to be
     public Pose2d getEstimatedPosition() {
         m_stateLock.readLock().lock();

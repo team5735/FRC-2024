@@ -31,6 +31,8 @@ public class TunablePIDCommand extends Command {
 
     protected TunableNumber p, i, d;
 
+    private NTDoubleSection doubles;
+
     /**
      * Creates a new PIDCommand, which controls the given output with a
      * PIDController.
@@ -56,9 +58,11 @@ public class TunablePIDCommand extends Command {
         setpoint = setpointSource;
         addRequirements(requirements);
 
-        p = new TunableNumber("tunable_pid_commands", name + "_p", 0);
-        i = new TunableNumber("tunable_pid_commands", name + "_i", 0);
-        d = new TunableNumber("tunable_pid_commands", name + "_d", 0);
+        p = new TunableNumber("tunable_pid_commands", name + "_p", Constants.PID_P);
+        i = new TunableNumber("tunable_pid_commands", name + "_i", Constants.PID_I);
+        d = new TunableNumber("tunable_pid_commands", name + "_d", Constants.PID_D);
+
+        doubles = new NTDoubleSection(name + " pid", "value output");
     }
 
     /**
@@ -83,13 +87,15 @@ public class TunablePIDCommand extends Command {
     @Override
     public void initialize() {
         controller = new PIDController(p.get(), i.get(), d.get());
+        controller.setSetpoint(setpoint.get());
         controller.setTolerance(Constants.TOLERANCE);
     }
 
     @Override
     public void execute() {
-        useOutput.accept(
-                controller.calculate(measurement.get(), setpoint.get()));
+        double value = controller.calculate(measurement.get());
+        useOutput.accept(value);
+        doubles.set("value output", value);
     }
 
     @Override
