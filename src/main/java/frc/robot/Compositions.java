@@ -125,7 +125,7 @@ public class Compositions {
         return Commands.runOnce(() -> {
             SmartDashboard.putBoolean("transrot", true);
         }).andThen(new ParallelDeadlineGroup(new ParallelCommandGroup(
-                new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getRotation().getDegrees(),
+                new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getRotation().getRadians(),
                         turningTarget, (Double value) -> {
                             workingOmega = value;
                         }, "rotation"),
