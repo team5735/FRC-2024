@@ -40,7 +40,7 @@ public final class Constants {
 
     public static final int PDH_ID = 59;
 
-    public static final double TOLERANCE = 0.05; // For PIDs.
+    public static final double TOLERANCE = 0.005; // For PIDs.
 
     public static final double PID_P = 6;
     public static final double PID_I = 2;
