@@ -117,29 +117,31 @@ public class Compositions {
         });
     }
 
-    private static Translation2d workingDeltaTrans = new Translation2d();
-    private static double workingDeltaRot;
+    private static double workingXVel, workingYVel;
+    private static double workingOmega;
 
     public static Command visionTransRot(DrivetrainSubsystem drivetrain, Supplier<Double> turningTarget,
             Supplier<Translation2d> transTarget) {
-        return new ParallelDeadlineGroup(new ParallelCommandGroup(
+        return Commands.runOnce(() -> {
+            SmartDashboard.putBoolean("transrot", true);
+        }).andThen(new ParallelDeadlineGroup(new ParallelCommandGroup(
                 new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getRotation().getDegrees(),
                         turningTarget, (Double value) -> {
-                            workingDeltaRot = value;
+                            workingOmega = value;
                         }, "rotation"),
                 new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getX(),
-                        transTarget.get().getX(), (Double value) -> {
-                            workingDeltaTrans = new Translation2d(value, workingDeltaTrans.getY());
+                        () -> transTarget.get().getX(), (Double value) -> {
+                            workingXVel = value;
                         }, "translation_x"),
                 new TunablePIDCommand(() -> drivetrain.getEstimatedPosition().getY(),
-                        transTarget.get().getY(), (Double value) -> {
-                            workingDeltaTrans = new Translation2d(workingDeltaTrans.getX(), value);
+                        () -> transTarget.get().getY(), (Double value) -> {
+                            workingYVel = value;
                         }, "translation_y")),
-                Commands.runEnd(() -> {
-                    SmartDashboard.putBoolean("transrot", true);
-                    drivetrain.drive(workingDeltaTrans, workingDeltaRot);
+                drivetrain.runEnd(() -> {
+                    SmartDashboard.putNumber("transrot rot", workingOmega);
+                    drivetrain.drive(workingXVel, workingYVel, workingOmega);
                 }, () -> {
                     SmartDashboard.putBoolean("transrot", false);
-                }, drivetrain));
+                })));
     }
 }
