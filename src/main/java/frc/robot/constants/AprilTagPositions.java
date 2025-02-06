@@ -28,29 +28,29 @@ public class AprilTagPositions {
      * </code>
      */
     private static final Pose2d TAGS[] = new Pose2d[] {
-            // 6
+            // 17
             fieldSpaceToBlueAllianceSpace(new Pose2d(
-                    new Translation2d(4.700446, -0.719482),
+                    new Translation2d(-4.700446, -0.719482),
                     new Rotation2d(-60))),
-            // 7
+            // 18
             fieldSpaceToBlueAllianceSpace(new Pose2d(
-                    new Translation2d(5.116498, 0),
+                    new Translation2d(-5.116498, 0),
                     new Rotation2d(0))),
-            // 8
+            // 19
             fieldSpaceToBlueAllianceSpace(new Pose2d(
-                    new Translation2d(4.700446, 0.719482),
+                    new Translation2d(-4.700446, 0.719482),
                     new Rotation2d(60))),
-            // 9
+            // 20
             fieldSpaceToBlueAllianceSpace(new Pose2d(
-                    new Translation2d(3.869358, 0.719482),
+                    new Translation2d(-3.869358, 0.719482),
                     new Rotation2d(120))),
-            // 10
+            // 21
             fieldSpaceToBlueAllianceSpace(new Pose2d(
-                    new Translation2d(3.453306, 0),
+                    new Translation2d(-3.453306, 0),
                     new Rotation2d(180))),
-            // 11
+            // 22
             fieldSpaceToBlueAllianceSpace(new Pose2d(
-                    new Translation2d(3.869358, -0.719482),
+                    new Translation2d(-3.869358, -0.719482),
                     new Rotation2d(-120))),
     };
 
@@ -61,5 +61,29 @@ public class AprilTagPositions {
         Translation2d trans = new Translation2d(in.getTranslation().getX() + FIELD_LENGTH / 2,
                 in.getTranslation().getY() + FIELD_WIDTH / 2);
         return new Pose2d(trans, in.getRotation());
+    }
+
+    /**
+     * Returns the pose of the tag closest to the given position.
+     *
+     * @param position The postiion in blue alliance field space.
+     */
+    public static Pose2d getClosestTag(Translation2d position) {
+        if (position.getX() > FIELD_LENGTH / 2) {
+            position = new Translation2d(position.getX() - FIELD_LENGTH / 2, position.getY());
+            System.out.println("shifted");
+        }
+        System.out.println("searching for closest tag to (x, y) = (" + position.getX() + ", " + position.getY() + ")");
+
+        double closest_distance_so_far = Double.MAX_VALUE;
+        Pose2d best = null;
+        for (Pose2d tag : TAGS) {
+            double dist = tag.getTranslation().getDistance(position);
+            if (dist < closest_distance_so_far) {
+                best = tag;
+                closest_distance_so_far = dist;
+            }
+        }
+        return best;
     }
 }
