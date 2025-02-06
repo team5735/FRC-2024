@@ -74,13 +74,12 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
                     .withVelocityY(vy)
                     .withRotationalRate(omega)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-            return;
+        } else {
+            setControl(m_robotCentric.withVelocityX(vx)
+                    .withVelocityY(vy)
+                    .withRotationalRate(omega)
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
         }
-
-        setControl(m_robotCentric.withVelocityX(vx)
-                .withVelocityY(vy)
-                .withRotationalRate(omega)
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
     }
 
     public void drive(Translation2d movement, double omega) {
@@ -95,21 +94,35 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         drive(0, 0, omega);
     }
 
-    public void driveClosedLoop(double vx, double vy, double omega) {
+    /**
+     * Significantly cleans up other code.
+     */
+    public void partialDrive(Double vx, Double vy, Double omega) {
+        // This is much uglier than it could be becase there is no type that all
+        // SwerveRequests inherit from that supports the with* functions
         if (m_isFieldCentric.get()) {
-            setControl(m_fieldCentric.withVelocityX(vx)
-                    .withVelocityY(vy)
-                    .withRotationalRate(omega)
-                    .withDriveRequestType(DriveRequestType.Velocity)
-                    .withDeadband(.1));
-            return;
+            if (vx != null) {
+                m_fieldCentric.withVelocityX(vx);
+            }
+            if (vy != null) {
+                m_fieldCentric.withVelocityY(vy);
+            }
+            if (omega != null) {
+                m_fieldCentric.withRotationalRate(omega);
+            }
+            setControl(m_fieldCentric.withDriveRequestType(DriveRequestType.OpenLoopVoltage));
+        } else {
+            if (vx != null) {
+                m_robotCentric.withVelocityX(vx);
+            }
+            if (vy != null) {
+                m_robotCentric.withVelocityY(vy);
+            }
+            if (omega != null) {
+                m_robotCentric.withRotationalRate(omega);
+            }
+            setControl(m_robotCentric.withDriveRequestType(DriveRequestType.OpenLoopVoltage));
         }
-
-        setControl(m_robotCentric.withVelocityX(vx)
-                .withVelocityY(vy)
-                .withRotationalRate(omega)
-                .withDriveRequestType(DriveRequestType.Velocity)
-                .withDeadband(.1));
     }
 
     public void driveFieldCentricObeyTurn(double vx, double vy, double omega) {
