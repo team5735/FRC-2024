@@ -29,28 +29,37 @@ public class AprilTagPositions {
      */
     private static final Pose2d TAGS[] = new Pose2d[] {
             // 6
-            new Pose2d(
+            fieldSpaceToBlueAllianceSpace(new Pose2d(
                     new Translation2d(4.700446, -0.719482),
-                    new Rotation2d(-60)),
+                    new Rotation2d(-60))),
             // 7
-            new Pose2d(
+            fieldSpaceToBlueAllianceSpace(new Pose2d(
                     new Translation2d(5.116498, 0),
-                    new Rotation2d(0)),
+                    new Rotation2d(0))),
             // 8
-            new Pose2d(
+            fieldSpaceToBlueAllianceSpace(new Pose2d(
                     new Translation2d(4.700446, 0.719482),
-                    new Rotation2d(60)),
+                    new Rotation2d(60))),
             // 9
-            new Pose2d(
+            fieldSpaceToBlueAllianceSpace(new Pose2d(
                     new Translation2d(3.869358, 0.719482),
-                    new Rotation2d(120)),
+                    new Rotation2d(120))),
             // 10
-            new Pose2d(
+            fieldSpaceToBlueAllianceSpace(new Pose2d(
                     new Translation2d(3.453306, 0),
-                    new Rotation2d(180)),
+                    new Rotation2d(180))),
             // 11
-            new Pose2d(
+            fieldSpaceToBlueAllianceSpace(new Pose2d(
                     new Translation2d(3.869358, -0.719482),
-                    new Rotation2d(-120)),
+                    new Rotation2d(-120))),
     };
+
+    private static final double FIELD_LENGTH = 17.5483;
+    private static final double FIELD_WIDTH = 8.0519;
+
+    private static Pose2d fieldSpaceToBlueAllianceSpace(Pose2d in) {
+        Translation2d trans = new Translation2d(in.getTranslation().getX() + FIELD_LENGTH / 2,
+                in.getTranslation().getY() + FIELD_WIDTH / 2);
+        return new Pose2d(trans, in.getRotation());
+    }
 }
