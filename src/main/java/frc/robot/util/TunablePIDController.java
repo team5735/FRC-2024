@@ -1,0 +1,70 @@
+package frc.robot.util;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.Constants;
+
+/**
+ * A command that uses a PIDController to control an output. The difference
+ * between this and {@link PIDCommand} is that this command re-creates the
+ * PIDController every initialization.
+ */
+public class TunablePIDController {
+    /** PID controller. */
+    protected PIDController controller;
+
+    protected TunableNumber p, i, d;
+
+    private NTDoubleSection doubles;
+
+    /**
+     * Creates a new PIDCommand, which controls the given output with a
+     * PIDController.
+     *
+     * @param controller        the controller that controls the output.
+     * @param measurementSource the measurement of the process variable
+     * @param setpointSource    the controller's setpoint
+     * @param useOutput         the controller's output
+     * @param requirements      the subsystems required by this command
+     */
+    public TunablePIDController(
+            String name,
+            Subsystem... requirements) {
+
+        p = new TunableNumber("tunable_pid_commands", name + "_p", Constants.PID_P);
+        i = new TunableNumber("tunable_pid_commands", name + "_i", Constants.PID_I);
+        d = new TunableNumber("tunable_pid_commands", name + "_d", Constants.PID_D);
+
+        doubles = new NTDoubleSection(name + " pid", "value output");
+    }
+
+    public void initialize(double setpoint) {
+        controller = new PIDController(p.get(), i.get(), d.get());
+        controller.setSetpoint(setpoint);
+        controller.setTolerance(Constants.TOLERANCE);
+    }
+
+    public double execute(double measurement) {
+        double value = controller.calculate(measurement);
+        doubles.set("value output", value);
+        return value;
+    }
+
+    public boolean atSetpoint() {
+        return this.controller.atSetpoint();
+    }
+
+    /**
+     * Returns the PIDController used by the command.
+     *
+     * @return The PIDController
+     */
+    public PIDController getController() {
+        return controller;
+    }
+}
