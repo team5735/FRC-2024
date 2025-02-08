@@ -17,13 +17,24 @@ public class Line {
     }
 
     /**
-     * Modifies the current line, moving it in a direction (todo: which?) by d
+     * Modifies the current line, moving it in the direction by d
      * units.
+     * 
+     * <p>
+     * I know you can do the same thing with the constructor Translation2d(double,
+     * Rotation2d), but this is easier to check and more descriptive.
+     * 
+     * deltaVectorTheta is the angle of the vector between the old and new center
+     * points for the Line.
+     * 
+     * @return this Line
      */
     public Line offsetBy(double d) {
-        Translation2d centerTranslation = new Translation2d(d, Rotation2d.fromRadians(Math.atan(slope) + Math.PI / 2));
-        this.centerX += centerTranslation.getX();
-        this.centerY += centerTranslation.getY();
+        double deltaVectorTheta = Math.atan(slope) + Math.PI / 2;
+        double deltaX = Math.cos(deltaVectorTheta) * d;
+        double deltaY = Math.sin(deltaVectorTheta) * d;
+        this.centerX += deltaX;
+        this.centerY += deltaY;
         return this;
     }
 
@@ -33,6 +44,8 @@ public class Line {
      * <p>
      * This formula is most similar to this one:
      * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Another_formula
+     * Note that the sign of all the terms within Math.abs is flipped when compared
+     * to the formula presented on the Wikipedia article.
      */
     public double getDistance(Translation2d position) {
         return Math.abs(slope * position.getX() - position.getY() + centerY - slope * centerX)
