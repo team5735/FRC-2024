@@ -1,10 +1,6 @@
 package frc.robot.util;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.Constants;
