@@ -1,22 +1,28 @@
 package frc.robot.commands.vision;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AprilTagPositions;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.util.Branch;
+import frc.robot.util.Line;
 import frc.robot.util.TunablePIDController;
 
 public class AlignToReef extends Command {
     DrivetrainSubsystem drivetrain;
 
     Pose2d alignmentTargetTag;
+    Line targetLine;
 
-    TunablePIDController omegaController;
+    TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega");
+    TunablePIDController lineController = new TunablePIDController("AlignToReef_line");
 
     /**
      * Positions the robot in order to score a coral.
      */
-    public AlignToReef(DrivetrainSubsystem drivetrain) {
+    public AlignToReef(DrivetrainSubsystem drivetrain, Supplier<Branch> whichBranch) {
         this.drivetrain = drivetrain;
         addRequirements(drivetrain);
     }
@@ -24,12 +30,16 @@ public class AlignToReef extends Command {
     @Override
     public void initialize() {
         this.alignmentTargetTag = AprilTagPositions.getClosestTag(drivetrain.getEstimatedPosition().getTranslation());
-        omegaController.initialize(alignmentTargetTag.getRotation().getRadians());
+
+        omegaController.setup(alignmentTargetTag.getRotation().getRadians());
+        lineController.setup(0); // we want to be 'at' the Line.
     }
 
     @Override
     public void execute() {
-        double omega = omegaController.execute(drivetrain.getEstimatedPosition().getRotation().getRadians());
+        double omega = omegaController.calculate(drivetrain.getEstimatedPosition().getRotation().getRadians());
+
+        double movementTowardsLine = lineController.calculate(targetLine.getDistance());
     }
 
     @Override
