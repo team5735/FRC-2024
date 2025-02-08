@@ -43,13 +43,13 @@ public class TunablePIDController {
         doubles = new NTDoubleSection(name + " pid", "value output");
     }
 
-    public void initialize(double setpoint) {
+    public void setup(double setpoint) {
         controller = new PIDController(p.get(), i.get(), d.get());
         controller.setSetpoint(setpoint);
         controller.setTolerance(Constants.TOLERANCE);
     }
 
-    public double execute(double measurement) {
+    public double calculate(double measurement) {
         double value = controller.calculate(measurement);
         doubles.set("value output", value);
         return value;
