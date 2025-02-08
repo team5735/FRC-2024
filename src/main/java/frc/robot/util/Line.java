@@ -18,6 +18,10 @@ public class Line {
         centerY = pose.getTranslation().getY();
 
         this.doubles = new NTDoubleSection(name + "_line", "slope", "centerX", "centerY");
+
+        doubles.set("slope", slope);
+        doubles.set("centerX", centerX);
+        doubles.set("centerY", centerY);
     }
 
     /**
@@ -39,6 +43,9 @@ public class Line {
         double deltaY = Math.sin(deltaVectorTheta) * d;
         this.centerX += deltaX;
         this.centerY += deltaY;
+
+        doubles.set("centerX", centerX);
+        doubles.set("centerY", centerY);
         return this;
     }
 
