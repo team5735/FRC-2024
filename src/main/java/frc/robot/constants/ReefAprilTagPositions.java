@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class AprilTagPositions {
+public class ReefAprilTagPositions {
     /**
      * Tags around the blue alliance reef. Field-space, centered at field origin
      * (unlike the rest of the robot code .-.)

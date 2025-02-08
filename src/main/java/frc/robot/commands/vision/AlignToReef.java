@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.AprilTagPositions;
+import frc.robot.constants.ReefAprilTagPositions;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.Branch;
 import frc.robot.util.Line;
@@ -33,7 +33,8 @@ public class AlignToReef extends Command {
 
     @Override
     public void initialize() {
-        this.alignmentTargetTag = AprilTagPositions.getClosestTag(drivetrain.getEstimatedPosition().getTranslation());
+        this.alignmentTargetTag = ReefAprilTagPositions
+                .getClosestTag(drivetrain.getEstimatedPosition().getTranslation());
         this.targetLine = new Line(alignmentTargetTag, "AlignToReef");
 
         omegaController.setup(alignmentTargetTag.getRotation().unaryMinus().getRadians());
