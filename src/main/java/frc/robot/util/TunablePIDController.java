@@ -50,13 +50,29 @@ public class TunablePIDController {
         controller.setTolerance(Constants.TOLERANCE);
     }
 
+    /**
+     * Runs the PID calculation.
+     * 
+     * <p>
+     * Outputs 0 if the controller is at the setpoint.
+     * 
+     * @param measurement
+     * @return The controller output, or zero if atSetpoint.
+     */
     public double calculate(double measurement) {
+        if (atSetpoint()) {
+            return 0;
+        }
+
         double value = controller.calculate(measurement);
         doubles.set("measurement", measurement);
         doubles.set("output", value);
         return value;
     }
 
+    /**
+     * @return Whether the PIDController is within tolerance of the setpoint.
+     */
     public boolean atSetpoint() {
         return this.controller.atSetpoint();
     }
