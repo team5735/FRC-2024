@@ -9,6 +9,7 @@ import frc.robot.constants.AprilTagPositions;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.Branch;
 import frc.robot.util.Line;
+import frc.robot.util.NTDoubleSection;
 import frc.robot.util.TunablePIDController;
 
 public class AlignToReef extends Command {
@@ -19,6 +20,8 @@ public class AlignToReef extends Command {
 
     TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega");
     TunablePIDController lineController = new TunablePIDController("AlignToReef_line");
+
+    NTDoubleSection doubles = new NTDoubleSection(getName(), "movement to line", "omega", "deltaX", "deltaY");
 
     /**
      * Positions the robot in order to score a coral.
@@ -31,7 +34,7 @@ public class AlignToReef extends Command {
     @Override
     public void initialize() {
         this.alignmentTargetTag = AprilTagPositions.getClosestTag(drivetrain.getEstimatedPosition().getTranslation());
-        this.targetLine = new Line(alignmentTargetTag);
+        this.targetLine = new Line(alignmentTargetTag, "AlignToReef");
 
         omegaController.setup(alignmentTargetTag.getRotation().unaryMinus().getRadians());
         lineController.setup(0); // we want to be 'at' the Line.
@@ -45,10 +48,15 @@ public class AlignToReef extends Command {
 
         double movementTowardsLine = lineController
                 .calculate(targetLine.getDistance(estimatedPosition.getTranslation()));
+        doubles.set("movement to line", movementTowardsLine);
         Translation2d vectorTowardsLine = targetLine.getVector(estimatedPosition.getTranslation())
                 .times(movementTowardsLine);
 
         drivetrain.drive(vectorTowardsLine, omega);
+
+        doubles.set("omega", omega);
+        doubles.set("deltaX", vectorTowardsLine.getX());
+        doubles.set("deltaY", vectorTowardsLine.getY());
     }
 
     @Override

@@ -36,18 +36,24 @@ public class TunablePIDController {
         i = new TunableNumber("tunable_pid_commands", name + "_i", Constants.PID_I);
         d = new TunableNumber("tunable_pid_commands", name + "_d", Constants.PID_D);
 
-        doubles = new NTDoubleSection(name + " pid", "value output");
+        doubles = new NTDoubleSection(name + " pid", "setpoint", "output", "measurement");
     }
 
     public void setup(double setpoint) {
         controller = new PIDController(p.get(), i.get(), d.get());
+        doubles.set("p", p.get());
+        doubles.set("i", i.get());
+        doubles.set("d", d.get());
+
         controller.setSetpoint(setpoint);
+        doubles.set("setpoint", setpoint);
         controller.setTolerance(Constants.TOLERANCE);
     }
 
     public double calculate(double measurement) {
         double value = controller.calculate(measurement);
-        doubles.set("value output", value);
+        doubles.set("measurement", measurement);
+        doubles.set("output", value);
         return value;
     }
 

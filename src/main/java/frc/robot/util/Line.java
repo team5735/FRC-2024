@@ -10,10 +10,14 @@ public class Line {
     private double centerX;
     private double centerY;
 
-    public Line(Pose2d pose) {
+    NTDoubleSection doubles;
+
+    public Line(Pose2d pose, String name) {
         slope = Math.tan(pose.getRotation().getRadians());
         centerX = pose.getTranslation().getX();
         centerY = pose.getTranslation().getY();
+
+        this.doubles = new NTDoubleSection(name + "_line", "slope", "centerX", "centerY");
     }
 
     /**
