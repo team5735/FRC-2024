@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LimelightHelpers;
 
@@ -41,7 +41,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Command getSeedPigeon() {
-        return new ParallelCommandGroup(
+        return new SequentialCommandGroup(
                 runOnce(() -> SmartDashboard.putBoolean("pigeon resetting", true)),
                 runEnd(() -> seedPigeon(), () -> SmartDashboard.putBoolean("pigeon resetting", false)));
     }
