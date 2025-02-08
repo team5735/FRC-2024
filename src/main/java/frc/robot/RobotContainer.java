@@ -17,11 +17,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
+import frc.robot.commands.vision.AlignToReef;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.Branch;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.TunableNumber;
 
@@ -117,8 +119,7 @@ public class RobotContainer {
         this.vision.setDefaultCommand(Commands.idle(this.vision));
 
         m_drivingController.a()
-                .onTrue(Compositions.visionTransRot(m_drivetrain, () -> turningTarget.get(),
-                        () -> this.m_drivetrain.getEstimatedPosition().getTranslation()));
+                .onTrue(new AlignToReef(m_drivetrain, () -> Branch.NEITHER));
         m_drivingController.b().onTrue(this.vision.getSeedPigeon().until(() -> LimelightHelpers.getTV(null)));
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
