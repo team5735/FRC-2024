@@ -31,6 +31,7 @@ public class AlignToReef extends Command {
     @Override
     public void initialize() {
         this.alignmentTargetTag = AprilTagPositions.getClosestTag(drivetrain.getEstimatedPosition().getTranslation());
+        this.targetLine = new Line(alignmentTargetTag);
 
         omegaController.setup(alignmentTargetTag.getRotation().unaryMinus().getRadians());
         lineController.setup(0); // we want to be 'at' the Line.
