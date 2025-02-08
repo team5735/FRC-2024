@@ -3,6 +3,7 @@ package frc.robot.commands.vision;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AprilTagPositions;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -37,9 +38,16 @@ public class AlignToReef extends Command {
 
     @Override
     public void execute() {
-        double omega = omegaController.calculate(drivetrain.getEstimatedPosition().getRotation().getRadians());
+        Pose2d estimatedPosition = drivetrain.getEstimatedPosition();
 
-        double movementTowardsLine = lineController.calculate(targetLine.getDistance());
+        double omega = omegaController.calculate(estimatedPosition.getRotation().getRadians());
+
+        double movementTowardsLine = lineController
+                .calculate(targetLine.getDistance(estimatedPosition.getTranslation()));
+        Translation2d vectorTowardsLine = targetLine.getVector(estimatedPosition.getTranslation())
+                .times(movementTowardsLine);
+
+        drivetrain.drive(vectorTowardsLine, omega);
     }
 
     @Override
