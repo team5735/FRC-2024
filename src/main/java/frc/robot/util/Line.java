@@ -17,6 +17,17 @@ public class Line {
     }
 
     /**
+     * Modifies the current line, moving it in a direction (todo: which?) by d
+     * units.
+     */
+    public Line offsetBy(double d) {
+        Translation2d centerTranslation = new Translation2d(d, Rotation2d.fromRadians(Math.atan(slope) + Math.PI / 2));
+        this.centerX += centerTranslation.getX();
+        this.centerY += centerTranslation.getY();
+        return this;
+    }
+
+    /**
      * Returns the distance from position to the line represented by this object.
      *
      * <p>
@@ -33,7 +44,7 @@ public class Line {
      * point on the line represented by this object}
      */
     public Translation2d getVector(Translation2d position) {
-        double vectorAngle = Math.atan(slope) + Math.PI / 2;
-        return new Translation2d(getDistance(position), Rotation2d.fromRadians(vectorAngle));
+        double perpendicularAngle = Math.atan(slope) + Math.PI / 2;
+        return new Translation2d(getDistance(position), Rotation2d.fromRadians(perpendicularAngle));
     }
 }
