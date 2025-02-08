@@ -35,7 +35,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (pose == null || !hasTarget) {
             return;
         }
-        double rot = pose.getRotation().getRadians();
+        double rot = pose.getRotation().getDegrees();
         System.out.println("setting yaw to: " + rot);
         drivetrain.getPigeon2().setYaw(rot);
     }

@@ -40,6 +40,10 @@ public class TunablePIDController {
     }
 
     public void setup(double setpoint) {
+        setup(setpoint, Constants.TOLERANCE);
+    }
+
+    public void setup(double setpoint, double tolerance) {
         controller = new PIDController(p.get(), i.get(), d.get());
         doubles.set("p", p.get());
         doubles.set("i", i.get());
@@ -47,7 +51,7 @@ public class TunablePIDController {
 
         controller.setSetpoint(setpoint);
         doubles.set("setpoint", setpoint);
-        controller.setTolerance(Constants.TOLERANCE);
+        controller.setTolerance(tolerance);
     }
 
     /**

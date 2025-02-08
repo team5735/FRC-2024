@@ -24,7 +24,6 @@ import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.Branch;
-import frc.robot.util.LimelightHelpers;
 import frc.robot.util.TunableNumber;
 
 /**
@@ -120,7 +119,7 @@ public class RobotContainer {
 
         m_drivingController.a()
                 .onTrue(new AlignToReef(m_drivetrain, () -> Branch.NEITHER));
-        m_drivingController.b().onTrue(this.vision.getSeedPigeon().until(() -> LimelightHelpers.getTV(null)));
+        m_drivingController.b().whileTrue(this.vision.getSeedPigeon());
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();

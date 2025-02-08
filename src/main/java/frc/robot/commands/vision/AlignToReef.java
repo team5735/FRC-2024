@@ -38,7 +38,7 @@ public class AlignToReef extends Command {
         this.targetLine = new Line(alignmentTargetTag, "AlignToReef");
 
         omegaController.setup(alignmentTargetTag.getRotation().unaryMinus().getRadians());
-        lineController.setup(0); // we want to be 'at' the Line.
+        lineController.setup(0, .1); // we want to be 'at' the Line.
     }
 
     @Override
