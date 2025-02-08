@@ -62,6 +62,6 @@ public class AlignToReef extends Command {
 
     @Override
     public boolean isFinished() {
-        return omegaController.atSetpoint();
+        return omegaController.atSetpoint() && lineController.atSetpoint();
     }
 }
