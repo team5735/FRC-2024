@@ -36,7 +36,7 @@ public class TunablePIDController {
         i = new TunableNumber("tunable_pid_commands", name + "_i", Constants.PID_I);
         d = new TunableNumber("tunable_pid_commands", name + "_d", Constants.PID_D);
 
-        doubles = new NTDoubleSection(name + " pid", "setpoint", "output", "measurement");
+        doubles = new NTDoubleSection(name + " pid", "setpoint", "output", "measurement", "p", "i", "d");
     }
 
     public void setup(double setpoint) {
