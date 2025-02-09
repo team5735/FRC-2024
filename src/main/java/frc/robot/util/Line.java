@@ -57,9 +57,12 @@ public class Line {
      * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Another_formula
      * Note that the sign of all the terms within Math.abs is flipped when compared
      * to the formula presented on the Wikipedia article.
+     *
+     * However, the absolute value is removed, in order to not accelerate towards
+     * infinity when the line is passed.
      */
     public double getDistance(Translation2d position) {
-        return Math.abs(slope * position.getX() - position.getY() + centerY - slope * centerX)
+        return slope * position.getX() - position.getY() + centerY - slope * centerX
                 / Math.sqrt(1 + slope * slope);
     }
 
