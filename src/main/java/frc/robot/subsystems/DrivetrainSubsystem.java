@@ -41,9 +41,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     private SwerveRequest.FieldCentricFacingAngle m_facingAngle = new SwerveRequest.FieldCentricFacingAngle();
     private Supplier<Boolean> m_isFieldCentric;
 
-    private boolean hasFacingRequest = false;
-    private double facingRequestDirection = 0;
-
     public DrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             Supplier<Boolean> fieldCentric, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -92,39 +89,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
 
     public void drive(double omega) {
         drive(0, 0, omega);
-    }
-
-
-    public void driveFieldCentricObeyTurn(double vx, double vy, double omega) {
-        SmartDashboard.putBoolean("drivetrain has a facing request", hasFacingRequest);
-        if (hasFacingRequest) {
-            SmartDashboard.putNumber("facing request", facingRequestDirection);
-            setControl(m_facingAngle.withDeadband(.1)
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                    .withVelocityX(vx)
-                    .withVelocityY(vy)
-                    .withTargetDirection(new Rotation2d(facingRequestDirection)));
-            return;
-        }
-
-        setControl(m_fieldCentric.withVelocityX(vx)
-                .withVelocityY(vy)
-                .withRotationalRate(omega)
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                .withDeadband(.1));
-    }
-
-    public void setRotationTarget(Double target) {
-        if (target == null) {
-            System.out.println("clearing rotation target");
-            this.hasFacingRequest = false;
-            this.facingRequestDirection = 0;
-            return;
-        }
-
-        System.out.println("setting rotation target to " + target);
-        this.hasFacingRequest = true;
-        this.facingRequestDirection = target;
     }
 
     public void brake() {
