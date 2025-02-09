@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.DrivetrainConstants;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -66,17 +67,16 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     }
 
     public void drive(double vx, double vy, double omega) {
-        if (m_isFieldCentric.get()) {
-            setControl(m_fieldCentric.withVelocityX(vx)
-                    .withVelocityY(vy)
-                    .withRotationalRate(omega)
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-        } else {
-            setControl(m_robotCentric.withVelocityX(vx)
-                    .withVelocityY(vy)
-                    .withRotationalRate(omega)
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
+        if (Math.abs(vx) > DrivetrainConstants.MAX_SPEED || Math.abs(vy) > DrivetrainConstants.MAX_SPEED
+                || Math.abs(omega) > DrivetrainConstants.MAX_ANGULAR_SPEED) {
+            setControl(m_brake);
+            throw new RuntimeException("Speeds are too high");
         }
+
+        setControl(m_fieldCentric.withVelocityX(vx)
+                .withVelocityY(vy)
+                .withRotationalRate(omega)
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
     }
 
     public void drive(Translation2d movement, double omega) {
