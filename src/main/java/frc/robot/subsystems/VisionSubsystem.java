@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -76,24 +75,12 @@ public class VisionSubsystem extends SubsystemBase {
         return mt2.pose;
     }
 
-    private static final int averagingWindow = 2;
-
-    private int averagingIndex = 0;
-    // degrees
-    private double megaTag1AveragingArray[] = new double[averagingWindow];
-    private Rotation2d lastMeasurement = null;
-
     // all in deg
     NTDoubleSection telemetry_doubles = new NTDoubleSection("test_telem_doubles", "mt1_rz", "mt2_rz", "pigeon",
             "poseest", "averagedMt1");
 
-    public double getMt1Average() {
-        double working = 0;
-        for (double elem : megaTag1AveragingArray) {
-            working += elem;
-        }
-        return working / averagingWindow;
-    }
+    Pose2d lastEstPos = null;
+    int ticks = 0;
 
     @Override
     public void periodic() {
@@ -115,20 +102,18 @@ public class VisionSubsystem extends SubsystemBase {
         telemetry_doubles.set("pigeon", drivetrain.getPigeon2().getRotation2d().getDegrees());
         telemetry_doubles.set("poseest", drivetrain.getEstimatedPosition().getRotation().getDegrees());
 
-        SmartDashboard.putBoolean("last is null", lastMeasurement == null);
-
-        Rotation2d measurement = LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation();
-        if (LimelightHelpers.getTV(null) && (lastMeasurement == null || Math.abs(measurement.getRadians()
-                - lastMeasurement.getRadians()) < LimelightConstants.BAD_MEASUREMENT_THRESHOLD)) {
-            megaTag1AveragingArray[averagingIndex++] = measurement.getDegrees();
-            lastMeasurement = measurement;
-            if (averagingIndex == averagingWindow) {
-                averagingIndex = 0;
-            }
-            telemetry_doubles.set("averagedMt1", getMt1Average());
-            drivetrain.getPigeon2().setYaw(getMt1Average());
-        } else if (!LimelightHelpers.getTV(null)) {
-            lastMeasurement = null;
+        if (!LimelightHelpers.getTV(null)) {
+            lastEstPos = null;
+        } else if (lastEstPos == null) {
+            lastEstPos = drivetrain.getEstimatedPosition();
+        } else if (Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
+                - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD // we're still
+                                                                                                         // enough
+                && ticks >= 10) { // it's been long enough
+            lastEstPos = drivetrain.getEstimatedPosition();
+            ticks = 0;
+            drivetrain.getPigeon2().setYaw(LimelightHelpers.getBotPose2d(null).getRotation().getDegrees());
         }
+        ticks++;
     }
 }
