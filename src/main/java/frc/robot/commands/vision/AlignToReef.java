@@ -48,9 +48,9 @@ public class AlignToReef extends Command {
         double omega = omegaController.calculate(estimatedPosition.getRotation().getRadians());
 
         double movementTowardsLine = lineController
-                .calculate(targetLine.getDistance(estimatedPosition.getTranslation()));
+                .calculate(targetLine.getPIDMeasurement(estimatedPosition.getTranslation()));
         doubles.set("movement to line", movementTowardsLine);
-        Translation2d vectorTowardsLine = targetLine.getVector(estimatedPosition.getTranslation())
+        Translation2d vectorTowardsLine = targetLine.getVectorFrom(estimatedPosition.getTranslation())
                 .times(movementTowardsLine);
 
         drivetrain.drive(vectorTowardsLine, omega);

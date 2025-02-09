@@ -61,7 +61,7 @@ public class Line {
      * However, the absolute value is removed, in order to not accelerate towards
      * infinity when the line is passed.
      */
-    public double getDistance(Translation2d position) {
+    public double getPIDMeasurement(Translation2d position) {
         return slope * position.getX() - position.getY() + centerY - slope * centerX
                 / Math.sqrt(1 + slope * slope);
     }
@@ -70,8 +70,8 @@ public class Line {
      * {@returns a {@link Translation2d} such that adding it to position returns a
      * point on the line represented by this object}
      */
-    public Translation2d getVector(Translation2d position) {
+    public Translation2d getVectorFrom(Translation2d position) {
         double perpendicularAngle = Math.atan(slope) + Math.PI / 2;
-        return new Translation2d(getDistance(position), Rotation2d.fromRadians(perpendicularAngle));
+        return new Translation2d(getPIDMeasurement(position), Rotation2d.fromRadians(perpendicularAngle));
     }
 }
