@@ -53,7 +53,8 @@ public class AlignToReef extends Command {
         Translation2d vectorTowardsLine = targetLine.getVectorFrom(estimatedPosition.getTranslation())
                 .times(movementTowardsLine);
 
-        drivetrain.drive(vectorTowardsLine, omega);
+        // drivetrain.drive(vectorTowardsLine, omega);
+        drivetrain.drive(0, 0, omega);
 
         doubles.set("omega", omega);
         doubles.set("deltaX", vectorTowardsLine.getX());
