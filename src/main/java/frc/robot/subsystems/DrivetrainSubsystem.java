@@ -94,36 +94,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         drive(0, 0, omega);
     }
 
-    /**
-     * Significantly cleans up other code.
-     */
-    public void partialDrive(Double vx, Double vy, Double omega) {
-        // This is much uglier than it could be becase there is no type that all
-        // SwerveRequests inherit from that supports the with* functions
-        if (m_isFieldCentric.get()) {
-            if (vx != null) {
-                m_fieldCentric.withVelocityX(vx);
-            }
-            if (vy != null) {
-                m_fieldCentric.withVelocityY(vy);
-            }
-            if (omega != null) {
-                m_fieldCentric.withRotationalRate(omega);
-            }
-            setControl(m_fieldCentric.withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-        } else {
-            if (vx != null) {
-                m_robotCentric.withVelocityX(vx);
-            }
-            if (vy != null) {
-                m_robotCentric.withVelocityY(vy);
-            }
-            if (omega != null) {
-                m_robotCentric.withRotationalRate(omega);
-            }
-            setControl(m_robotCentric.withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-        }
-    }
 
     public void driveFieldCentricObeyTurn(double vx, double vy, double omega) {
         SmartDashboard.putBoolean("drivetrain has a facing request", hasFacingRequest);
