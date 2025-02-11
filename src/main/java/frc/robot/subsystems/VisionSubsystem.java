@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,7 +28,6 @@ public class VisionSubsystem extends SubsystemBase {
     // Initializes the vision subsystem
     public VisionSubsystem(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
-        // seedPigeon();
     }
 
     @SuppressWarnings("unused")
@@ -59,13 +59,15 @@ public class VisionSubsystem extends SubsystemBase {
         } else if (lastEstPos == null) {
             lastEstPos = drivetrain.getEstimatedPosition();
         } else if (Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
-                - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD // we're still
-                                                                                                         // enough
-                && ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) { // it's been long enough
+                - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD
+
+                && ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
             lastEstPos = drivetrain.getEstimatedPosition();
             ticks = 0;
-            drivetrain.getPigeon2().setYaw(LimelightHelpers.getBotPose2d(null).getRotation().getDegrees());
-            System.out.println("set the pigeon's yaw");
+
+            Rotation2d rot = LimelightHelpers.getBotPose2d(null).getRotation();
+            drivetrain.getPigeon2().setYaw(rot.getDegrees());
+            System.out.println("set pigeon yaw to deg " + rot.getDegrees());
         }
         ticks++;
     }
