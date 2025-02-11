@@ -10,7 +10,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.util.LimelightHelpers;
@@ -31,7 +30,8 @@ public class VisionSubsystem extends SubsystemBase {
         // seedPigeon();
     }
 
-    private void seedPigeon() {
+    @SuppressWarnings("unused")
+    private void oldSeedPigeon() {
         Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
         boolean hasTarget = LimelightHelpers.getTV(null);
         if (pose == null || !hasTarget) {
@@ -42,15 +42,36 @@ public class VisionSubsystem extends SubsystemBase {
         drivetrain.getPigeon2().setYaw(rot);
     }
 
-    public Command getSeedPigeon() {
-        return new SequentialCommandGroup(
-                runOnce(() -> SmartDashboard.putBoolean("pigeon resetting", true)),
-                runEnd(() -> seedPigeon(), () -> SmartDashboard.putBoolean("pigeon resetting", false)));
+    Pose2d lastEstPos = null;
+    int ticks = 0;
+
+    /**
+     * If no april-tag data -> null last-pos.
+     * If null last-pos -> set it to the current position.
+     * Otherwise, if we're still enough and it's been long enough since the last
+     * update:
+     * - update the last estimated position
+     * - set the pigeon
+     */
+    private void seedPigeon() {
+        if (!LimelightHelpers.getTV(null)) {
+            lastEstPos = null;
+        } else if (lastEstPos == null) {
+            lastEstPos = drivetrain.getEstimatedPosition();
+        } else if (Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
+                - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD // we're still
+                                                                                                         // enough
+                && ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) { // it's been long enough
+            lastEstPos = drivetrain.getEstimatedPosition();
+            ticks = 0;
+            drivetrain.getPigeon2().setYaw(LimelightHelpers.getBotPose2d(null).getRotation().getDegrees());
+            System.out.println("set the pigeon's yaw");
+        }
+        ticks++;
     }
 
-    private void keepDriftInCheck() {
-        driftEstimateTicks += 1;
-        // TODO: is this even a problem that we need to correct for?
+    public Command getSeedPigeon() {
+        return run(() -> seedPigeon());
     }
 
     private Pose2d updateVisionMeasurement() {
@@ -79,9 +100,6 @@ public class VisionSubsystem extends SubsystemBase {
     NTDoubleSection telemetry_doubles = new NTDoubleSection("test_telem_doubles", "mt1_rz", "mt2_rz", "pigeon",
             "poseest", "averagedMt1");
 
-    Pose2d lastEstPos = null;
-    int ticks = 0;
-
     @Override
     public void periodic() {
         LimelightHelpers.SetRobotOrientation(null,
@@ -94,26 +112,10 @@ public class VisionSubsystem extends SubsystemBase {
         }
         this.limelightPosePublisher.set(drivetrain.getEstimatedPosition());
 
-        keepDriftInCheck();
-
         telemetry_doubles.set("mt1_rz", LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation().getDegrees());
         telemetry_doubles.set("mt2_rz",
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(null).pose.getRotation().getDegrees());
         telemetry_doubles.set("pigeon", drivetrain.getPigeon2().getRotation2d().getDegrees());
         telemetry_doubles.set("poseest", drivetrain.getEstimatedPosition().getRotation().getDegrees());
-
-        if (!LimelightHelpers.getTV(null)) {
-            lastEstPos = null;
-        } else if (lastEstPos == null) {
-            lastEstPos = drivetrain.getEstimatedPosition();
-        } else if (Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
-                - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD // we're still
-                                                                                                         // enough
-                && ticks >= 10) { // it's been long enough
-            lastEstPos = drivetrain.getEstimatedPosition();
-            ticks = 0;
-            drivetrain.getPigeon2().setYaw(LimelightHelpers.getBotPose2d(null).getRotation().getDegrees());
-        }
-        ticks++;
     }
 }
