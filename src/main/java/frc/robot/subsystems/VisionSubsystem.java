@@ -68,6 +68,8 @@ public class VisionSubsystem extends SubsystemBase {
             Rotation2d rot = LimelightHelpers.getBotPose2d(null).getRotation();
             drivetrain.getPigeon2().setYaw(rot.getDegrees());
             System.out.println("set pigeon yaw to deg " + rot.getDegrees());
+        } else {
+            lastEstPos = drivetrain.getEstimatedPosition();
         }
         ticks++;
     }
@@ -119,5 +121,7 @@ public class VisionSubsystem extends SubsystemBase {
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(null).pose.getRotation().getDegrees());
         telemetry_doubles.set("pigeon", drivetrain.getPigeon2().getRotation2d().getDegrees());
         telemetry_doubles.set("poseest", drivetrain.getEstimatedPosition().getRotation().getDegrees());
+
+        seedPigeon();
     }
 }
