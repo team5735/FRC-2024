@@ -31,10 +31,13 @@ public class TunablePIDController {
     public TunablePIDController(
             String name,
             Subsystem... requirements) {
+        this(name, Constants.PID_P, Constants.PID_I, Constants.PID_D, requirements);
+    }
 
-        p = new TunableNumber("tunable_pid_commands", name + "_p", Constants.PID_P);
-        i = new TunableNumber("tunable_pid_commands", name + "_i", Constants.PID_I);
-        d = new TunableNumber("tunable_pid_commands", name + "_d", Constants.PID_D);
+    public TunablePIDController(String name, double _p, double _i, double _d, Subsystem... requirements) {
+        p = new TunableNumber("tunable_pid_commands", name + "_p", _p);
+        i = new TunableNumber("tunable_pid_commands", name + "_i", _i);
+        d = new TunableNumber("tunable_pid_commands", name + "_d", _d);
 
         doubles = new NTDoubleSection(name + " pid", "setpoint", "output", "measurement", "p", "i", "d");
     }

@@ -66,7 +66,7 @@ public class ReefAprilTagPositions {
     /**
      * Returns the pose of the tag closest to the given position.
      *
-     * @param position The postiion in blue alliance field space.
+     * @param position The position in blue alliance field space.
      */
     public static Pose2d getClosestTag(Translation2d position) {
         if (position.getX() > FIELD_LENGTH / 2) {

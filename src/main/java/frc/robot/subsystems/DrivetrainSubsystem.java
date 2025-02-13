@@ -39,8 +39,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
     private SwerveRequest.RobotCentric m_robotCentric = new SwerveRequest.RobotCentric();
     private SwerveRequest.FieldCentric m_fieldCentric = new SwerveRequest.FieldCentric();
     private SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
-    private SwerveRequest.FieldCentricFacingAngle m_facingAngle = new SwerveRequest.FieldCentricFacingAngle();
-    private Supplier<Boolean> m_isFieldCentric;
 
     public DrivetrainSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             Supplier<Boolean> fieldCentric, SwerveModuleConstants... modules) {
@@ -48,8 +46,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        m_isFieldCentric = fieldCentric;
 
         setupAuto();
     }
@@ -60,8 +56,6 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        m_isFieldCentric = fieldCentric;
 
         setupAuto();
     }

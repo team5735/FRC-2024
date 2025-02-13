@@ -118,7 +118,7 @@ public class RobotContainer {
         this.vision.setDefaultCommand(this.vision.getSeedPigeon());
 
         m_drivingController.a()
-                .onTrue(new AlignToReef(m_drivetrain, () -> Branch.NEITHER));
+                .onTrue(new AlignToReef(m_drivetrain, this.vision, () -> Branch.NEITHER));
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();

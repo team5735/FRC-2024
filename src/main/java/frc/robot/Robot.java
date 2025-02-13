@@ -16,7 +16,6 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.FeederConstants;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.constants.LimelightConstants;
 import frc.robot.constants.ShooterConstants;
 
 /**
@@ -99,10 +98,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("drivetrain_slowSpeed", DrivetrainConstants.SLOW_SPEED);
         SmartDashboard.putNumber("drivetrain_normalSpeed", DrivetrainConstants.NORMAL_SPEED);
         SmartDashboard.putNumber("drivetrain_turboSpeed", DrivetrainConstants.TURBO_SPEED);
-
-        SmartDashboard.putNumber("llv2_turnP", LimelightConstants.TURN_P);
-        SmartDashboard.putNumber("llv2_turnI", LimelightConstants.TURN_I);
-        SmartDashboard.putNumber("llv2_turnD", LimelightConstants.TURN_D);
     }
 
     /**

@@ -54,12 +54,11 @@ public class VisionSubsystem extends SubsystemBase {
      * - set the pigeon
      */
     private void seedPigeon() {
-        if (!LimelightHelpers.getTV(null)) {
-            lastEstPos = null;
-        } else if (lastEstPos == null) {
+        if (lastEstPos == null) {
             lastEstPos = drivetrain.getEstimatedPosition();
-        } else if (Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
-                - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD
+        } else if (LimelightHelpers.getTV(null) &&
+                Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
+                        - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD
 
                 && ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
             lastEstPos = drivetrain.getEstimatedPosition();
