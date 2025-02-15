@@ -31,6 +31,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     LinearFilter mt1RzAverage = LinearFilter.movingAverage(5);
+    double lastRot = Double.NaN;
     int ticks = 0;
     int ticksWithNoTv = 0;
 
@@ -44,8 +45,12 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         ticksWithNoTv = 0;
-        double newRot = mt1RzAverage
-                .calculate(LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation().getDegrees());
+        double thisRot = LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation().getDegrees();
+        if (thisRot == lastRot) {
+            return;
+        }
+        lastRot = thisRot;
+        double newRot = mt1RzAverage.calculate(thisRot);
         telemetry_doubles.set("averagedMt1", newRot);
         if (ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
             ticks = 0;
