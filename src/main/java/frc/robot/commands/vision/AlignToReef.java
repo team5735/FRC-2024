@@ -14,15 +14,21 @@ import frc.robot.util.NTDoubleSection;
 import frc.robot.util.TunablePIDController;
 
 public class AlignToReef extends Command {
-    DrivetrainSubsystem drivetrain;
+    private DrivetrainSubsystem drivetrain;
 
-    Pose2d alignmentTargetTag;
-    Line targetLine;
+    private Pose2d alignmentTargetTag;
+    private Line targetLine;
 
-    TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 1, 1, 0);
-    TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 1, 1, 0);
+    private TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 1, 1, 0);
+    private TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 1, 1, 0);
 
-    NTDoubleSection doubles = new NTDoubleSection(getName(), "omega", "deltaX", "deltaY");
+    private NTDoubleSection doubles = new NTDoubleSection(getName(), "omega", "deltaX", "deltaY");
+
+    /**
+     * What command to schedule after we're finished (assuming interrupted ==
+     * false).
+     */
+    private Command afterDone;
 
     /**
      * Positions the robot in order to score a coral.
@@ -30,6 +36,15 @@ public class AlignToReef extends Command {
     public AlignToReef(DrivetrainSubsystem drivetrain, VisionSubsystem vision, Supplier<Branch> whichBranch) {
         this.drivetrain = drivetrain;
         addRequirements(drivetrain, vision);
+    }
+
+    public AlignToReef withAfterDone(Command afterDone) {
+        this.afterDone = afterDone;
+        return this;
+    }
+
+    public Supplier<Line> getLineGetter() {
+        return () -> this.targetLine;
     }
 
     @Override
@@ -58,6 +73,13 @@ public class AlignToReef extends Command {
         doubles.set("omega", omega);
         doubles.set("deltaX", vectorTowardsLine.getX());
         doubles.set("deltaY", vectorTowardsLine.getY());
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (!interrupted) {
+            this.afterDone.schedule();
+        }
     }
 
     @Override

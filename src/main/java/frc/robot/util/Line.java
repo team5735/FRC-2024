@@ -74,4 +74,8 @@ public class Line {
         double perpendicularAngle = Math.atan(slope) + Math.PI / 2;
         return new Translation2d(1, Rotation2d.fromRadians(perpendicularAngle));
     }
+
+    public Translation2d getVectorAlongLine() {
+        return new Translation2d(1, Rotation2d.fromRadians(Math.atan(slope)));
+    }
 }
