@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,7 +32,7 @@ public class VisionSubsystem extends SubsystemBase {
         this.drivetrain = drivetrain;
     }
 
-    LinearFilter mt1RzAverage = LinearFilter.movingAverage(5);
+    LinearFilter mt1RzAverage = LinearFilter.movingAverage(LimelightConstants.AVERAGING_WINDOW);
     double lastRot = Double.NaN;
     int ticks = 0;
     int ticksWithNoTv = 0;
@@ -39,7 +41,9 @@ public class VisionSubsystem extends SubsystemBase {
         if (!LimelightHelpers.getTV(null)) {
             ticksWithNoTv++;
             if (ticksWithNoTv > 5) {
-                mt1RzAverage.reset();
+                double[] inputBuffer = new double[LimelightConstants.AVERAGING_WINDOW];
+                Arrays.fill(inputBuffer, drivetrain.getEstimatedPosition().getRotation().getDegrees());
+                mt1RzAverage.reset(inputBuffer, new double[0]);
             }
             return;
         }
@@ -60,7 +64,11 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Command getSeedPigeon() {
-        return run(() -> seedPigeon());
+        return runOnce(() -> {
+            double[] inputBuffer = new double[LimelightConstants.AVERAGING_WINDOW];
+            Arrays.fill(inputBuffer, drivetrain.getEstimatedPosition().getRotation().getDegrees());
+            mt1RzAverage.reset(inputBuffer, new double[0]);
+        }).andThen(run(() -> seedPigeon()));
     }
 
     private Pose2d updateVisionMeasurement() {

@@ -39,7 +39,7 @@ public class AlignToReef extends Command {
                 .getClosestTag(drivetrain.getEstimatedPosition().getTranslation());
         this.targetLine = new Line(alignmentTargetTag, "AlignToReef");
 
-        omegaController.setup(alignmentTargetTag.getRotation().unaryMinus().getRadians());
+        omegaController.setup(alignmentTargetTag.getRotation().unaryMinus().getRadians(), 0.1);
         lineController.setup(0, .02); // we want to be 'at' the Line.
     }
 
@@ -57,9 +57,9 @@ public class AlignToReef extends Command {
         Translation2d vectorTowardsLine = targetLine.getVectorFrom(estimatedPosition.getTranslation())
                 .times(movementTowardsLine);
 
-        // drivetrain.drive(vectorTowardsLine, omega);
+        drivetrain.drive(vectorTowardsLine, omega);
         // drivetrain.drive(0, 0, omega);
-        drivetrain.drive(vectorTowardsLine);
+        // drivetrain.drive(vectorTowardsLine);
 
         doubles.set("omega", omega);
         doubles.set("deltaX", vectorTowardsLine.getX());
@@ -68,6 +68,6 @@ public class AlignToReef extends Command {
 
     @Override
     public boolean isFinished() {
-        return omegaController.atSetpoint();
+        return omegaController.atSetpoint() && lineController.atSetpoint();
     }
 }
