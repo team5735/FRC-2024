@@ -15,6 +15,6 @@ public class DrivetrainConstants {
     public static final double NORMAL_SPEED = 2;
     public static final double TURBO_SPEED = 2;
 
-    public static final double MAX_SPEED = 3;
+    public static final double MAX_SPEED = 7;
     public static final double MAX_ANGULAR_SPEED = 2 * Math.PI;
 }
