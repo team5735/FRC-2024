@@ -5,8 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,33 +30,26 @@ public class VisionSubsystem extends SubsystemBase {
         this.drivetrain = drivetrain;
     }
 
-    Pose2d lastEstPos = null;
+    LinearFilter mt1RzAverage = LinearFilter.movingAverage(5);
     int ticks = 0;
+    int ticksWithNoTv = 0;
 
-    /**
-     * If no april-tag data -> null last-pos.
-     * If null last-pos -> set it to the current position.
-     * Otherwise, if we're still enough and it's been long enough since the last
-     * update:
-     * - update the last estimated position
-     * - set the pigeon
-     */
     private void seedPigeon() {
-        if (lastEstPos == null) {
-            lastEstPos = drivetrain.getEstimatedPosition();
-        } else if (LimelightHelpers.getTV(null) &&
-                Math.abs(drivetrain.getEstimatedPosition().getRotation().getDegrees()
-                        - lastEstPos.getRotation().getDegrees()) < LimelightConstants.DRIVETRAIN_STILL_THRESHOLD
+        if (!LimelightHelpers.getTV(null)) {
+            ticksWithNoTv++;
+            if (ticksWithNoTv > 5) {
+                mt1RzAverage.reset();
+            }
+            return;
+        }
 
-                && ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
-            lastEstPos = drivetrain.getEstimatedPosition();
+        ticksWithNoTv = 0;
+        double newRot = mt1RzAverage
+                .calculate(LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation().getDegrees());
+        telemetry_doubles.set("averagedMt1", newRot);
+        if (ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
             ticks = 0;
-
-            Rotation2d rot = LimelightHelpers.getBotPose2d(null).getRotation();
-            drivetrain.getPigeon2().setYaw(rot.getDegrees());
-            System.out.println("set pigeon yaw to deg " + rot.getDegrees());
-        } else {
-            lastEstPos = drivetrain.getEstimatedPosition();
+            drivetrain.getPigeon2().setYaw(newRot);
         }
         ticks++;
     }
