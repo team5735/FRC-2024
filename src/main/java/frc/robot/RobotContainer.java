@@ -124,7 +124,9 @@ public class RobotContainer {
             m_drivetrain.seedFieldRelative();
         }));
 
-        m_drivingController.b().onTrue(Commands.waitSeconds(2));
+        Command testPauseCommand = Commands.waitSeconds(2);
+        testPauseCommand.addRequirements(this.vision);
+        m_drivingController.b().onTrue(testPauseCommand);
     }
 
     private void updateMultipliers() {
