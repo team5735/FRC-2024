@@ -120,7 +120,5 @@ public class VisionSubsystem extends SubsystemBase {
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(null).pose.getRotation().getDegrees());
         telemetry_doubles.set("pigeon", drivetrain.getPigeon2().getRotation2d().getDegrees());
         telemetry_doubles.set("poseest", drivetrain.getEstimatedPosition().getRotation().getDegrees());
-
-        seedPigeon();
     }
 }
