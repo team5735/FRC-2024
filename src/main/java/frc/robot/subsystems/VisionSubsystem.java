@@ -58,8 +58,8 @@ public class VisionSubsystem extends SubsystemBase {
         telemetry_doubles.set("averagedMt1", newRot);
         if (ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
             ticks = 0;
-            drivetrain.getPigeon2().setYaw(newRot);
         }
+        drivetrain.getPigeon2().setYaw(newRot);
         ticks++;
     }
 

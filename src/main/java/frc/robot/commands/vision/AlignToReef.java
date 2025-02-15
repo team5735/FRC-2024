@@ -19,11 +19,10 @@ public class AlignToReef extends Command {
     Pose2d alignmentTargetTag;
     Line targetLine;
 
-    TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 1, 0, 0);
-    TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 1, 0, 0);
+    TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 1, 1, 0);
+    TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 1, 1, 0);
 
-    NTDoubleSection doubles = new NTDoubleSection(getName(), "movement to line", "omega", "deltaX", "deltaY",
-            "line measurement");
+    NTDoubleSection doubles = new NTDoubleSection(getName(), "omega", "deltaX", "deltaY");
 
     /**
      * Positions the robot in order to score a coral.
@@ -50,12 +49,9 @@ public class AlignToReef extends Command {
         double omega = omegaController.calculate(estimatedPosition.getRotation().getRadians());
 
         double measurement = targetLine.getPIDMeasurement(estimatedPosition.getTranslation());
-        doubles.set("line measurement", measurement);
-        double movementTowardsLine = lineController
-                .calculate(measurement);
-        doubles.set("movement to line", movementTowardsLine);
+        double movementTowardsLine = lineController.calculate(measurement);
         Translation2d vectorTowardsLine = targetLine.getVectorFrom(estimatedPosition.getTranslation())
-                .times(movementTowardsLine);
+                .times(-movementTowardsLine);
 
         drivetrain.drive(vectorTowardsLine, omega);
         // drivetrain.drive(0, 0, omega);
