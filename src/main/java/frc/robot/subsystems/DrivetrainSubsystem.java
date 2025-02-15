@@ -67,6 +67,10 @@ public class DrivetrainSubsystem extends SwerveDrivetrain implements Subsystem {
             throw new RuntimeException("Speeds are too high");
         }
 
+        manualDrive(vx, vy, omega);
+    }
+
+    public void manualDrive(double vx, double vy, double omega) {
         setControl(m_fieldCentric.withVelocityX(vx)
                 .withVelocityY(vy)
                 .withRotationalRate(omega)

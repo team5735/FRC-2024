@@ -57,7 +57,7 @@ public class DriveCommand extends Command {
         } else if (DrivetrainConstants.SLEW_RATE_LIMITER_MODE == SlewRateLimiterMode.AXES) {
             driveAxesSRL(speedX, speedY, speedOmega);
         } else {
-            m_drivetrain.drive(speedX, speedY, speedOmega);
+            m_drivetrain.manualDrive(speedX, speedY, speedOmega);
         }
     }
 
@@ -73,7 +73,7 @@ public class DriveCommand extends Command {
         doubles.set("speedX", speedX);
         doubles.set("speedY", speedY);
         doubles.set("speedOmega", speedOmega);
-        m_drivetrain.drive(speedX, speedY, speedOmega);
+        m_drivetrain.manualDrive(speedX, speedY, speedOmega);
     }
 
     /**
@@ -101,7 +101,7 @@ public class DriveCommand extends Command {
         Translation2d thetaMagnitudeMovement = new Translation2d(r, theta);
         doubles.set("theta", theta);
         doubles.set("magnitude", r);
-        m_drivetrain.drive(thetaMagnitudeMovement.getX(), thetaMagnitudeMovement.getY(),
+        m_drivetrain.manualDrive(thetaMagnitudeMovement.getX(), thetaMagnitudeMovement.getY(),
                 m_omegaLimiter.calculate(speedOmega));
     }
 }
