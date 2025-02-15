@@ -123,6 +123,8 @@ public class RobotContainer {
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
         }));
+
+        m_drivingController.b().onTrue(Commands.waitSeconds(2));
     }
 
     private void updateMultipliers() {

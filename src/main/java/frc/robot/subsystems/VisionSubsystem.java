@@ -30,18 +30,6 @@ public class VisionSubsystem extends SubsystemBase {
         this.drivetrain = drivetrain;
     }
 
-    @SuppressWarnings("unused")
-    private void oldSeedPigeon() {
-        Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(null);
-        boolean hasTarget = LimelightHelpers.getTV(null);
-        if (pose == null || !hasTarget) {
-            return;
-        }
-        double rot = pose.getRotation().getDegrees();
-        System.out.println("setting yaw to: " + rot);
-        drivetrain.getPigeon2().setYaw(rot);
-    }
-
     Pose2d lastEstPos = null;
     int ticks = 0;
 
