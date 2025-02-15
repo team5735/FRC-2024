@@ -53,9 +53,7 @@ public class AlignToReef extends Command {
         Translation2d vectorTowardsLine = targetLine.getVectorFrom(estimatedPosition.getTranslation())
                 .times(-movementTowardsLine);
 
-        // drivetrain.drive(vectorTowardsLine, omega);
-        // drivetrain.drive(0, 0, omega);
-        drivetrain.drive(vectorTowardsLine);
+        drivetrain.drive(vectorTowardsLine, omega);
 
         doubles.set("omega", omega);
         doubles.set("deltaX", vectorTowardsLine.getX());
@@ -64,6 +62,6 @@ public class AlignToReef extends Command {
 
     @Override
     public boolean isFinished() {
-        return /* omegaController.atSetpoint() && */ lineController.atSetpoint();
+        return omegaController.atSetpoint() && lineController.atSetpoint();
     }
 }
