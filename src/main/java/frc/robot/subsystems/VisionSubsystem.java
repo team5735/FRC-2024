@@ -68,7 +68,7 @@ public class VisionSubsystem extends SubsystemBase {
             double[] inputBuffer = new double[LimelightConstants.AVERAGING_WINDOW];
             Arrays.fill(inputBuffer, drivetrain.getEstimatedPosition().getRotation().getDegrees());
             mt1RzAverage.reset(inputBuffer, new double[0]);
-        }).andThen(run(() -> seedPigeon()));
+        }).andThen(run(() -> seedPigeon()).ignoringDisable(true));
     }
 
     private Pose2d updateVisionMeasurement() {

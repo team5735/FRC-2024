@@ -119,10 +119,11 @@ public class RobotContainer {
         this.vision.setDefaultCommand(this.vision.getSeedPigeon());
 
         AlignToReef alignToReef = new AlignToReef(m_drivetrain, vision, () -> Branch.NEITHER);
-        MoveAlongLine moveAlongLine = new MoveAlongLine(() -> m_drivingController.getHID().getLeftX(),
+
+        MoveAlongLine moveAlongLine = new MoveAlongLine(() -> m_drivingController.getHID().getLeftY(),
                 alignToReef.getLineGetter(), m_drivetrain);
 
-        m_drivingController.a().onTrue(alignToReef.withAfterDone(moveAlongLine));
+        m_drivingController.a().onTrue(alignToReef.andThen(() -> moveAlongLine.schedule()));
         m_drivingController.b().onTrue(Commands.runOnce(() -> {
             moveAlongLine.cancel();
         }));

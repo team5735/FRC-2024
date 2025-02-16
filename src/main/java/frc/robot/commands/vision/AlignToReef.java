@@ -25,22 +25,11 @@ public class AlignToReef extends Command {
     private NTDoubleSection doubles = new NTDoubleSection(getName(), "omega", "deltaX", "deltaY");
 
     /**
-     * What command to schedule after we're finished (assuming interrupted ==
-     * false).
-     */
-    private Command afterDone;
-
-    /**
      * Positions the robot in order to score a coral.
      */
     public AlignToReef(DrivetrainSubsystem drivetrain, VisionSubsystem vision, Supplier<Branch> whichBranch) {
         this.drivetrain = drivetrain;
         addRequirements(drivetrain, vision);
-    }
-
-    public AlignToReef withAfterDone(Command afterDone) {
-        this.afterDone = afterDone;
-        return this;
     }
 
     public Supplier<Line> getLineGetter() {
@@ -73,13 +62,6 @@ public class AlignToReef extends Command {
         doubles.set("omega", omega);
         doubles.set("deltaX", vectorTowardsLine.getX());
         doubles.set("deltaY", vectorTowardsLine.getY());
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        if (!interrupted) {
-            this.afterDone.schedule();
-        }
     }
 
     @Override
