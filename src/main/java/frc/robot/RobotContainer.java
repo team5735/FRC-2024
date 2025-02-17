@@ -117,8 +117,7 @@ public class RobotContainer {
 
         this.vision.setDefaultCommand(this.vision.getSeedPigeon());
 
-        AlignToReef alignToReef = new AlignToReef(m_drivetrain, vision, () -> Branch.NEITHER,
-                () -> m_drivingController.getHID().getLeftY());
+        AlignToReef alignToReef = new AlignToReef(m_drivetrain, vision, () -> Branch.NEITHER);
 
         m_drivingController.a().onTrue(alignToReef);
         m_drivingController.b().onTrue(Commands.runOnce(() -> alignToReef.cancel()));

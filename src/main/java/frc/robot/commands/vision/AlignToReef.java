@@ -2,12 +2,10 @@ package frc.robot.commands.vision;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.ReefAprilTagPositions;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -22,22 +20,18 @@ public class AlignToReef extends Command {
     private Pose2d alignmentTargetTag;
     private Line targetLine;
 
-    private TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 1, 0, 0);
-    private TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 1, 0, 0);
+    private TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 2, 1, 0);
+    private TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 2, 1, 0);
 
     private NTDoubleSection doubles = new NTDoubleSection(getName(), "omega", "deltaX", "deltaY");
 
-    private Supplier<Double> input;
-
-    private static boolean infinite = true;
+    private static boolean infinite = false;
 
     /**
      * Positions the robot in order to score a coral.
      */
-    public AlignToReef(DrivetrainSubsystem drivetrain, VisionSubsystem vision, Supplier<Branch> whichBranch,
-            Supplier<Double> input) {
+    public AlignToReef(DrivetrainSubsystem drivetrain, VisionSubsystem vision, Supplier<Branch> whichBranch) {
         this.drivetrain = drivetrain;
-        this.input = input;
         addRequirements(drivetrain, vision);
     }
 
@@ -67,11 +61,6 @@ public class AlignToReef extends Command {
         doubles.set("omega", omega);
         doubles.set("deltaX", drivetrainMovement.getX());
         doubles.set("deltaY", drivetrainMovement.getY());
-
-        Translation2d alongLineNormalized = this.targetLine.getVectorAlongLine();
-        Translation2d alongLine = alongLineNormalized
-                .times(MathUtil.applyDeadband(this.input.get(), DrivetrainConstants.DEADBAND));
-        drivetrainMovement = drivetrainMovement.plus(alongLine);
 
         drivetrain.drive(drivetrainMovement, omega);
     }
