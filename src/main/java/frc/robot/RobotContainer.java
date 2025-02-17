@@ -122,6 +122,7 @@ public class RobotContainer {
 
         m_drivingController.a().onTrue(alignToReef);
         m_drivingController.b().onTrue(Commands.runOnce(() -> alignToReef.cancel()));
+        m_drivingController.x().onTrue(Commands.runOnce(() -> vision.seedPigeon()));
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();

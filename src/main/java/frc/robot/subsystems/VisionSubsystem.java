@@ -34,33 +34,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     LinearFilter mt1RzAverage = LinearFilter.movingAverage(LimelightConstants.AVERAGING_WINDOW);
     double lastRot = Double.NaN;
+    double curRot;
     int ticks = 0;
     int ticksWithNoTv = 0;
 
-    private void seedPigeon() {
-        if (!LimelightHelpers.getTV(null)) {
-            ticksWithNoTv++;
-            if (ticksWithNoTv > 5) {
-                double[] inputBuffer = new double[LimelightConstants.AVERAGING_WINDOW];
-                Arrays.fill(inputBuffer, drivetrain.getEstimatedPosition().getRotation().getDegrees());
-                mt1RzAverage.reset(inputBuffer, new double[0]);
-            }
-            return;
-        }
-
-        ticksWithNoTv = 0;
-        double thisRot = LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation().getDegrees();
-        if (thisRot == lastRot) {
-            return;
-        }
-        lastRot = thisRot;
-        double newRot = mt1RzAverage.calculate(thisRot);
-        telemetry_doubles.set("averagedMt1", newRot);
-        if (ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
-            ticks = 0;
-        }
-        drivetrain.getPigeon2().setYaw(newRot);
-        ticks++;
+    public void seedPigeon() {
+        drivetrain.getPigeon2().setYaw(curRot);
     }
 
     public Command getSeedPigeon() {
@@ -93,6 +72,31 @@ public class VisionSubsystem extends SubsystemBase {
         return mt2.pose;
     }
 
+    private void addMt1Reading() {
+        if (!LimelightHelpers.getTV(null)) {
+            ticksWithNoTv++;
+            if (ticksWithNoTv > 5) {
+                double[] inputBuffer = new double[LimelightConstants.AVERAGING_WINDOW];
+                Arrays.fill(inputBuffer, drivetrain.getEstimatedPosition().getRotation().getDegrees());
+                mt1RzAverage.reset(inputBuffer, new double[0]);
+            }
+            return;
+        }
+
+        ticksWithNoTv = 0;
+        double thisRot = LimelightHelpers.getBotPose2d_wpiBlue(null).getRotation().getDegrees();
+        if (thisRot == lastRot) {
+            return;
+        }
+        lastRot = thisRot;
+        curRot = mt1RzAverage.calculate(thisRot);
+        telemetry_doubles.set("averagedMt1", curRot);
+        if (ticks >= LimelightConstants.TICKS_BETWEEN_PIGEON_UPDATES) {
+            ticks = 0;
+        }
+        ticks++;
+    }
+
     // all in deg
     NTDoubleSection telemetry_doubles = new NTDoubleSection("test_telem_doubles", "mt1_rz", "mt2_rz", "pigeon",
             "poseest", "averagedMt1");
@@ -114,5 +118,7 @@ public class VisionSubsystem extends SubsystemBase {
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(null).pose.getRotation().getDegrees());
         telemetry_doubles.set("pigeon", drivetrain.getPigeon2().getRotation2d().getDegrees());
         telemetry_doubles.set("poseest", drivetrain.getEstimatedPosition().getRotation().getDegrees());
+
+        addMt1Reading();
     }
 }
