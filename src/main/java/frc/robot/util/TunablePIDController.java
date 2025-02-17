@@ -57,6 +57,10 @@ public class TunablePIDController {
         controller.setTolerance(tolerance);
     }
 
+    public void reset() {
+        controller.reset();
+    }
+
     /**
      * Runs the PID calculation.
      * 
@@ -67,10 +71,6 @@ public class TunablePIDController {
      * @return The controller output, or zero if atSetpoint.
      */
     public double calculate(double measurement) {
-        if (atSetpoint()) {
-            return 0;
-        }
-
         double value = controller.calculate(measurement);
         doubles.set("measurement", measurement);
         doubles.set("output", value);

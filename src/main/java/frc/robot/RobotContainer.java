@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.drivetrain.BrakeCommand;
 import frc.robot.commands.drivetrain.DriveCommand;
 import frc.robot.commands.vision.AlignToReef;
-import frc.robot.commands.vision.MoveAlongLine;
 import frc.robot.constants.Constants.OperatorConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.TunerConstants;
@@ -118,15 +117,11 @@ public class RobotContainer {
 
         this.vision.setDefaultCommand(this.vision.getSeedPigeon());
 
-        AlignToReef alignToReef = new AlignToReef(m_drivetrain, vision, () -> Branch.NEITHER);
+        AlignToReef alignToReef = new AlignToReef(m_drivetrain, vision, () -> Branch.NEITHER,
+                () -> m_drivingController.getHID().getLeftY());
 
-        MoveAlongLine moveAlongLine = new MoveAlongLine(() -> m_drivingController.getHID().getLeftY(),
-                alignToReef.getLineGetter(), m_drivetrain);
-
-        m_drivingController.a().onTrue(alignToReef.andThen(() -> moveAlongLine.schedule()));
-        m_drivingController.b().onTrue(Commands.runOnce(() -> {
-            moveAlongLine.cancel();
-        }));
+        m_drivingController.a().onTrue(alignToReef);
+        m_drivingController.b().onTrue(Commands.runOnce(() -> alignToReef.cancel()));
 
         m_drivingController.y().onTrue(m_drivetrain.runOnce(() -> {
             m_drivetrain.seedFieldRelative();
