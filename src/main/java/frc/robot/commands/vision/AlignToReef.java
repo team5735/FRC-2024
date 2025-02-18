@@ -20,8 +20,8 @@ public class AlignToReef extends Command {
     private Pose2d alignmentTargetTag;
     private Line targetLine;
 
-    private TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 2, 1, 0);
-    private TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 2, 1, 0);
+    private TunablePIDController omegaController = new TunablePIDController("AlignToReef_omega", 5, 1, 0);
+    private TunablePIDController lineController = new TunablePIDController("AlignToReef_line", 5, 1, 0);
 
     private NTDoubleSection doubles = new NTDoubleSection(getName(), "omega", "deltaX", "deltaY");
 
