@@ -23,7 +23,7 @@ public class LimelightConstants {
 
     public static final double BLINK_TIME = 1.0;
 
-    public static final int AVERAGING_WINDOW = 20;
+    public static final int AVERAGING_WINDOW = 5;
     public static final double DRIVETRAIN_STILL_THRESHOLD = .1;
     public static final int BLINK_COUNT = 5;
     public static final int TICKS_BETWEEN_PIGEON_UPDATES = 5;

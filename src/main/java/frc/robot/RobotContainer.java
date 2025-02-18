@@ -115,11 +115,11 @@ public class RobotContainer {
                                                     : m_normalMultiplier);
                         }));
 
-        this.vision.setDefaultCommand(this.vision.getSeedPigeon());
+        this.vision.setDefaultCommand(Commands.idle(this.vision));
 
         AlignToReef alignToReef = new AlignToReef(m_drivetrain, vision, () -> Branch.NEITHER);
 
-        m_drivingController.a().onTrue(alignToReef);
+        m_drivingController.a().onTrue(Commands.runOnce(() -> vision.seedPigeon()).andThen(alignToReef));
         m_drivingController.b().onTrue(Commands.runOnce(() -> alignToReef.cancel()));
         m_drivingController.x().onTrue(Commands.runOnce(() -> vision.seedPigeon()));
 
