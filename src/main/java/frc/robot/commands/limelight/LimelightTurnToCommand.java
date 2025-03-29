@@ -14,6 +14,10 @@ import frc.robot.util.NTBooleanSection;
 import frc.robot.util.NTDoubleSection;
 import frc.robot.util.TunableNumber;
 
+/**
+ * Uses a {@link PIDController} to turn the drivetrain to a specified angle.
+ * Accounts for the pigeon's offset.
+ */
 public class LimelightTurnToCommand extends Command {
     DrivetrainSubsystem m_drivetrain;
     LimelightSubsystem m_limelight;
@@ -28,7 +32,10 @@ public class LimelightTurnToCommand extends Command {
     private final TunableNumber m_kI = new TunableNumber("limelight", "kI", LimelightConstants.TURN_I);
     private final TunableNumber m_kD = new TunableNumber("limelight", "kD", LimelightConstants.TURN_D);
 
-    /** Creates a new LimelightTurnToCommand. */
+    /**
+     * Creates a new LimelightTurnToCommand. Initializes everything and logs the
+     * setpoint.
+     */
     public LimelightTurnToCommand(final DrivetrainSubsystem drivetrain, final LimelightSubsystem limelight,
             final double offset) {
         m_drivetrain = drivetrain;
@@ -47,12 +54,13 @@ public class LimelightTurnToCommand extends Command {
         m_doubles.set("setpiont", m_pid.getSetpoint());
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /**
+     * Uses the output of the PID to drive the drivetrain towards the setpoint.
+     */
     @Override
     public void execute() {
         double measurement = getMeasurement();
@@ -62,18 +70,27 @@ public class LimelightTurnToCommand extends Command {
         m_drivetrain.drive(omega);
     }
 
-    // Called once the command ends or is interrupted.
+    /**
+     * Stops the drivetrain and sets aiming to false so it's known that aiming is
+     * done.
+     */
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.drive(0);
         m_booleans.set("aiming", false);
     }
 
+    /**
+     * Returns the drivetrain's current rotation as reported by the Pigeon2.
+     */
     private double getMeasurement() {
         return m_drivetrain.getRotation3d().getZ();
     }
 
-    // Returns true when the command should end.
+    /**
+     * Determines whether the absolute difference between the setpoint and the
+     * measurement is less than the tolerance.
+     */
     @Override
     public boolean isFinished() {
         return Math.abs(getMeasurement() - m_pid.getSetpoint()) < Constants.TOLERANCE;

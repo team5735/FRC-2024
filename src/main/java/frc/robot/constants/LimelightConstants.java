@@ -26,4 +26,5 @@ public class LimelightConstants {
     public static final double TURN_SRL = 8;
 
     public static final double BLINK_TIME = 1.0;
+    public static final int BLINK_COUNT = 5;
 }

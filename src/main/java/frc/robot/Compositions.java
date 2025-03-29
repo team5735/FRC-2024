@@ -19,7 +19,7 @@ import frc.robot.subsystems.shooter.ShooterTopSubsystem;
  * belong to
  */
 public class Compositions {
-    /*
+    /**
      * Creates and returns a new SequentialCommandGroup that first spins up the
      * shooter, that is to say it gets the shooter to full speed, and then has a
      * ParallelCommandGroup that feeds the NOTE in, and simultaneously keeps the
@@ -42,9 +42,21 @@ public class Compositions {
                         shootersHoldNStop(shooterTop, shooterBottom)));
     }
 
-    public static Command angleUpdateWithIntake(Command angleSetCommand, AngleSubsystem angler,
+    /**
+     * Creates and returns a Command either composed of the Command fed in and an
+     * intake command, or simply of the Command passed in. The condition for the
+     * intake running is the angle subsystem being at base position.
+     * 
+     * @param angleSetCommand the Command to run on the angle changer
+     * @param angle           the angle changer to run the Command on
+     * @param intake          the intake subsystem to aid in note movement
+     * 
+     *                        Please use this command when fiddling around the angle
+     *                        changer as opposed to any other methods
+     */
+    public static Command angleUpdateWithIntake(Command angleSetCommand, AngleSubsystem angle,
             IntakeSubsystem intake) {
-        return (angler.isAtBase())
+        return (angle.isAtBase())
                 ? new ParallelCommandGroup(
                         angleSetCommand,
                         new ParallelDeadlineGroup(
@@ -58,8 +70,9 @@ public class Compositions {
         return new SequentialCommandGroup(
                 angle.angleToStageBack(),
                 feedAndShootAlsoIntake(
-                        feeder, intake, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_BACK_RPM,
-                        ShooterConstants.SHOOTER_BOTTOM_STAGE_BACK_RPM));
+                        feeder, intake, top, bottom,
+                        ShooterConstants.TOP_STAGE_BACK_RPM,
+                        ShooterConstants.BOTTOM_STAGE_BACK_RPM));
     }
 
     public static Command shootNAngleFromStageFront(AngleSubsystem angle, ShooterTopSubsystem top,
@@ -67,8 +80,9 @@ public class Compositions {
         return new SequentialCommandGroup(
                 angle.angleToStageFront(),
                 feedAndShootAlsoIntake(
-                        feeder, intake, top, bottom, ShooterConstants.SHOOTER_TOP_STAGE_FRONT_RPM,
-                        ShooterConstants.SHOOTER_BOTTOM_STAGE_FRONT_RPM));
+                        feeder, intake, top, bottom,
+                        ShooterConstants.TOP_STAGE_FRONT_RPM,
+                        ShooterConstants.BOTTOM_STAGE_FRONT_RPM));
     }
 
     public static Command feedNIn(FeederSubsystem feeder, IntakeSubsystem intake) {

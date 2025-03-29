@@ -43,12 +43,12 @@ public class ShooterBottomSubsystem extends SubsystemBase {
      * </ul>
      */
     public void updateProportions() {
-        double bkp = ShooterConstants.SHOOTER_BOTTOM_KP;
-        double bki = ShooterConstants.SHOOTER_BOTTOM_KI;
-        double bkd = ShooterConstants.SHOOTER_BOTTOM_KD;
+        double bkp = ShooterConstants.BOTTOM_KP;
+        double bki = ShooterConstants.BOTTOM_KI;
+        double bkd = ShooterConstants.BOTTOM_KD;
 
-        double bks = ShooterConstants.SHOOTER_BOTTOM_KS;
-        double bkv = ShooterConstants.SHOOTER_BOTTOM_KV;
+        double bks = ShooterConstants.BOTTOM_KS;
+        double bkv = ShooterConstants.BOTTOM_KV;
 
         m_pid_bottom.setPID(bkp, bki, bkd);
         m_feedForward_bottom = new SimpleMotorFeedforward(bks, bkv);
